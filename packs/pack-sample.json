@@ -1,0 +1,19 @@
+{"id":"pack-sample-000","name":"Test pack 測試包","date":"2026-08-03",
+"readings":[
+{"l":2,"title":"寄包裹 Mailing a Package","toks":[["今天","jīntiān","today"],["我","wǒ","I"],["去","qù","go to"],["郵局","yóujú","post office"],["寄","jì","mail"],["包裹","bāoguǒ","package"],["。"],["店員","diànyuán","the clerk"],["問","wèn","asks"],["我","wǒ","me"],["："],["裡面","lǐmiàn","inside"],["是","shì","is"],["什麼","shénme","what"],["？"],["我","wǒ","I"],["說","shuō","say"],["是","shì","it's"],["茶葉","cháyè","tea leaves"],["，"],["要","yào","(I) want to"],["寄","jì","mail (it)"],["到","dào","to"],["美國","Měiguó","the US"],["。"],["航空","hángkōng","air mail"],["比較","bǐjiào","comparatively"],["快","kuài","fast"],["，"],["但是","dànshì","but"],["也","yě","also"],["比較","bǐjiào","comparatively"],["貴","guì","expensive"],["。"]],
+"qs":[{"q":"What is he mailing?","ch":["Books","Tea leaves","Clothes","Snacks"],"a":1},{"q":"Where is the package going?","ch":["Japan","Taiwan","The US","Canada"],"a":2},{"q":"What's true of air mail?","ch":["Slower and cheaper","Faster but pricier","Free over 1kg","Not available"],"a":1}],
+"gram":{"t":"比較 + adj","d":"比較 before an adjective = 'relatively / -er' without naming the thing compared: 航空比較快 — air mail is faster."}}],
+"listening":[
+{"l":2,"dict":[{"zh":"請問裡面是什麼東西？","py":"Qǐngwèn lǐmiàn shì shénme dōngxi?","en":"May I ask what's inside?"},{"zh":"寄到美國要幾天？","py":"Jì dào Měiguó yào jǐ tiān?","en":"How many days to the US?"}],
+"pass":{"zh":"你好，寄美國的話，航空大概七天，海運要一個月。航空四百五，海運兩百。","qs":[{"q":"How long does air mail take?","ch":["About 7 days","About a month","2 days","2 weeks"],"a":0},{"q":"How much is sea mail?","ch":["NT$450","NT$200","NT$700","NT$100"],"a":1}]}}],
+"scenarios":[
+{"id":"sample-postoffice","l":2,"zh":"郵局寄件","en":"At the Post Office","who":"郵局店員 Postal Clerk","intro":"Mail a small box of tea to the US. Answer the contents question, choose a shipping speed, and pay.",
+"turns":[
+{"them":{"zh":"你好，請問要辦什麼？","py":"Nǐ hǎo, qǐngwèn yào bàn shénme?","en":"Hello, what can I help you with?"},"task":"Say you want to mail this package to the US.","ans":{"zh":"你好，我要寄這個包裹到美國。","py":"Nǐ hǎo, wǒ yào jì zhège bāoguǒ dào Měiguó.","en":"Hi, I'd like to mail this package to the US."},"keys":"寄包裹美國"},
+{"them":{"zh":"好的，裡面是什麼東西？","py":"Hǎo de, lǐmiàn shì shénme dōngxi?","en":"OK — what's inside?"},"task":"Say it's tea leaves, a gift for family.","ans":{"zh":"是茶葉，要送給家人的。","py":"Shì cháyè, yào sòng gěi jiārén de.","en":"Tea leaves — a gift for my family."},"keys":"茶葉家人"},
+{"them":{"zh":"航空七天四百五，海運一個月兩百，您要哪一種？","py":"Hángkōng qī tiān sìbǎi wǔ, hǎiyùn yíge yuè liǎngbǎi, nín yào nǎ yì zhǒng?","en":"Air is 7 days at 450; sea is a month at 200. Which would you like?"},"task":"Pick air mail — faster is worth it — and pay by card.","ans":{"zh":"我要航空的，快一點比較好。可以刷卡嗎？","py":"Wǒ yào hángkōng de, kuài yìdiǎn bǐjiào hǎo. Kěyǐ shuākǎ ma?","en":"Air mail please — faster is better. Can I pay by card?"},"keys":"航空刷卡"}]}],
+"vocab":[
+{"c":"海運","p":"hǎiyùn","e":"sea freight, surface mail","l":3,"d":["daily","biz"],"x":["海運比較慢，但是便宜很多。","Hǎiyùn bǐjiào màn, dànshì piányí hěnduō.","Sea mail is slower but much cheaper."]},
+{"c":"茶葉","p":"cháyè","e":"tea leaves","l":2,"d":["daily"],"x":["台灣的高山茶葉很有名。","Táiwān de gāoshān cháyè hěn yǒumíng.","Taiwan's high-mountain tea is famous."],"n":"阿里山 and 梨山 teas make great gifts for clients."}],
+"slang":[
+{"c":"划算","p":"huásuàn","e":"a good deal, worth it","x":["兩百塊寄到美國，很划算欸！","Liǎngbǎi kuài jì dào Měiguó, hěn huásuàn éi!","NT$200 to ship to the US — what a deal!"],"n":"Everyday shopping word; the opposite is 不划算."}]}
