@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>台灣華語 Tutor — Taiwanese Mandarin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F1EFEA; --card:#FBFAF7; --ink:#1B2528; --ink2:#4A5A60; --ink3:#7C8A8E;
+  --seal:#C8321E; --seal-dk:#A22314; --jade:#20705F; --jade-lt:#E3EEEA;
+  --gold:#B98A2F; --line:#DAD6CB; --line2:#E8E5DD;
+  --serif:"Noto Serif TC","PingFang TC","Microsoft JhengHei",serif;
+  --sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",-apple-system,sans-serif;
+  --mono:"IBM Plex Mono","Menlo",monospace;
+  --r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15.5px;line-height:1.6;min-height:100vh}
+::selection{background:var(--seal);color:#fff}
+button{font-family:var(--sans);cursor:pointer}
+a{color:var(--jade)}
+.zh{font-family:var(--serif)}
+.py{font-family:var(--mono);color:var(--jade);letter-spacing:.01em}
+
+/* ---------- layout ---------- */
+#app{display:flex;min-height:100vh}
+#side{width:218px;flex-shrink:0;background:var(--ink);color:#EDEAE2;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+#main{flex:1;min-width:0;padding:34px 44px 90px;max-width:1060px}
+@media(max-width:860px){
+  #app{flex-direction:column}
+  #side{width:100%;height:auto;position:static;flex-direction:row;flex-wrap:wrap;align-items:center;padding:6px 10px}
+  #side .brand{padding:10px 8px;border:none}
+  #side nav{display:flex;flex-wrap:wrap;flex:1;padding:0}
+  #side .navbtn{padding:8px 10px;border-left:none;font-size:13px}
+  #side .navbtn .seal{width:22px;height:22px;font-size:12px}
+  #side .side-foot{display:none}
+  #main{padding:20px 16px 80px}
+}
+
+/* ---------- sidebar ---------- */
+.brand{padding:26px 20px 20px;border-bottom:1px solid rgba(255,255,255,.12)}
+.brand .big{font-family:var(--serif);font-weight:900;font-size:26px;line-height:1.25;letter-spacing:.06em}
+.brand .sub{font-family:var(--mono);font-size:10.5px;color:#9FB0AC;margin-top:6px;text-transform:uppercase;letter-spacing:.14em}
+#side nav{padding:14px 0;flex:1}
+.navbtn{display:flex;align-items:center;gap:11px;width:100%;background:none;border:none;color:#C9CFC9;padding:10px 20px;font-size:14.5px;text-align:left;border-left:3px solid transparent;transition:background .15s}
+.navbtn:hover{background:rgba(255,255,255,.06);color:#fff}
+.navbtn.on{color:#fff;border-left-color:var(--seal);background:rgba(200,50,30,.14)}
+.seal{width:26px;height:26px;flex-shrink:0;background:var(--seal);color:#fff;font-family:var(--serif);font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;border-radius:4px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28)}
+.navbtn.on .seal{background:var(--seal)}
+.navbtn .seal{background:#39474C}
+.side-foot{padding:16px 20px;border-top:1px solid rgba(255,255,255,.12);font-size:12px;color:#8B9A97}
+.side-foot .streakline{display:flex;align-items:center;gap:8px;color:#EDEAE2;font-size:13px}
+.side-foot .streakline .seal{width:22px;height:22px;font-size:11px;background:var(--seal)}
+
+/* ---------- generic ---------- */
+h1.pagetitle{font-family:var(--serif);font-weight:900;font-size:30px;letter-spacing:.02em}
+.pagesub{color:var(--ink2);margin:4px 0 26px;font-size:14.5px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--seal);margin-bottom:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;margin-bottom:16px}
+.btn{background:var(--ink);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-size:14.5px;font-weight:500;transition:transform .1s, opacity .15s}
+.btn:hover{opacity:.88}.btn:active{transform:scale(.97)}
+.btn.red{background:var(--seal)}
+.btn.jade{background:var(--jade)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line);}
+.btn.ghost:hover{border-color:var(--ink2)}
+.btn.sm{padding:6px 12px;font-size:13px;border-radius:7px}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:2px 8px;border-radius:20px;background:var(--jade-lt);color:var(--jade);margin-right:5px;vertical-align:middle}
+.tag.red{background:#F7E3DF;color:var(--seal)}
+.tag.gold{background:#F3EAD5;color:#8A6516}
+.tag.gray{background:#E7E5DE;color:var(--ink2)}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.spread{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.muted{color:var(--ink3);font-size:13px}
+.hr{border:none;border-top:1px solid var(--line2);margin:16px 0}
+input[type=text],input[type=number],textarea,select{font-family:var(--sans);font-size:15px;padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);width:100%}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--jade);outline-offset:1px;border-color:var(--jade)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.big-zh{font-family:var(--serif);font-weight:900;font-size:56px;line-height:1.2;letter-spacing:.04em}
+.correct{color:var(--jade);font-weight:700}
+.wrong{color:var(--seal);font-weight:700}
+.stampwrap{display:inline-flex}
+.stamp{width:64px;height:64px;background:var(--seal);color:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:900;font-size:30px;box-shadow:inset 0 0 0 2.5px rgba(255,255,255,.3), 0 2px 8px rgba(162,35,20,.3);transform:rotate(-4deg);animation:stampin .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes stampin{0%{transform:scale(2.1) rotate(8deg);opacity:0}60%{transform:scale(.95) rotate(-5deg);opacity:1}100%{transform:scale(1) rotate(-4deg)}}
+.progressbar{height:7px;background:var(--line2);border-radius:6px;overflow:hidden}
+.progressbar>div{height:100%;background:var(--jade);border-radius:6px;transition:width .4s}
+.choice{display:block;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:9px;padding:11px 14px;margin-bottom:9px;font-size:15px;transition:border-color .12s}
+.choice:hover{border-color:var(--ink2)}
+.choice.picked-ok{border-color:var(--jade);background:var(--jade-lt)}
+.choice.picked-bad{border-color:var(--seal);background:#F9E9E6}
+.choice:disabled{cursor:default;opacity:.75}
+.levelchip{font-family:var(--mono);font-size:11px;background:var(--ink);color:#fff;border-radius:5px;padding:2px 7px}
+.tok{cursor:pointer;border-radius:4px;padding:1px 1px;transition:background .12s}
+.tok:hover{background:#EFE3C9}
+.tok.hasdef{border-bottom:2px dotted var(--gold)}
+.reading-zh{font-family:var(--serif);font-size:23px;line-height:2.15;font-weight:600}
+.rubytop{display:block;font-family:var(--mono);font-size:10px;color:var(--jade);text-align:center;line-height:1;margin-bottom:2px;min-height:10px}
+.tokv{display:inline-block;vertical-align:bottom;text-align:center;margin:0 1px}
+#tip{position:fixed;background:var(--ink);color:#fff;padding:9px 13px;border-radius:8px;font-size:13.5px;max-width:280px;z-index:99;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none}
+#tip .py{color:#8FD4C4}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 20px;border-radius:9px;font-size:14px;z-index:100;display:none;box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.flashcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:38px 30px;text-align:center;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative}
+.flashcard .domtags{position:absolute;top:14px;left:14px}
+.flashcard .srsinfo{position:absolute;top:14px;right:14px}
+.gradebtns{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+.gradebtns .btn{min-width:96px}
+.speakbox{border:1.5px dashed var(--line);border-radius:10px;padding:14px;background:#fff;margin-top:10px}
+.transcript{font-family:var(--serif);font-size:19px;min-height:28px}
+.dlgline{display:flex;gap:12px;margin-bottom:14px}
+.dlgline .who{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:900;color:#fff;font-size:15px}
+.dlgline.them .who{background:var(--ink)}
+.dlgline.you .who{background:var(--jade)}
+.dlgbubble{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;max-width:640px}
+.dlgline.you .dlgbubble{background:var(--jade-lt);border-color:#CBE0DA}
+.dlg-zh{font-family:var(--serif);font-size:19px;font-weight:600}
+.dlg-py{font-family:var(--mono);font-size:12px;color:var(--jade);margin-top:2px}
+.dlg-en{font-size:13px;color:var(--ink2);margin-top:2px}
+.objbox{background:#FDF7EC;border:1.5px solid #E8D9B8;border-radius:10px;padding:12px 16px;margin:12px 0}
+.audiobtn{background:var(--ink);color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:16px;flex-shrink:0}
+.audiobtn:hover{opacity:.85}
+.audiobtn.sm{width:28px;height:28px;font-size:12px}
+table.stats{width:100%;border-collapse:collapse;font-size:14px}
+table.stats td,table.stats th{padding:8px 10px;border-bottom:1px solid var(--line2);text-align:left}
+table.stats th{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink2)}
+.lvlband{display:flex;align-items:stretch;gap:0;border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.lvlseg{flex:1;padding:12px 8px;text-align:center;border-right:1px solid var(--line2);background:#fff;min-width:74px}
+.lvlseg:last-child{border-right:none}
+.lvlseg.done{background:var(--jade-lt)}
+.lvlseg.cur{background:var(--ink);color:#fff}
+.lvlseg.cur .py,.lvlseg.cur .muted{color:#9FD0C2}
+.lvlseg .zh{font-weight:900;font-size:19px}
+.lvlseg .muted{font-size:10.5px}
+.vocabrow{display:flex;align-items:baseline;gap:14px;padding:9px 4px;border-bottom:1px solid var(--line2);flex-wrap:wrap}
+.vocabrow .zh{font-size:20px;font-weight:600;min-width:110px}
+.vocabrow .py{font-size:12.5px;min-width:120px}
+.vocabrow .en{color:var(--ink2);font-size:14px;flex:1}
+details.lesson{border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:12px}
+details.lesson>summary{cursor:pointer;padding:14px 18px;font-weight:700;font-size:15.5px;list-style:none;display:flex;align-items:center;gap:10px}
+details.lesson>summary::-webkit-details-marker{display:none}
+details.lesson[open]>summary{border-bottom:1px solid var(--line2)}
+details.lesson .inner{padding:16px 18px}
+.reslink{display:block;padding:12px 16px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:10px;text-decoration:none;color:var(--ink);transition:border-color .12s}
+.reslink:hover{border-color:var(--jade)}
+.reslink .t{font-weight:700}
+.reslink .d{font-size:13px;color:var(--ink2)}
+.reslink .u{font-family:var(--mono);font-size:11px;color:var(--jade)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+.focusring:focus-visible{outline:3px solid var(--gold)}
+</style>
+</head>
+<body>
+<div id="tip"></div>
+<div id="toast"></div>
+<div id="app">
+  <aside id="side">
+    <div class="brand">
+      <div class="big">台灣華語<br>Tutor</div>
+      <div class="sub">Traditional · zh-TW · Offline</div>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <div class="streakline"><span class="seal" id="streakSeal">0</span> session streak</div>
+      <div id="sideLevel" style="margin-top:6px"></div>
+    </div>
+  </aside>
+  <main id="main"></main>
+</div>
+<script>
+/* ============ VOCAB BANK ============
+ c=character(trad) p=pinyin(Taiwan reading) e=english l=level d=domains
+ x=[example zh, example pinyin, example en] n=Taiwan usage note */
+const VOCAB=[
+/* ---------- LEVEL 1 · 基礎 Foundations (來學華語 1-2 / TOCFL Novice) ---------- */
+{c:"你好",p:"nǐ hǎo",e:"hello",l:1,d:["daily"],x:["你好，請問你是王先生嗎？","Nǐ hǎo, qǐngwèn nǐ shì Wáng xiānshēng ma?","Hello, are you Mr. Wang?"]},
+{c:"請問",p:"qǐngwèn",e:"excuse me, may I ask",l:1,d:["daily"],x:["請問廁所在哪裡？","Qǐngwèn cèsuǒ zài nǎlǐ?","Excuse me, where is the restroom?"]},
+{c:"謝謝",p:"xièxie",e:"thank you",l:1,d:["daily"],x:["謝謝你的幫忙。","Xièxie nǐ de bāngmáng.","Thanks for your help."],n:"Reply in Taiwan: 不會 bú huì, not 不客氣."},
+{c:"不好意思",p:"bù hǎo yìsi",e:"excuse me / sorry (mild)",l:1,d:["daily"],x:["不好意思，借過一下。","Bù hǎo yìsi, jièguò yíxià.","Excuse me, coming through."],n:"The all-purpose Taiwanese social lubricant — used far more than 對不起."},
+{c:"對不起",p:"duìbùqǐ",e:"I'm sorry",l:1,d:["daily"],x:["對不起，我遲到了。","Duìbùqǐ, wǒ chídào le.","Sorry, I'm late."]},
+{c:"我",p:"wǒ",e:"I, me",l:1,d:["daily"],x:["我是美國人。","Wǒ shì Měiguó rén.","I'm American."]},
+{c:"你",p:"nǐ",e:"you",l:1,d:["daily"],x:["你叫什麼名字？","Nǐ jiào shénme míngzi?","What's your name?"]},
+{c:"他",p:"tā",e:"he / she (她)",l:1,d:["daily"],x:["他是我朋友。","Tā shì wǒ péngyǒu.","He's my friend."]},
+{c:"我們",p:"wǒmen",e:"we, us",l:1,d:["daily"],x:["我們都是同事。","Wǒmen dōu shì tóngshì.","We're all coworkers."]},
+{c:"是",p:"shì",e:"to be",l:1,d:["daily"],x:["這是我的名片。","Zhè shì wǒ de míngpiàn.","This is my business card."]},
+{c:"姓",p:"xìng",e:"surname; to be surnamed",l:1,d:["daily"],x:["我姓馬，請多指教。","Wǒ xìng Mǎ, qǐng duō zhǐjiào.","My surname is Ma, pleased to meet you."]},
+{c:"叫",p:"jiào",e:"to be called",l:1,d:["daily"],x:["我叫 Eric。","Wǒ jiào Eric.","My name is Eric."]},
+{c:"名字",p:"míngzi",e:"name",l:1,d:["daily"],x:["你的中文名字很好聽。","Nǐ de Zhōngwén míngzi hěn hǎotīng.","Your Chinese name sounds nice."]},
+{c:"哪",p:"nǎ",e:"which",l:1,d:["daily"],x:["你是哪國人？","Nǐ shì nǎ guó rén?","Which country are you from?"]},
+{c:"美國",p:"Měiguó",e:"United States",l:1,d:["daily"],x:["我從美國來。","Wǒ cóng Měiguó lái.","I come from the US."]},
+{c:"台灣",p:"Táiwān",e:"Taiwan",l:1,d:["daily"],x:["我很喜歡台灣。","Wǒ hěn xǐhuān Táiwān.","I really like Taiwan."]},
+{c:"會",p:"huì",e:"can, know how to; will",l:1,d:["daily"],x:["我會說一點中文。","Wǒ huì shuō yìdiǎn Zhōngwén.","I can speak a little Chinese."]},
+{c:"說",p:"shuō",e:"to speak, say",l:1,d:["daily"],x:["請說慢一點。","Qǐng shuō màn yìdiǎn.","Please speak a bit slower."]},
+{c:"中文",p:"Zhōngwén",e:"Chinese language",l:1,d:["daily"],x:["你的中文越來越好了！","Nǐ de Zhōngwén yuèláiyuè hǎo le!","Your Chinese keeps getting better!"],n:"In Taiwan also 華語 huáyǔ or 國語 guóyǔ."},
+{c:"一點",p:"yìdiǎn",e:"a little",l:1,d:["daily"],x:["再便宜一點好不好？","Zài piányí yìdiǎn hǎo bù hǎo?","A little cheaper, OK?"]},
+{c:"學",p:"xué",e:"to study, learn",l:1,d:["daily"],x:["我在學華語。","Wǒ zài xué huáyǔ.","I'm learning Mandarin."]},
+{c:"老師",p:"lǎoshī",e:"teacher",l:1,d:["daily"],x:["老師，這個字怎麼念？","Lǎoshī, zhège zì zěnme niàn?","Teacher, how do you read this character?"]},
+{c:"朋友",p:"péngyǒu",e:"friend",l:1,d:["daily"],x:["他是我台灣朋友。","Tā shì wǒ Táiwān péngyǒu.","He's my Taiwanese friend."]},
+{c:"家人",p:"jiārén",e:"family members",l:1,d:["daily"],x:["我家人都住在美國。","Wǒ jiārén dōu zhù zài Měiguó.","My family all live in the US."]},
+{c:"這",p:"zhè",e:"this",l:1,d:["daily"],x:["這是什麼？","Zhè shì shénme?","What is this?"]},
+{c:"那",p:"nà",e:"that",l:1,d:["daily"],x:["那個多少錢？","Nàge duōshǎo qián?","How much is that one?"]},
+{c:"什麼",p:"shénme",e:"what",l:1,d:["daily"],x:["你想吃什麼？","Nǐ xiǎng chī shénme?","What do you want to eat?"]},
+{c:"誰",p:"shéi",e:"who",l:1,d:["daily"],x:["他是誰？","Tā shì shéi?","Who is he?"]},
+{c:"多少",p:"duōshǎo",e:"how much, how many",l:1,d:["daily","biz"],x:["這個多少錢？","Zhège duōshǎo qián?","How much is this?"]},
+{c:"錢",p:"qián",e:"money",l:1,d:["daily"],x:["我沒帶錢。","Wǒ méi dài qián.","I didn't bring money."]},
+{c:"塊",p:"kuài",e:"dollar (spoken measure)",l:1,d:["daily"],x:["五十塊。","Wǔshí kuài.","Fifty dollars (NT)."],n:"NT$ in speech is 塊; written price signs use 元."},
+{c:"買",p:"mǎi",e:"to buy",l:1,d:["daily"],x:["我想買一杯咖啡。","Wǒ xiǎng mǎi yì bēi kāfēi.","I'd like to buy a coffee."]},
+{c:"要",p:"yào",e:"to want; will",l:1,d:["daily"],x:["我要這個。","Wǒ yào zhège.","I want this one."]},
+{c:"有",p:"yǒu",e:"to have; there is",l:1,d:["daily"],x:["有沒有大杯的？","Yǒu méiyǒu dà bēi de?","Do you have a large size?"]},
+{c:"吃",p:"chī",e:"to eat",l:1,d:["daily"],x:["你吃飯了嗎？","Nǐ chīfàn le ma?","Have you eaten?"],n:"Common Taiwanese greeting, not a literal question."},
+{c:"喝",p:"hē",e:"to drink",l:1,d:["daily"],x:["你想喝什麼？","Nǐ xiǎng hē shénme?","What would you like to drink?"]},
+{c:"水",p:"shuǐ",e:"water",l:1,d:["daily"],x:["請給我一杯水。","Qǐng gěi wǒ yì bēi shuǐ.","Please give me a glass of water."]},
+{c:"茶",p:"chá",e:"tea",l:1,d:["daily"],x:["台灣的茶很有名。","Táiwān de chá hěn yǒumíng.","Taiwan's tea is famous."]},
+{c:"咖啡",p:"kāfēi",e:"coffee",l:1,d:["daily"],x:["我每天早上喝咖啡。","Wǒ měitiān zǎoshang hē kāfēi.","I drink coffee every morning."]},
+{c:"好吃",p:"hǎochī",e:"delicious",l:1,d:["daily"],x:["夜市的東西都很好吃。","Yèshì de dōngxi dōu hěn hǎochī.","Everything at the night market is delicious."]},
+{c:"今天",p:"jīntiān",e:"today",l:1,d:["daily"],x:["今天天氣很好。","Jīntiān tiānqì hěn hǎo.","The weather is nice today."]},
+{c:"明天",p:"míngtiān",e:"tomorrow",l:1,d:["daily"],x:["明天見！","Míngtiān jiàn!","See you tomorrow!"]},
+{c:"現在",p:"xiànzài",e:"now",l:1,d:["daily"],x:["現在幾點？","Xiànzài jǐ diǎn?","What time is it now?"]},
+{c:"星期",p:"xīngqí",e:"week",l:1,d:["daily"],x:["今天星期五。","Jīntiān xīngqí wǔ.","Today is Friday."],n:"Taiwan reading is xīngqí (2nd tone), not xīngqī. Also common: 禮拜 lǐbài."},
+{c:"去",p:"qù",e:"to go",l:1,d:["daily"],x:["我要去台北車站。","Wǒ yào qù Táiběi chēzhàn.","I'm going to Taipei Main Station."]},
+{c:"在",p:"zài",e:"at, in; to be located",l:1,d:["daily"],x:["你在哪裡？","Nǐ zài nǎlǐ?","Where are you?"]},
+{c:"哪裡",p:"nǎlǐ",e:"where",l:1,d:["daily"],x:["捷運站在哪裡？","Jiéyùn zhàn zài nǎlǐ?","Where is the MRT station?"]},
+{c:"喜歡",p:"xǐhuān",e:"to like",l:1,d:["daily"],x:["我喜歡吃小籠包。","Wǒ xǐhuān chī xiǎolóngbāo.","I like eating soup dumplings."]},
+{c:"很",p:"hěn",e:"very",l:1,d:["daily"],x:["台灣人很熱情。","Táiwān rén hěn rèqíng.","Taiwanese people are very warm."]},
+{c:"沒關係",p:"méi guānxi",e:"it's okay, no problem",l:1,d:["daily"],x:["沒關係，慢慢來。","Méi guānxi, mànmàn lái.","It's fine, take your time."]},
+
+/* ---------- LEVEL 2 · 生活 Daily Transactions (來學華語 3-4 / TOCFL A2) ---------- */
+{c:"捷運",p:"jiéyùn",e:"MRT, metro",l:2,d:["daily","travel"],x:["搭捷運到台北101要多久？","Dā jiéyùn dào Táiběi yīlíngyī yào duōjiǔ?","How long to Taipei 101 by MRT?"],n:"Taiwan says 捷運, not 地鐵 (mainland)."},
+{c:"公車",p:"gōngchē",e:"city bus",l:2,d:["daily","travel"],x:["這班公車有到故宮嗎？","Zhè bān gōngchē yǒu dào Gùgōng ma?","Does this bus go to the Palace Museum?"],n:"Mainland: 公交車. Taiwan: 公車."},
+{c:"高鐵",p:"gāotiě",e:"high-speed rail (THSR)",l:2,d:["daily","travel"],x:["我坐高鐵去高雄。","Wǒ zuò gāotiě qù Gāoxióng.","I'm taking the HSR to Kaohsiung."]},
+{c:"計程車",p:"jìchéngchē",e:"taxi",l:2,d:["daily","travel"],x:["我們叫計程車吧。","Wǒmen jiào jìchéngchē ba.","Let's call a taxi."],n:"Mainland: 出租車. Colloquially 小黃 xiǎohuáng (the yellow one)."},
+{c:"車站",p:"chēzhàn",e:"station, stop",l:2,d:["daily","travel"],x:["下一個車站是台北車站。","Xià yíge chēzhàn shì Táiběi chēzhàn.","Next station: Taipei Main Station."]},
+{c:"搭",p:"dā",e:"to take (transport)",l:2,d:["daily","travel"],x:["你要搭幾點的車？","Nǐ yào dā jǐ diǎn de chē?","What time train are you taking?"]},
+{c:"機車",p:"jīchē",e:"scooter, motorcycle",l:2,d:["daily"],x:["台灣的機車真的很多。","Táiwān de jīchē zhēnde hěn duō.","There really are a lot of scooters in Taiwan."],n:"Also slang for 'annoying/difficult (person)' — see Slang."},
+{c:"左轉",p:"zuǒ zhuǎn",e:"turn left",l:2,d:["daily","travel"],x:["前面路口左轉。","Qiánmiàn lùkǒu zuǒ zhuǎn.","Turn left at the intersection ahead."]},
+{c:"右轉",p:"yòu zhuǎn",e:"turn right",l:2,d:["daily","travel"],x:["到了7-11右轉。","Dàole 7-11 yòu zhuǎn.","Turn right at the 7-11."]},
+{c:"直走",p:"zhí zǒu",e:"go straight",l:2,d:["daily","travel"],x:["一直走，五分鐘就到了。","Yìzhí zǒu, wǔ fēnzhōng jiù dào le.","Go straight, you'll be there in five minutes."]},
+{c:"附近",p:"fùjìn",e:"nearby, vicinity",l:2,d:["daily"],x:["附近有沒有提款機？","Fùjìn yǒu méiyǒu tíkuǎnjī?","Is there an ATM nearby?"]},
+{c:"等",p:"děng",e:"to wait",l:2,d:["daily"],x:["請等一下。","Qǐng děng yíxià.","Please wait a moment."]},
+{c:"結帳",p:"jiézhàng",e:"to pay the bill, check out",l:2,d:["daily","biz"],x:["老闆，結帳！","Lǎobǎn, jiézhàng!","Boss, the check please!"],n:"Mainland often 買單; Taiwan mostly 結帳."},
+{c:"發票",p:"fāpiào",e:"receipt / uniform invoice",l:2,d:["daily","biz"],x:["發票要印嗎？","Fāpiào yào yìn ma?","Do you want the receipt printed?"],n:"統一發票 is also a national lottery — keep them!"},
+{c:"收據",p:"shōujù",e:"receipt (non-invoice)",l:2,d:["daily","biz"],x:["可以給我收據嗎？","Kěyǐ gěi wǒ shōujù ma?","Could you give me a receipt?"]},
+{c:"找",p:"zhǎo",e:"to give change; to look for",l:2,d:["daily"],x:["找您五十塊。","Zhǎo nín wǔshí kuài.","Fifty dollars is your change."]},
+{c:"刷卡",p:"shuākǎ",e:"to pay by card",l:2,d:["daily","biz"],x:["可以刷卡嗎？","Kěyǐ shuākǎ ma?","Can I pay by card?"]},
+{c:"現金",p:"xiànjīn",e:"cash",l:2,d:["daily","biz"],x:["夜市大部分只收現金。","Yèshì dàbùfèn zhǐ shōu xiànjīn.","Night markets mostly only take cash."]},
+{c:"悠遊卡",p:"Yōuyóukǎ",e:"EasyCard (transit card)",l:2,d:["daily","travel"],x:["悠遊卡可以在超商加值。","Yōuyóukǎ kěyǐ zài chāoshāng jiāzhí.","You can top up your EasyCard at convenience stores."]},
+{c:"便利商店",p:"biànlì shāngdiàn",e:"convenience store",l:2,d:["daily"],x:["台灣的便利商店什麼都有。","Táiwān de biànlì shāngdiàn shénme dōu yǒu.","Taiwan's convenience stores have everything."],n:"Usually shortened to 超商 chāoshāng or by brand: 7-11 (seven), 全家."},
+{c:"夜市",p:"yèshì",e:"night market",l:2,d:["daily"],x:["晚上我們去逛夜市吧！","Wǎnshàng wǒmen qù guàng yèshì ba!","Let's go stroll the night market tonight!"]},
+{c:"老闆",p:"lǎobǎn",e:"boss, shop owner",l:2,d:["daily","biz"],x:["老闆，這個怎麼賣？","Lǎobǎn, zhège zěnme mài?","Boss, how much is this?"],n:"How you address any vendor. Female: 老闆娘 lǎobǎnniáng."},
+{c:"菜單",p:"càidān",e:"menu",l:2,d:["daily"],x:["請給我看一下菜單。","Qǐng gěi wǒ kàn yíxià càidān.","Please let me see the menu."]},
+{c:"點",p:"diǎn",e:"to order (food); o'clock; point",l:2,d:["daily"],x:["你們點好了嗎？","Nǐmen diǎn hǎo le ma?","Are you ready to order?"]},
+{c:"外帶",p:"wàidài",e:"takeout",l:2,d:["daily"],x:["內用還是外帶？","Nèiyòng háishì wàidài?","For here or to go?"],n:"Mainland: 打包/帶走. Taiwan: 外帶 vs 內用."},
+{c:"內用",p:"nèiyòng",e:"dine in",l:2,d:["daily"],x:["內用，兩位。","Nèiyòng, liǎng wèi.","Dine in, two people."]},
+{c:"飲料",p:"yǐnliào",e:"beverage, drink",l:2,d:["daily"],x:["附餐飲料要什麼？","Fùcān yǐnliào yào shénme?","What drink with your meal?"]},
+{c:"珍珠奶茶",p:"zhēnzhū nǎichá",e:"bubble tea",l:2,d:["daily"],x:["珍珠奶茶，半糖少冰。","Zhēnzhū nǎichá, bàntáng shǎobīng.","Bubble tea, half sugar, less ice."],n:"Ordering formula: sweetness (無糖/微糖/半糖/全糖) + ice (去冰/微冰/少冰/正常冰)."},
+{c:"甜",p:"tián",e:"sweet",l:2,d:["daily"],x:["這個太甜了。","Zhège tài tián le.","This is too sweet."]},
+{c:"冰",p:"bīng",e:"ice; iced",l:2,d:["daily"],x:["去冰，謝謝。","Qùbīng, xièxie.","No ice, thanks."]},
+{c:"貴",p:"guì",e:"expensive",l:2,d:["daily","biz"],x:["有一點貴，可以算便宜一點嗎？","Yǒu yìdiǎn guì, kěyǐ suàn piányí yìdiǎn ma?","A bit pricey — can you do it cheaper?"]},
+{c:"便宜",p:"piányí",e:"cheap",l:2,d:["daily","biz"],x:["這家店又便宜又好吃。","Zhè jiā diàn yòu piányí yòu hǎochī.","This place is cheap and tasty."]},
+{c:"打折",p:"dǎzhé",e:"to give a discount",l:2,d:["daily","biz"],x:["現在打八折。","Xiànzài dǎ bāzhé.","It's 20% off right now."],n:"打八折 = pay 80%, i.e. 20% off. Opposite of English logic!"},
+{c:"飯店",p:"fàndiàn",e:"hotel",l:2,d:["daily","travel"],x:["我住在車站附近的飯店。","Wǒ zhù zài chēzhàn fùjìn de fàndiàn.","I'm staying at a hotel near the station."],n:"In Taiwan 飯店 = hotel (mainland: 酒店). A restaurant is 餐廳."},
+{c:"訂",p:"dìng",e:"to book, reserve",l:2,d:["daily","travel","biz"],x:["我想訂一間雙人房。","Wǒ xiǎng dìng yì jiān shuāngrén fáng.","I'd like to book a double room."]},
+{c:"入住",p:"rùzhù",e:"to check in",l:2,d:["travel"],x:["請問幾點可以入住？","Qǐngwèn jǐ diǎn kěyǐ rùzhù?","What time can I check in?"]},
+{c:"退房",p:"tuìfáng",e:"to check out",l:2,d:["travel"],x:["退房時間是早上十一點。","Tuìfáng shíjiān shì zǎoshang shíyī diǎn.","Checkout time is 11 a.m."]},
+{c:"行李",p:"xínglǐ",e:"luggage",l:2,d:["travel"],x:["可以幫我寄放行李嗎？","Kěyǐ bāng wǒ jìfàng xínglǐ ma?","Could you store my luggage?"]},
+{c:"房間",p:"fángjiān",e:"room",l:2,d:["daily","travel"],x:["房間的冷氣壞了。","Fángjiān de lěngqì huài le.","The room's AC is broken."]},
+{c:"鑰匙",p:"yàoshi",e:"key",l:2,d:["daily","travel"],x:["我把鑰匙忘在房間裡了。","Wǒ bǎ yàoshi wàng zài fángjiān lǐ le.","I left my key in the room."]},
+{c:"廁所",p:"cèsuǒ",e:"toilet, restroom",l:2,d:["daily"],x:["廁所在二樓。","Cèsuǒ zài èr lóu.","The restroom is on the second floor."],n:"Politer: 洗手間 xǐshǒujiān."},
+{c:"樓",p:"lóu",e:"floor, story",l:2,d:["daily"],x:["會議室在五樓。","Huìyìshì zài wǔ lóu.","The meeting room is on the 5th floor."]},
+{c:"加值",p:"jiāzhí",e:"to top up (card)",l:2,d:["daily"],x:["我要加值兩百塊。","Wǒ yào jiāzhí liǎngbǎi kuài.","I want to top up NT$200."],n:"Mainland: 充值."},
+{c:"塑膠袋",p:"sùjiāo dài",e:"plastic bag",l:2,d:["daily"],x:["需要塑膠袋嗎？要加一塊錢。","Xūyào sùjiāo dài ma? Yào jiā yí kuài qián.","Need a bag? It's one dollar extra."],n:"Mainland: 塑料袋. Bags cost extra in Taiwan."},
+{c:"排隊",p:"páiduì",e:"to line up, queue",l:2,d:["daily"],x:["這家店每天都要排隊。","Zhè jiā diàn měitiān dōu yào páiduì.","You have to queue at this shop every day."]},
+{c:"逛",p:"guàng",e:"to stroll, browse",l:2,d:["daily"],x:["週末我喜歡去逛街。","Zhōumò wǒ xǐhuān qù guàngjiē.","On weekends I like to go shopping around."]},
+{c:"付",p:"fù",e:"to pay",l:2,d:["daily","biz"],x:["我來付就好。","Wǒ lái fù jiù hǎo.","Let me pay."]},
+{c:"零錢",p:"língqián",e:"small change, coins",l:2,d:["daily"],x:["抱歉，我沒有零錢。","Bàoqiàn, wǒ méiyǒu língqián.","Sorry, I don't have change."]},
+{c:"味道",p:"wèidào",e:"taste, flavor; smell",l:2,d:["daily"],x:["臭豆腐的味道很特別。","Chòudòufǔ de wèidào hěn tèbié.","Stinky tofu has a very particular smell."]},
+{c:"推薦",p:"tuījiàn",e:"to recommend",l:2,d:["daily","biz"],x:["老闆，你推薦什麼？","Lǎobǎn, nǐ tuījiàn shénme?","Boss, what do you recommend?"]},
+
+/* ---------- LEVEL 3 · 在地生活 Living in Taiwan (來學華語 5-6 / TOCFL B1) ---------- */
+{c:"護照",p:"hùzhào",e:"passport",l:3,d:["travel"],x:["請出示您的護照。","Qǐng chūshì nín de hùzhào.","Please show your passport."]},
+{c:"簽證",p:"qiānzhèng",e:"visa",l:3,d:["travel","gov"],x:["美國人來台灣九十天免簽證。","Měiguó rén lái Táiwān jiǔshí tiān miǎn qiānzhèng.","Americans get 90 days visa-free in Taiwan."]},
+{c:"機場",p:"jīchǎng",e:"airport",l:3,d:["travel"],x:["桃園機場離台北市不近。","Táoyuán jīchǎng lí Táiběi shì bú jìn.","Taoyuan Airport isn't close to Taipei city."]},
+{c:"航班",p:"hángbān",e:"flight",l:3,d:["travel"],x:["我的航班延誤了兩個小時。","Wǒ de hángbān yánwù le liǎng ge xiǎoshí.","My flight was delayed two hours."]},
+{c:"登機",p:"dēngjī",e:"to board a plane",l:3,d:["travel"],x:["現在開始登機。","Xiànzài kāishǐ dēngjī.","Boarding is now beginning."]},
+{c:"海關",p:"hǎiguān",e:"customs",l:3,d:["travel","gov"],x:["過海關的時候不要緊張。","Guò hǎiguān de shíhòu búyào jǐnzhāng.","Don't be nervous going through customs."]},
+{c:"兌換",p:"duìhuàn",e:"to exchange (currency)",l:3,d:["travel","biz"],x:["我要把美金兌換成台幣。","Wǒ yào bǎ Měijīn duìhuàn chéng Táibì.","I want to change USD into NT dollars."]},
+{c:"匯率",p:"huìlǜ",e:"exchange rate",l:3,d:["biz","news"],x:["今天的匯率是多少？","Jīntiān de huìlǜ shì duōshǎo?","What's today's exchange rate?"]},
+{c:"銀行",p:"yínháng",e:"bank",l:3,d:["daily","biz"],x:["我要去銀行開戶。","Wǒ yào qù yínháng kāihù.","I'm going to the bank to open an account."]},
+{c:"帳戶",p:"zhànghù",e:"account (bank)",l:3,d:["biz"],x:["錢已經轉到你的帳戶了。","Qián yǐjīng zhuǎn dào nǐ de zhànghù le.","The money's been transferred to your account."]},
+{c:"提款機",p:"tíkuǎnjī",e:"ATM",l:3,d:["daily"],x:["超商裡面就有提款機。","Chāoshāng lǐmiàn jiù yǒu tíkuǎnjī.","There's an ATM right inside the convenience store."]},
+{c:"手機",p:"shǒujī",e:"cell phone",l:3,d:["daily","tech"],x:["我的手機沒電了。","Wǒ de shǒujī méi diàn le.","My phone is dead."]},
+{c:"門號",p:"ménhào",e:"phone number / SIM plan",l:3,d:["daily","tech"],x:["我想辦一個預付卡門號。","Wǒ xiǎng bàn yíge yùfùkǎ ménhào.","I'd like to get a prepaid SIM number."]},
+{c:"網路",p:"wǎnglù",e:"internet, network",l:3,d:["daily","tech"],x:["這裡的網路訊號不好。","Zhèlǐ de wǎnglù xùnhào bù hǎo.","The internet signal here is bad."],n:"Taiwan: 網路 wǎnglù. Mainland: 網絡 wǎngluò."},
+{c:"充電",p:"chōngdiàn",e:"to charge (battery)",l:3,d:["daily","tech"],x:["請問哪裡可以充電？","Qǐngwèn nǎlǐ kěyǐ chōngdiàn?","Where can I charge my phone?"]},
+{c:"生病",p:"shēngbìng",e:"to get sick",l:3,d:["daily"],x:["他生病了，今天不能來。","Tā shēngbìng le, jīntiān bùnéng lái.","He's sick and can't come today."]},
+{c:"感冒",p:"gǎnmào",e:"to catch a cold",l:3,d:["daily"],x:["我好像感冒了。","Wǒ hǎoxiàng gǎnmào le.","I think I've caught a cold."]},
+{c:"發燒",p:"fāshāo",e:"to have a fever",l:3,d:["daily"],x:["你有沒有發燒？","Nǐ yǒu méiyǒu fāshāo?","Do you have a fever?"]},
+{c:"藥局",p:"yàojú",e:"pharmacy",l:3,d:["daily"],x:["藥局就在診所旁邊。","Yàojú jiù zài zhěnsuǒ pángbiān.","The pharmacy is right next to the clinic."],n:"Mainland: 藥店."},
+{c:"醫院",p:"yīyuàn",e:"hospital",l:3,d:["daily"],x:["嚴重的話要去大醫院。","Yánzhòng dehuà yào qù dà yīyuàn.","If it's serious, go to a big hospital."]},
+{c:"診所",p:"zhěnsuǒ",e:"clinic",l:3,d:["daily"],x:["小感冒去診所就好。","Xiǎo gǎnmào qù zhěnsuǒ jiù hǎo.","For a small cold, a clinic is fine."]},
+{c:"掛號",p:"guàhào",e:"to register (at clinic)",l:3,d:["daily"],x:["我要掛號，看內科。","Wǒ yào guàhào, kàn nèikē.","I'd like to register for internal medicine."]},
+{c:"健保",p:"jiànbǎo",e:"National Health Insurance",l:3,d:["daily","gov"],x:["台灣的健保很方便。","Táiwān de jiànbǎo hěn fāngbiàn.","Taiwan's NHI is very convenient."],n:"全民健康保險 — everyone will ask if you have a 健保卡."},
+{c:"天氣",p:"tiānqì",e:"weather",l:3,d:["daily"],x:["台北的天氣常常下雨。","Táiběi de tiānqì chángcháng xiàyǔ.","It often rains in Taipei."]},
+{c:"颱風",p:"táifēng",e:"typhoon",l:3,d:["daily","news"],x:["颱風要來了，明天可能放颱風假。","Táifēng yào lái le, míngtiān kěnéng fàng táifēngjià.","A typhoon's coming — tomorrow might be a typhoon day off."]},
+{c:"地震",p:"dìzhèn",e:"earthquake",l:3,d:["daily","news"],x:["剛剛有地震，你有感覺嗎？","Gānggāng yǒu dìzhèn, nǐ yǒu gǎnjué ma?","There was just an earthquake — did you feel it?"]},
+{c:"預報",p:"yùbào",e:"forecast",l:3,d:["daily","news"],x:["氣象預報說週末會放晴。","Qìxiàng yùbào shuō zhōumò huì fàngqíng.","The forecast says it'll clear up this weekend."]},
+{c:"郵局",p:"yóujú",e:"post office",l:3,d:["daily"],x:["我去郵局寄包裹。","Wǒ qù yóujú jì bāoguǒ.","I'm going to the post office to mail a package."]},
+{c:"包裹",p:"bāoguǒ",e:"package, parcel",l:3,d:["daily"],x:["你的包裹到超商了。","Nǐ de bāoguǒ dào chāoshāng le.","Your package arrived at the convenience store."]},
+{c:"地址",p:"dìzhǐ",e:"address",l:3,d:["daily"],x:["請把地址寫在這裡。","Qǐng bǎ dìzhǐ xiě zài zhèlǐ.","Please write the address here."]},
+{c:"租",p:"zū",e:"to rent",l:3,d:["daily","biz"],x:["我在台北租了一間套房。","Wǒ zài Táiběi zū le yì jiān tàofáng.","I rented a studio in Taipei."]},
+{c:"合約",p:"héyuē",e:"contract",l:3,d:["biz","gov"],x:["簽合約以前要看清楚。","Qiān héyuē yǐqián yào kàn qīngchǔ.","Read carefully before signing a contract."],n:"Mainland often 合同 hétong."},
+{c:"押金",p:"yājīn",e:"deposit",l:3,d:["daily","biz"],x:["押金是兩個月的房租。","Yājīn shì liǎng ge yuè de fángzū.","The deposit is two months' rent."]},
+{c:"修理",p:"xiūlǐ",e:"to repair",l:3,d:["daily"],x:["冷氣可以請人來修理嗎？","Lěngqì kěyǐ qǐng rén lái xiūlǐ ma?","Can someone come repair the AC?"]},
+{c:"壞",p:"huài",e:"broken; bad",l:3,d:["daily"],x:["電梯壞了，要走樓梯。","Diàntī huài le, yào zǒu lóutī.","The elevator is broken; take the stairs."]},
+{c:"幫忙",p:"bāngmáng",e:"to help",l:3,d:["daily"],x:["可以請你幫個忙嗎？","Kěyǐ qǐng nǐ bāng ge máng ma?","Could I ask you a favor?"]},
+{c:"問題",p:"wèntí",e:"question; problem",l:3,d:["daily","biz"],x:["沒問題，交給我。","Méi wèntí, jiāo gěi wǒ.","No problem, leave it to me."]},
+{c:"麻煩",p:"máfán",e:"trouble; to bother",l:3,d:["daily"],x:["麻煩你了，真不好意思。","Máfán nǐ le, zhēn bù hǎo yìsi.","Sorry to trouble you."],n:"麻煩你 + request = polite Taiwanese way to ask for anything."},
+{c:"需要",p:"xūyào",e:"to need",l:3,d:["daily","biz"],x:["你需要我幫忙嗎？","Nǐ xūyào wǒ bāngmáng ma?","Do you need my help?"]},
+{c:"應該",p:"yīnggāi",e:"should, ought to",l:3,d:["daily"],x:["你應該早一點睡。","Nǐ yīnggāi zǎo yìdiǎn shuì.","You should sleep earlier."]},
+{c:"可能",p:"kěnéng",e:"maybe, possible",l:3,d:["daily"],x:["他可能塞車了。","Tā kěnéng sāichē le.","He's probably stuck in traffic."]},
+{c:"一定",p:"yídìng",e:"definitely, certainly",l:3,d:["daily"],x:["你一定要試試看芒果冰。","Nǐ yídìng yào shìshì kàn mángguǒ bīng.","You absolutely must try mango shaved ice."]},
+{c:"如果",p:"rúguǒ",e:"if",l:3,d:["daily"],x:["如果下雨，我們就改天。","Rúguǒ xiàyǔ, wǒmen jiù gǎitiān.","If it rains, we'll do it another day."]},
+{c:"因為",p:"yīnwèi",e:"because",l:3,d:["daily"],x:["因為塞車，所以我遲到了。","Yīnwèi sāichē, suǒyǐ wǒ chídào le.","I was late because of traffic."]},
+{c:"雖然",p:"suīrán",e:"although",l:3,d:["daily"],x:["雖然很累，但是很值得。","Suīrán hěn lèi, dànshì hěn zhídé.","Tiring, but worth it."]},
+{c:"越來越",p:"yuèláiyuè",e:"more and more",l:3,d:["daily"],x:["天氣越來越熱了。","Tiānqì yuèláiyuè rè le.","It's getting hotter and hotter."]},
+{c:"習慣",p:"xíguàn",e:"habit; to be used to",l:3,d:["daily"],x:["你習慣台灣的生活了嗎？","Nǐ xíguàn Táiwān de shēnghuó le ma?","Are you used to life in Taiwan yet?"]},
+{c:"方便",p:"fāngbiàn",e:"convenient",l:3,d:["daily"],x:["台北的交通非常方便。","Táiběi de jiāotōng fēicháng fāngbiàn.","Taipei's transit is extremely convenient."]},
+{c:"環境",p:"huánjìng",e:"environment, surroundings",l:3,d:["daily","news"],x:["這裡的環境很安靜。","Zhèlǐ de huánjìng hěn ānjìng.","The environment here is very quiet."]},
+{c:"塞車",p:"sāichē",e:"traffic jam",l:3,d:["daily"],x:["下班時間市區都在塞車。","Xiàbān shíjiān shìqū dōu zài sāichē.","Downtown is jammed at rush hour."],n:"Mainland: 堵車."},
+
+/* ---------- LEVEL 4 · 職場 Work & Business (TOCFL B2) ---------- */
+{c:"公司",p:"gōngsī",e:"company",l:4,d:["biz"],x:["我們公司做無人機系統。","Wǒmen gōngsī zuò wúrénjī xìtǒng.","Our company makes drone systems."]},
+{c:"開會",p:"kāihuì",e:"to hold/attend a meeting",l:4,d:["biz"],x:["我十點要開會。","Wǒ shí diǎn yào kāihuì.","I have a meeting at ten."]},
+{c:"會議",p:"huìyì",e:"meeting, conference",l:4,d:["biz","gov"],x:["下週的會議改到禮拜三。","Xiàzhōu de huìyì gǎi dào lǐbài sān.","Next week's meeting is moved to Wednesday."]},
+{c:"簡報",p:"jiǎnbào",e:"presentation, briefing",l:4,d:["biz","mil"],x:["等一下由我來做簡報。","Děng yíxià yóu wǒ lái zuò jiǎnbào.","I'll give the briefing in a moment."],n:"Also the word for PowerPoint slides in Taiwan."},
+{c:"報告",p:"bàogào",e:"report; to report",l:4,d:["biz","mil","gov"],x:["請在週五前交報告。","Qǐng zài zhōuwǔ qián jiāo bàogào.","Please submit the report by Friday."],n:"Also how soldiers/students open when addressing a superior: 報告！"},
+{c:"客戶",p:"kèhù",e:"client, customer",l:4,d:["biz"],x:["下午要拜訪一個重要客戶。","Xiàwǔ yào bàifǎng yíge zhòngyào kèhù.","We're visiting an important client this afternoon."]},
+{c:"廠商",p:"chǎngshāng",e:"vendor, manufacturer",l:4,d:["biz","gov"],x:["這個案子有三家廠商投標。","Zhège ànzi yǒu sān jiā chǎngshāng tóubiāo.","Three vendors bid on this project."]},
+{c:"供應商",p:"gōngyìngshāng",e:"supplier",l:4,d:["biz"],x:["我們在找新的零件供應商。","Wǒmen zài zhǎo xīn de língjiàn gōngyìngshāng.","We're looking for a new parts supplier."]},
+{c:"合作",p:"hézuò",e:"to cooperate, partner",l:4,d:["biz","gov","mil"],x:["期待跟貴公司合作。","Qídài gēn guì gōngsī hézuò.","We look forward to working with your company."],n:"貴公司 = polite 'your company'; ours is 敝公司 bì gōngsī."},
+{c:"簽約",p:"qiānyuē",e:"to sign a contract",l:4,d:["biz","gov"],x:["雙方預計下個月簽約。","Shuāngfāng yùjì xià ge yuè qiānyuē.","Both sides expect to sign next month."]},
+{c:"談判",p:"tánpàn",e:"to negotiate",l:4,d:["biz","gov","news"],x:["價格還在談判中。","Jiàgé hái zài tánpàn zhōng.","The price is still under negotiation."]},
+{c:"報價",p:"bàojià",e:"quotation, to quote a price",l:4,d:["biz"],x:["請先給我們一份報價單。","Qǐng xiān gěi wǒmen yí fèn bàojiàdān.","Please send us a quote first."]},
+{c:"預算",p:"yùsuàn",e:"budget",l:4,d:["biz","gov","mil"],x:["這超出我們的預算了。","Zhè chāochū wǒmen de yùsuàn le.","This exceeds our budget."]},
+{c:"成本",p:"chéngběn",e:"cost",l:4,d:["biz"],x:["原料成本一直上漲。","Yuánliào chéngběn yìzhí shàngzhǎng.","Raw material costs keep rising."]},
+{c:"利潤",p:"lìrùn",e:"profit",l:4,d:["biz"],x:["這一行的利潤不高。","Zhè yì háng de lìrùn bù gāo.","Margins in this industry aren't high."]},
+{c:"市場",p:"shìchǎng",e:"market",l:4,d:["biz","news"],x:["我們想進入亞洲市場。","Wǒmen xiǎng jìnrù Yàzhōu shìchǎng.","We want to enter the Asian market."]},
+{c:"行銷",p:"xíngxiāo",e:"marketing",l:4,d:["biz"],x:["她在行銷部門工作。","Tā zài xíngxiāo bùmén gōngzuò.","She works in the marketing department."],n:"Mainland: 營銷 or 市場營銷."},
+{c:"業務",p:"yèwù",e:"sales(person); business affairs",l:4,d:["biz"],x:["他是我們的業務，跑客戶的。","Tā shì wǒmen de yèwù, pǎo kèhù de.","He's our sales rep — he handles clients."]},
+{c:"經理",p:"jīnglǐ",e:"manager",l:4,d:["biz"],x:["王經理現在方便嗎？","Wáng jīnglǐ xiànzài fāngbiàn ma?","Is Manager Wang available now?"],n:"Address people by surname + title: 陳經理, 林處長, 張教授."},
+{c:"主管",p:"zhǔguǎn",e:"supervisor, person in charge",l:4,d:["biz","gov"],x:["這要先問過我的主管。","Zhè yào xiān wènguò wǒ de zhǔguǎn.","I need to check with my supervisor first."]},
+{c:"同事",p:"tóngshì",e:"colleague",l:4,d:["biz"],x:["我同事會把資料寄給你。","Wǒ tóngshì huì bǎ zīliào jì gěi nǐ.","My colleague will send you the materials."]},
+{c:"部門",p:"bùmén",e:"department",l:4,d:["biz","gov"],x:["這件事是哪個部門負責？","Zhè jiàn shì shì nǎge bùmén fùzé?","Which department handles this?"]},
+{c:"專案",p:"zhuān'àn",e:"project",l:4,d:["biz","gov"],x:["這個專案的期限是六月底。","Zhège zhuān'àn de qíxiàn shì liùyuè dǐ.","This project's deadline is end of June."],n:"Mainland: 項目 xiàngmù. Taiwan business says 專案 or 案子."},
+{c:"進度",p:"jìndù",e:"progress, schedule status",l:4,d:["biz","mil"],x:["跟大家報告一下目前的進度。","Gēn dàjiā bàogào yíxià mùqián de jìndù.","Let me update everyone on current progress."]},
+{c:"期限",p:"qíxiàn",e:"deadline, time limit",l:4,d:["biz","gov"],x:["投標的期限是這個禮拜五。","Tóubiāo de qíxiàn shì zhège lǐbài wǔ.","The bidding deadline is this Friday."],n:"Taiwan reading qíxiàn (期 = qí)."},
+{c:"出差",p:"chūchāi",e:"business trip",l:4,d:["biz"],x:["我下週要去新竹出差。","Wǒ xiàzhōu yào qù Xīnzhú chūchāi.","I'm on a business trip to Hsinchu next week."]},
+{c:"加班",p:"jiābān",e:"to work overtime",l:4,d:["biz"],x:["最近天天加班到十點。","Zuìjìn tiāntiān jiābān dào shí diǎn.","Lately I work overtime to 10 p.m. every day."]},
+{c:"薪水",p:"xīnshuǐ",e:"salary",l:4,d:["biz"],x:["台北的薪水不算高，房租卻很貴。","Táiběi de xīnshuǐ búsuàn gāo, fángzū què hěn guì.","Taipei salaries aren't high, but rents are."]},
+{c:"面試",p:"miànshì",e:"job interview",l:4,d:["biz"],x:["我明天有一場面試。","Wǒ míngtiān yǒu yì chǎng miànshì.","I have an interview tomorrow."]},
+{c:"履歷",p:"lǚlì",e:"résumé, CV",l:4,d:["biz"],x:["請把履歷寄到人資部。","Qǐng bǎ lǚlì jì dào rénzī bù.","Please send your résumé to HR."],n:"Mainland: 簡歷 jiǎnlì. HR = 人資 in Taiwan."},
+{c:"產品",p:"chǎnpǐn",e:"product",l:4,d:["biz","tech"],x:["我來介紹一下我們的產品。","Wǒ lái jièshào yíxià wǒmen de chǎnpǐn.","Let me introduce our product."]},
+{c:"服務",p:"fúwù",e:"service",l:4,d:["biz"],x:["我們提供一年的維修服務。","Wǒmen tígōng yì nián de wéixiū fúwù.","We provide one year of maintenance service."]},
+{c:"品質",p:"pǐnzhí",e:"quality",l:4,d:["biz","tech"],x:["品質比價格更重要。","Pǐnzhí bǐ jiàgé gèng zhòngyào.","Quality matters more than price."],n:"Taiwan: 品質 pǐnzhí. Mainland: 質量 zhìliàng."},
+{c:"品牌",p:"pǐnpái",e:"brand",l:4,d:["biz"],x:["這是台灣本土的品牌。","Zhè shì Táiwān běntǔ de pǐnpái.","This is a homegrown Taiwanese brand."]},
+{c:"競爭",p:"jìngzhēng",e:"competition; to compete",l:4,d:["biz","news"],x:["這個市場競爭很激烈。","Zhège shìchǎng jìngzhēng hěn jīliè.","Competition in this market is fierce."]},
+{c:"對手",p:"duìshǒu",e:"rival, opponent",l:4,d:["biz","mil"],x:["我們最大的對手是一家韓國公司。","Wǒmen zuìdà de duìshǒu shì yì jiā Hánguó gōngsī.","Our biggest rival is a Korean company."]},
+{c:"優勢",p:"yōushì",e:"advantage, edge",l:4,d:["biz","mil","news"],x:["我們的優勢是反應速度快。","Wǒmen de yōushì shì fǎnyìng sùdù kuài.","Our advantage is fast response time."]},
+{c:"需求",p:"xūqiú",e:"demand, requirement",l:4,d:["biz","gov","mil"],x:["請先告訴我們你們的需求。","Qǐng xiān gàosù wǒmen nǐmen de xūqiú.","Please tell us your requirements first."]},
+{c:"提供",p:"tígōng",e:"to provide, offer",l:4,d:["biz","gov"],x:["我們可以提供客製化的方案。","Wǒmen kěyǐ tígōng kèzhìhuà de fāng'àn.","We can provide a customized solution."],n:"客製化 = customized (mainland: 定制)."},
+{c:"討論",p:"tǎolùn",e:"to discuss",l:4,d:["biz","gov"],x:["這個問題我們內部再討論。","Zhège wèntí wǒmen nèibù zài tǎolùn.","We'll discuss this internally."]},
+{c:"決定",p:"juédìng",e:"to decide; decision",l:4,d:["biz","daily"],x:["最後的決定權在客戶手上。","Zuìhòu de juédìngquán zài kèhù shǒushàng.","The final decision is in the client's hands."]},
+{c:"同意",p:"tóngyì",e:"to agree",l:4,d:["biz","gov"],x:["雙方都同意這個條件。","Shuāngfāng dōu tóngyì zhège tiáojiàn.","Both sides agree to these terms."]},
+{c:"建議",p:"jiànyì",e:"to suggest; suggestion",l:4,d:["biz","daily"],x:["我建議我們先做小規模測試。","Wǒ jiànyì wǒmen xiān zuò xiǎo guīmó cèshì.","I suggest we do small-scale testing first."]},
+{c:"負責",p:"fùzé",e:"to be responsible for",l:4,d:["biz","gov"],x:["這個案子由我負責。","Zhège ànzi yóu wǒ fùzé.","I'm in charge of this project."]},
+{c:"安排",p:"ānpái",e:"to arrange",l:4,d:["biz","daily"],x:["我來安排下次會議的時間。","Wǒ lái ānpái xiàcì huìyì de shíjiān.","I'll arrange the time for the next meeting."]},
+{c:"聯絡",p:"liánluò",e:"to contact",l:4,d:["biz","daily"],x:["有問題隨時聯絡我。","Yǒu wèntí suíshí liánluò wǒ.","Contact me anytime if there's an issue."],n:"Mainland often 聯繫 liánxì."},
+{c:"電子郵件",p:"diànzǐ yóujiàn",e:"email",l:4,d:["biz","tech"],x:["細節我再用電子郵件寄給你。","Xìjié wǒ zài yòng diànzǐ yóujiàn jì gěi nǐ.","I'll email you the details."],n:"Everyone just says email or 寄 mail 給我."},
+{c:"附件",p:"fùjiàn",e:"attachment",l:4,d:["biz","tech"],x:["報價單在附件裡。","Bàojiàdān zài fùjiàn lǐ.","The quote is in the attachment."]},
+{c:"名片",p:"míngpiàn",e:"business card",l:4,d:["biz"],x:["這是我的名片，請多指教。","Zhè shì wǒ de míngpiàn, qǐng duō zhǐjiào.","Here's my card — pleased to meet you."],n:"Exchange with both hands, characters facing the receiver."},
+{c:"介紹",p:"jièshào",e:"to introduce",l:4,d:["biz","daily"],x:["我先自我介紹一下。","Wǒ xiān zìwǒ jièshào yíxià.","Let me first introduce myself."]},
+{c:"順利",p:"shùnlì",e:"smooth, without a hitch",l:4,d:["biz","daily"],x:["祝合作順利！","Zhù hézuò shùnlì!","Here's to a smooth partnership!"]}
+];
+/* ---------- LEVEL 5 · 時事 News & Current Events (TOCFL B2-C1 / ILR 2+-3) ---------- */
+VOCAB.push(
+{c:"新聞",p:"xīnwén",e:"news",l:5,d:["news"],x:["你有看今天的新聞嗎？","Nǐ yǒu kàn jīntiān de xīnwén ma?","Did you see today's news?"]},
+{c:"媒體",p:"méitǐ",e:"media",l:5,d:["news"],x:["各家媒體的報導角度不同。","Gè jiā méitǐ de bàodǎo jiǎodù bùtóng.","Each outlet covers it from a different angle."]},
+{c:"記者",p:"jìzhě",e:"reporter, journalist",l:5,d:["news"],x:["記者在現場為您報導。","Jìzhě zài xiànchǎng wèi nín bàodǎo.","Our reporter, live from the scene."]},
+{c:"報導",p:"bàodǎo",e:"to report; news report",l:5,d:["news"],x:["根據媒體報導，雙方已達成協議。","Gēnjù méitǐ bàodǎo, shuāngfāng yǐ dáchéng xiéyì.","According to reports, the two sides have reached an agreement."],n:"Taiwan writes 報導; mainland 報道."},
+{c:"消息",p:"xiāoxí",e:"news, information",l:5,d:["news"],x:["有進一步的消息我再通知你。","Yǒu jìnyíbù de xiāoxí wǒ zài tōngzhī nǐ.","I'll let you know when there's further news."],n:"Taiwan reading xiāoxí (息 = xí)."},
+{c:"政府",p:"zhèngfǔ",e:"government",l:5,d:["gov","news"],x:["政府宣布了新的補助方案。","Zhèngfǔ xuānbù le xīn de bǔzhù fāng'àn.","The government announced a new subsidy program."]},
+{c:"總統",p:"zǒngtǒng",e:"president (of a country)",l:5,d:["gov","news"],x:["總統將於下週出訪。","Zǒngtǒng jiāng yú xiàzhōu chūfǎng.","The president will travel abroad next week."]},
+{c:"行政院",p:"Xíngzhèngyuàn",e:"Executive Yuan (cabinet)",l:5,d:["gov"],x:["行政院今天通過了這項草案。","Xíngzhèngyuàn jīntiān tōngguò le zhè xiàng cǎo'àn.","The Executive Yuan passed the draft bill today."]},
+{c:"立法院",p:"Lìfǎyuàn",e:"Legislative Yuan (parliament)",l:5,d:["gov"],x:["法案還要送立法院審查。","Fǎ'àn hái yào sòng Lìfǎyuàn shěnchá.","The bill still needs Legislative Yuan review."]},
+{c:"立委",p:"lìwěi",e:"legislator (abbrev.)",l:5,d:["gov","news"],x:["多位立委對預算提出質詢。","Duō wèi lìwěi duì yùsuàn tíchū zhíxún.","Several legislators questioned the budget."],n:"Short for 立法委員."},
+{c:"政策",p:"zhèngcè",e:"policy",l:5,d:["gov","news"],x:["新政策明年一月上路。","Xīn zhèngcè míngnián yīyuè shànglù.","The new policy takes effect in January."],n:"上路 = 'hits the road' = takes effect (TW news idiom)."},
+{c:"法案",p:"fǎ'àn",e:"bill, legislation",l:5,d:["gov","news"],x:["這個法案引起很大的爭議。","Zhège fǎ'àn yǐnqǐ hěn dà de zhēngyì.","The bill sparked major controversy."]},
+{c:"選舉",p:"xuǎnjǔ",e:"election",l:5,d:["gov","news"],x:["明年一月有總統選舉。","Míngnián yīyuè yǒu zǒngtǒng xuǎnjǔ.","There's a presidential election next January."]},
+{c:"投票",p:"tóupiào",e:"to vote",l:5,d:["gov","news"],x:["投票率超過七成。","Tóupiào lǜ chāoguò qī chéng.","Turnout exceeded 70%."],n:"成 = tenths: 七成 = 70%."},
+{c:"政黨",p:"zhèngdǎng",e:"political party",l:5,d:["gov","news"],x:["三個主要政黨都提出了候選人。","Sān ge zhǔyào zhèngdǎng dōu tíchū le hòuxuǎnrén.","All three major parties fielded candidates."]},
+{c:"民調",p:"míndiào",e:"opinion poll",l:5,d:["gov","news"],x:["最新民調顯示支持度上升。","Zuìxīn míndiào xiǎnshì zhīchídù shàngshēng.","The latest poll shows support rising."]},
+{c:"經濟",p:"jīngjì",e:"economy",l:5,d:["news","biz"],x:["今年經濟成長率預估百分之三。","Jīnnián jīngjì chéngzhǎnglǜ yùgū bǎifēnzhī sān.","Economic growth is forecast at 3% this year."]},
+{c:"貿易",p:"màoyì",e:"trade",l:5,d:["news","biz"],x:["兩國的貿易關係越來越緊密。","Liǎng guó de màoyì guānxi yuèláiyuè jǐnmì.","Trade ties between the two countries keep deepening."]},
+{c:"出口",p:"chūkǒu",e:"export; exit",l:5,d:["news","biz"],x:["台灣的出口以電子產品為主。","Táiwān de chūkǒu yǐ diànzǐ chǎnpǐn wéi zhǔ.","Taiwan's exports are mainly electronics."]},
+{c:"關稅",p:"guānshuì",e:"tariff",l:5,d:["news","biz","gov"],x:["新關稅將影響數百家廠商。","Xīn guānshuì jiāng yǐngxiǎng shùbǎi jiā chǎngshāng.","The new tariffs will affect hundreds of firms."]},
+{c:"通膨",p:"tōngpéng",e:"inflation (abbrev.)",l:5,d:["news","biz"],x:["通膨壓力讓物價一直漲。","Tōngpéng yālì ràng wùjià yìzhí zhǎng.","Inflationary pressure keeps pushing prices up."],n:"Short for 通貨膨脹 tōnghuò péngzhàng."},
+{c:"股市",p:"gǔshì",e:"stock market",l:5,d:["news","biz"],x:["台股今天大漲三百點。","Táigǔ jīntiān dàzhǎng sānbǎi diǎn.","Taiwan stocks jumped 300 points today."]},
+{c:"半導體",p:"bàndǎotǐ",e:"semiconductor",l:5,d:["news","tech","biz"],x:["半導體是台灣的護國神山。","Bàndǎotǐ shì Táiwān de hùguó shénshān.","Semiconductors are Taiwan's 'sacred mountain that protects the nation.'"],n:"護國神山 = nickname for TSMC/the chip industry."},
+{c:"晶片",p:"jīngpiàn",e:"chip (IC)",l:5,d:["news","tech"],x:["先進晶片的需求持續增加。","Xiānjìn jīngpiàn de xūqiú chíxù zēngjiā.","Demand for advanced chips keeps growing."],n:"Mainland: 芯片 xīnpiàn."},
+{c:"科技",p:"kējì",e:"technology",l:5,d:["news","tech"],x:["新竹是台灣的科技重鎮。","Xīnzhú shì Táiwān de kējì zhòngzhèn.","Hsinchu is Taiwan's tech hub."]},
+{c:"人工智慧",p:"réngōng zhìhuì",e:"artificial intelligence",l:5,d:["news","tech"],x:["人工智慧正在改變每個產業。","Réngōng zhìhuì zhèngzài gǎibiàn měi ge chǎnyè.","AI is transforming every industry."],n:"Taiwan: 人工智慧/AI. Mainland: 人工智能 zhìnéng."},
+{c:"資安",p:"zī'ān",e:"cybersecurity (abbrev.)",l:5,d:["news","tech","mil"],x:["政府很重視資安問題。","Zhèngfǔ hěn zhòngshì zī'ān wèntí.","The government takes cybersecurity seriously."],n:"Short for 資訊安全. Mainland: 網絡安全."},
+{c:"能源",p:"néngyuán",e:"energy (resources)",l:5,d:["news","gov"],x:["能源政策是這次選舉的焦點。","Néngyuán zhèngcè shì zhècì xuǎnjǔ de jiāodiǎn.","Energy policy is a focus of this election."]},
+{c:"氣候變遷",p:"qìhòu biànqiān",e:"climate change",l:5,d:["news"],x:["氣候變遷讓極端天氣更常見。","Qìhòu biànqiān ràng jíduān tiānqì gèng chángjiàn.","Climate change makes extreme weather more common."],n:"Mainland: 氣候變化."},
+{c:"議題",p:"yìtí",e:"issue, topic (public)",l:5,d:["news","gov"],x:["這是最近很熱門的議題。","Zhè shì zuìjìn hěn rèmén de yìtí.","This is a hot-button issue lately."]},
+{c:"影響",p:"yǐngxiǎng",e:"to influence; impact",l:5,d:["news","biz"],x:["這對出口會有很大的影響。","Zhè duì chūkǒu huì yǒu hěn dà de yǐngxiǎng.","This will have a big impact on exports."]},
+{c:"增加",p:"zēngjiā",e:"to increase",l:5,d:["news","biz"],x:["訂單比去年增加了兩成。","Dìngdān bǐ qùnián zēngjiā le liǎng chéng.","Orders rose 20% over last year."]},
+{c:"上漲",p:"shàngzhǎng",e:"to rise (prices)",l:5,d:["news","biz"],x:["油價又上漲了。","Yóujià yòu shàngzhǎng le.","Fuel prices rose again."]},
+{c:"下跌",p:"xiàdié",e:"to fall (prices)",l:5,d:["news","biz"],x:["股價下跌了百分之五。","Gǔjià xiàdié le bǎifēnzhī wǔ.","The stock fell 5%."]},
+{c:"成長",p:"chéngzhǎng",e:"growth; to grow",l:5,d:["news","biz"],x:["公司連續三年保持成長。","Gōngsī liánxù sān nián bǎochí chéngzhǎng.","The company has grown three years running."],n:"Mainland economics prefers 增長 zēngzhǎng."},
+{c:"危機",p:"wéijī",e:"crisis",l:5,d:["news","gov","mil"],x:["能源危機影響了整個歐洲。","Néngyuán wéijī yǐngxiǎng le zhěngge Ōuzhōu.","The energy crisis affected all of Europe."],n:"Taiwan reading wéi (危), not wēi."},
+{c:"挑戰",p:"tiǎozhàn",e:"challenge",l:5,d:["news","biz"],x:["缺工是產業最大的挑戰。","Quēgōng shì chǎnyè zuìdà de tiǎozhàn.","Labor shortage is the industry's biggest challenge."]},
+{c:"發展",p:"fāzhǎn",e:"development; to develop",l:5,d:["news","biz","gov"],x:["政府大力推動綠能發展。","Zhèngfǔ dàlì tuīdòng lǜnéng fāzhǎn.","The government is pushing green energy development hard."]},
+{c:"宣布",p:"xuānbù",e:"to announce",l:5,d:["news","gov","biz"],x:["公司宣布將在台南設廠。","Gōngsī xuānbù jiāng zài Táinán shèchǎng.","The company announced it will build a plant in Tainan."]},
+{c:"表示",p:"biǎoshì",e:"to state, express",l:5,d:["news","gov"],x:["發言人表示目前沒有評論。","Fāyánrén biǎoshì mùqián méiyǒu pínglùn.","The spokesperson said there's no comment at this time."],n:"The workhorse 'said' of news Chinese."},
+{c:"指出",p:"zhǐchū",e:"to point out",l:5,d:["news"],x:["專家指出，風險仍然存在。","Zhuānjiā zhǐchū, fēngxiǎn réngrán cúnzài.","Experts point out that risks remain."]},
+{c:"認為",p:"rènwéi",e:"to believe, hold that",l:5,d:["news","daily"],x:["我認為這個做法值得討論。","Wǒ rènwéi zhège zuòfǎ zhídé tǎolùn.","I think this approach is worth discussing."]},
+{c:"根據",p:"gēnjù",e:"according to; based on",l:5,d:["news","gov"],x:["根據統計，數字持續上升。","Gēnjù tǒngjì, shùzì chíxù shàngshēng.","According to statistics, the numbers keep rising."]},
+{c:"針對",p:"zhēnduì",e:"regarding, aimed at",l:5,d:["news","gov"],x:["針對這個問題，部長回應了。","Zhēnduì zhège wèntí, bùzhǎng huíyìng le.","The minister responded to this question."]},
+{c:"目前",p:"mùqián",e:"at present, currently",l:5,d:["news","biz"],x:["目前還沒有正式的時間表。","Mùqián hái méiyǒu zhèngshì de shíjiānbiǎo.","There's no official timeline at present."]},
+{c:"趨勢",p:"qūshì",e:"trend",l:5,d:["news","biz"],x:["遠距工作已經是全球趨勢。","Yuǎnjù gōngzuò yǐjīng shì quánqiú qūshì.","Remote work is already a global trend."]},
+{c:"產業",p:"chǎnyè",e:"industry (sector)",l:5,d:["news","biz"],x:["無人機產業發展得很快。","Wúrénjī chǎnyè fāzhǎn de hěn kuài.","The drone industry is developing fast."]},
+{c:"國際",p:"guójì",e:"international",l:5,d:["news","gov"],x:["這件事引起國際關注。","Zhè jiàn shì yǐnqǐ guójì guānzhù.","The matter drew international attention."]},
+{c:"雙方",p:"shuāngfāng",e:"both sides, both parties",l:5,d:["news","gov","biz"],x:["雙方同意繼續對話。","Shuāngfāng tóngyì jìxù duìhuà.","Both sides agreed to keep talking."]},
+{c:"協議",p:"xiéyì",e:"agreement, accord",l:5,d:["news","gov","biz"],x:["兩家公司簽署了合作協議。","Liǎng jiā gōngsī qiānshǔ le hézuò xiéyì.","The two companies signed a cooperation agreement."]},
+
+/* ---------- LEVEL 6 · 國防科技 Defense, UxS & Government (C1 / ILR 3-3+) ---------- */
+{c:"無人機",p:"wúrénjī",e:"drone, UAV",l:6,d:["mil","tech"],x:["這款無人機可以自主飛行。","Zhè kuǎn wúrénjī kěyǐ zìzhǔ fēixíng.","This drone can fly autonomously."]},
+{c:"無人載具",p:"wúrén zàijù",e:"unmanned vehicle (UxV)",l:6,d:["mil","tech"],x:["海上無人載具是新的發展重點。","Hǎishàng wúrén zàijù shì xīn de fāzhǎn zhòngdiǎn.","Unmanned surface vehicles are a new development priority."],n:"UxS umbrella: 無人系統. USV: 無人船/無人艇. UUV: 水下無人載具. UGV: 無人地面載具."},
+{c:"系統",p:"xìtǒng",e:"system",l:6,d:["tech","mil"],x:["整個系統包含地面控制站。","Zhěngge xìtǒng bāohán dìmiàn kòngzhìzhàn.","The full system includes a ground control station."]},
+{c:"國防",p:"guófáng",e:"national defense",l:6,d:["mil","gov"],x:["國防預算明年將增加。","Guófáng yùsuàn míngnián jiāng zēngjiā.","The defense budget will increase next year."],n:"Ministry of National Defense = 國防部 Guófángbù."},
+{c:"軍事",p:"jūnshì",e:"military (adj.)",l:6,d:["mil","news"],x:["兩國加強了軍事合作。","Liǎng guó jiāqiáng le jūnshì hézuò.","The two countries strengthened military cooperation."]},
+{c:"軍隊",p:"jūnduì",e:"armed forces, army",l:6,d:["mil"],x:["軍隊正在進行年度訓練。","Jūnduì zhèngzài jìnxíng niándù xùnliàn.","The military is conducting annual training."]},
+{c:"陸軍",p:"lùjūn",e:"army (ground forces)",l:6,d:["mil"],x:["陸軍採購了新型無人機。","Lùjūn cǎigòu le xīnxíng wúrénjī.","The army procured new-model drones."],n:"海軍 hǎijūn navy · 空軍 kōngjūn air force · 海軍陸戰隊 marines."},
+{c:"演習",p:"yǎnxí",e:"military exercise, drill",l:6,d:["mil","news"],x:["漢光演習每年舉行一次。","Hànguāng yǎnxí měinián jǔxíng yícì.","The Han Kuang exercise is held annually."],n:"漢光演習 = Taiwan's major annual joint exercise."},
+{c:"訓練",p:"xùnliàn",e:"training",l:6,d:["mil","biz"],x:["操作人員需要完整的訓練。","Cāozuò rényuán xūyào wánzhěng de xùnliàn.","Operators need complete training."]},
+{c:"作戰",p:"zuòzhàn",e:"combat, operations",l:6,d:["mil"],x:["無人機改變了現代作戰的方式。","Wúrénjī gǎibiàn le xiàndài zuòzhàn de fāngshì.","Drones have changed how modern combat is conducted."]},
+{c:"戰略",p:"zhànlüè",e:"strategy",l:6,d:["mil","biz","news"],x:["不對稱戰略是台灣的核心概念。","Bú duìchèn zhànlüè shì Táiwān de héxīn gàiniàn.","Asymmetric strategy is Taiwan's core concept."],n:"不對稱作戰 = asymmetric warfare — key term in Taiwan defense talk."},
+{c:"戰術",p:"zhànshù",e:"tactics",l:6,d:["mil"],x:["小型無人機適合戰術偵察。","Xiǎoxíng wúrénjī shìhé zhànshù zhēnchá.","Small drones suit tactical reconnaissance."]},
+{c:"威脅",p:"wēixié",e:"threat",l:6,d:["mil","news"],x:["飛彈威脅越來越嚴重。","Fēidàn wēixié yuèláiyuè yánzhòng.","The missile threat is growing."]},
+{c:"防禦",p:"fángyù",e:"defense (action)",l:6,d:["mil"],x:["防空防禦系統已經部署。","Fángkōng fángyù xìtǒng yǐjīng bùshǔ.","The air-defense system has been deployed."]},
+{c:"嚇阻",p:"hèzǔ",e:"deterrence",l:6,d:["mil","gov"],x:["提升嚇阻能力是首要目標。","Tíshēng hèzǔ nénglì shì shǒuyào mùbiāo.","Boosting deterrence is the top goal."],n:"Taiwan: 嚇阻. Mainland texts: 威懾 wēishè."},
+{c:"飛彈",p:"fēidàn",e:"missile",l:6,d:["mil"],x:["雄風飛彈是國造武器。","Xióngfēng fēidàn shì guózào wǔqì.","The Hsiung Feng missile is domestically made."],n:"Taiwan: 飛彈. Mainland: 導彈 dǎodàn. 國造 = indigenously produced."},
+{c:"雷達",p:"léidá",e:"radar",l:6,d:["mil","tech"],x:["這型雷達可以偵測低空目標。","Zhè xíng léidá kěyǐ zhēncè dīkōng mùbiāo.","This radar can detect low-altitude targets."]},
+{c:"感測器",p:"gǎncèqì",e:"sensor",l:6,d:["tech","mil"],x:["酬載包含光電感測器。","Chóuzài bāohán guāngdiàn gǎncèqì.","The payload includes an electro-optical sensor."],n:"Mainland: 傳感器 chuángǎnqì."},
+{c:"衛星",p:"wèixīng",e:"satellite",l:6,d:["mil","tech"],x:["低軌衛星通訊是備援方案。","Dīguǐ wèixīng tōngxùn shì bèiyuán fāng'àn.","LEO satellite comms are the backup plan."]},
+{c:"通訊",p:"tōngxùn",e:"communications",l:6,d:["tech","mil"],x:["通訊中斷的時候怎麼辦？","Tōngxùn zhōngduàn de shíhòu zěnme bàn?","What happens if comms are cut?"],n:"Comms link = 通訊鏈路; jamming = 干擾 gānrǎo."},
+{c:"導航",p:"dǎoháng",e:"navigation",l:6,d:["tech","mil"],x:["GPS被干擾時需要備用導航。","GPS bèi gānrǎo shí xūyào bèiyòng dǎoháng.","You need backup navigation when GPS is jammed."]},
+{c:"裝備",p:"zhuāngbèi",e:"equipment, gear",l:6,d:["mil"],x:["新裝備下個月交貨。","Xīn zhuāngbèi xià ge yuè jiāohuò.","The new equipment is delivered next month."]},
+{c:"武器",p:"wǔqì",e:"weapon",l:6,d:["mil"],x:["這是防禦性武器，不是攻擊性的。","Zhè shì fángyùxìng wǔqì, búshì gōngjíxìng de.","These are defensive weapons, not offensive."],n:"攻擊 = gōngjí in Taiwan (擊 = jí)."},
+{c:"採購",p:"cǎigòu",e:"procurement",l:6,d:["gov","mil","biz"],x:["軍事採購要經過嚴格審查。","Jūnshì cǎigòu yào jīngguò yángé shěnchá.","Military procurement undergoes strict review."],n:"對美軍購 = arms purchases from the US."},
+{c:"標案",p:"biāo'àn",e:"tender, bid case",l:6,d:["gov","biz"],x:["我們打算投這個標案。","Wǒmen dǎsuàn tóu zhège biāo'àn.","We plan to bid on this tender."],n:"招標 = call for bids; 投標 = to bid; 得標 = win the bid."},
+{c:"測試",p:"cèshì",e:"test, testing",l:6,d:["tech","mil","biz"],x:["原型機正在進行飛行測試。","Yuánxíngjī zhèngzài jìnxíng fēixíng cèshì.","The prototype is undergoing flight testing."],n:"Prototype = 原型 or 原型機."},
+{c:"研發",p:"yánfā",e:"R&D",l:6,d:["tech","biz","mil"],x:["公司把三成的預算投入研發。","Gōngsī bǎ sān chéng de yùsuàn tóurù yánfā.","The company puts 30% of its budget into R&D."],n:"Short for 研究發展. 研究 = yánjiù in Taiwan."},
+{c:"創新",p:"chuàngxīn",e:"innovation",l:6,d:["tech","biz"],x:["我是創新工程師，負責新技術評估。","Wǒ shì chuàngxīn gōngchéngshī, fùzé xīn jìshù pínggū.","I'm an innovation engineer, in charge of evaluating new tech."]},
+{c:"工程師",p:"gōngchéngshī",e:"engineer",l:6,d:["tech","biz"],x:["我們團隊有十位電機工程師。","Wǒmen tuánduì yǒu shí wèi diànjī gōngchéngshī.","Our team has ten electrical engineers."],n:"電機工程 = electrical engineering (Taiwan). Mainland: 電氣工程."},
+{c:"技術",p:"jìshù",e:"technology, technique",l:6,d:["tech","biz"],x:["這項技術還在早期階段。","Zhè xiàng jìshù hái zài zǎoqí jiēduàn.","This technology is still early-stage."]},
+{c:"性能",p:"xìngnéng",e:"performance (of a system)",l:6,d:["tech","mil"],x:["性能規格都在文件裡。","Xìngnéng guīgé dōu zài wénjiàn lǐ.","The performance specs are all in the document."],n:"Specs = 規格 guīgé."},
+{c:"續航力",p:"xùhánglì",e:"endurance, battery range",l:6,d:["tech","mil"],x:["這台無人機的續航力是八小時。","Zhè tái wúrénjī de xùhánglì shì bā xiǎoshí.","This UAV's endurance is eight hours."]},
+{c:"酬載",p:"chóuzài",e:"payload",l:6,d:["tech","mil"],x:["最大酬載是五公斤。","Zuìdà chóuzài shì wǔ gōngjīn.","Max payload is five kilograms."],n:"Mainland: 載荷/有效載荷."},
+{c:"遙控",p:"yáokòng",e:"remote control",l:6,d:["tech","mil"],x:["超出遙控距離就會自動返航。","Chāochū yáokòng jùlí jiù huì zìdòng fǎnháng.","Beyond remote range it auto-returns."],n:"返航 = return to launch (RTL)."},
+{c:"自主",p:"zìzhǔ",e:"autonomous; self-directed",l:6,d:["tech","mil"],x:["自主導航不需要人為操作。","Zìzhǔ dǎoháng bù xūyào rénwéi cāozuò.","Autonomous navigation needs no human operation."]},
+{c:"整合",p:"zhěnghé",e:"to integrate",l:6,d:["tech","biz","mil"],x:["我們負責感測器的系統整合。","Wǒmen fùzé gǎncèqì de xìtǒng zhěnghé.","We handle sensor system integration."]},
+{c:"部署",p:"bùshǔ",e:"to deploy; deployment",l:6,d:["mil"],x:["新系統將部署在外島。","Xīn xìtǒng jiāng bùshǔ zài wàidǎo.","The new system will be deployed on the outlying islands."],n:"外島 = Kinmen, Matsu, Penghu etc."},
+{c:"任務",p:"rènwù",e:"mission, task",l:6,d:["mil","biz"],x:["這次任務的目標是海上監偵。","Zhècì rènwù de mùbiāo shì hǎishàng jiānzhēn.","This mission's objective is maritime surveillance."]},
+{c:"偵察",p:"zhēnchá",e:"reconnaissance",l:6,d:["mil"],x:["無人機執行偵察任務。","Wúrénjī zhíxíng zhēnchá rènwù.","The UAV carries out recon missions."],n:"監偵 = ISR (surveillance & recon) in Taiwan military usage."},
+{c:"情報",p:"qíngbào",e:"intelligence (info)",l:6,d:["mil","gov"],x:["即時情報對指揮官很重要。","Jíshí qíngbào duì zhǐhuīguān hěn zhòngyào.","Real-time intelligence matters to commanders."],n:"即時 = real-time (mainland: 實時)."},
+{c:"盟友",p:"méngyǒu",e:"ally",l:6,d:["mil","gov","news"],x:["美國是台灣重要的安全夥伴。","Měiguó shì Táiwān zhòngyào de ānquán huǒbàn.","The US is a key security partner for Taiwan."],n:"夥伴 = partner; 理念相近國家 = like-minded countries (gov-speak)."},
+{c:"台海",p:"Táihǎi",e:"Taiwan Strait (abbrev.)",l:6,d:["mil","news"],x:["台海局勢受到全球關注。","Táihǎi júshì shòudào quánqiú guānzhù.","The Taiwan Strait situation draws global attention."]},
+{c:"兩岸",p:"liǎng'àn",e:"cross-strait (TW & PRC)",l:6,d:["gov","news"],x:["兩岸關係是敏感的政治議題。","Liǎng'àn guānxi shì mǐngǎn de zhèngzhì yìtí.","Cross-strait relations are a sensitive political issue."]},
+{c:"局勢",p:"júshì",e:"situation (geopolitical)",l:6,d:["mil","news"],x:["區域局勢最近比較緊張。","Qūyù júshì zuìjìn bǐjiào jǐnzhāng.","The regional situation has been tense lately."]},
+{c:"緊張",p:"jǐnzhāng",e:"tense; nervous",l:6,d:["mil","news","daily"],x:["情勢升高，雙方都很緊張。","Qíngshì shēnggāo, shuāngfāng dōu hěn jǐnzhāng.","Tensions rose; both sides are on edge."]},
+{c:"演訓",p:"yǎnxùn",e:"exercises and training",l:6,d:["mil","news"],x:["共軍在台灣周邊進行演訓。","Gòngjūn zài Táiwān zhōubiān jìnxíng yǎnxùn.","The PLA conducted exercises around Taiwan."],n:"共軍/解放軍 = how Taiwan media refers to the PLA."},
+{c:"國安",p:"guó'ān",e:"national security (abbrev.)",l:6,d:["gov","mil"],x:["這牽涉到國安問題。","Zhè qiānshè dào guó'ān wèntí.","This touches on national security."],n:"國安會 = National Security Council; 國安局 = NSB."},
+{c:"韌性",p:"rènxìng",e:"resilience",l:6,d:["gov","mil","news"],x:["提升社會韌性是國防的一部分。","Tíshēng shèhuì rènxìng shì guófáng de yíbùfèn.","Building societal resilience is part of defense."],n:"Buzzword in current Taiwan policy: 全社會防衛韌性."},
+{c:"後勤",p:"hòuqín",e:"logistics",l:6,d:["mil","biz"],x:["後勤補給是作戰的關鍵。","Hòuqín bǔjǐ shì zuòzhàn de guānjiàn.","Logistics and resupply are key to operations."]},
+{c:"指揮",p:"zhǐhuī",e:"to command; command",l:6,d:["mil"],x:["指揮官下達了命令。","Zhǐhuīguān xiàdá le mìnglìng.","The commander issued the order."],n:"指管通情 = C4ISR-type shorthand (指揮/管制/通訊/情報)."},
+
+/* ---------- LEVEL 7 · 精通 Mastery: idiom & formal register (C2 / ILR 4) ---------- */
+{c:"眾所皆知",p:"zhòng suǒ jiē zhī",e:"as everyone knows",l:7,d:["formal"],x:["眾所皆知，台灣以半導體聞名。","Zhòng suǒ jiē zhī, Táiwān yǐ bàndǎotǐ wénmíng.","As everyone knows, Taiwan is famous for semiconductors."]},
+{c:"迫在眉睫",p:"pò zài méi jié",e:"imminent, urgent",l:7,d:["formal","news"],x:["能源轉型已迫在眉睫。","Néngyuán zhuǎnxíng yǐ pò zài méi jié.","Energy transition is now urgent."]},
+{c:"息息相關",p:"xí xí xiāng guān",e:"closely interrelated",l:7,d:["formal","news"],x:["晶片供應與國家安全息息相關。","Jīngpiàn gōngyìng yǔ guójiā ānquán xí xí xiāng guān.","Chip supply is closely tied to national security."]},
+{c:"供不應求",p:"gōng bù yìng qiú",e:"supply can't meet demand",l:7,d:["formal","biz"],x:["先進製程產能供不應求。","Xiānjìn zhìchéng chǎnnéng gōng bù yìng qiú.","Advanced-node capacity can't keep up with demand."]},
+{c:"未雨綢繆",p:"wèi yǔ chóu móu",e:"prepare before it rains",l:7,d:["formal"],x:["企業應未雨綢繆，分散供應鏈。","Qìyè yīng wèi yǔ chóu móu, fēnsàn gōngyìngliàn.","Firms should plan ahead and diversify supply chains."],n:"企業 = qìyè in Taiwan (企 = qì)."},
+{c:"一舉兩得",p:"yì jǔ liǎng dé",e:"kill two birds with one stone",l:7,d:["formal","daily"],x:["邊工作邊學中文，一舉兩得。","Biān gōngzuò biān xué Zhōngwén, yì jǔ liǎng dé.","Working while learning Chinese — two wins at once."]},
+{c:"層出不窮",p:"céng chū bù qióng",e:"emerging endlessly",l:7,d:["formal","news"],x:["詐騙手法層出不窮。","Zhàpiàn shǒufǎ céng chū bù qióng.","Scam tactics keep emerging one after another."]},
+{c:"日新月異",p:"rì xīn yuè yì",e:"changing rapidly by the day",l:7,d:["formal","tech"],x:["無人機技術日新月異。","Wúrénjī jìshù rì xīn yuè yì.","Drone technology advances by the day."]},
+{c:"與時俱進",p:"yǔ shí jù jìn",e:"keep pace with the times",l:7,d:["formal"],x:["法規也必須與時俱進。","Fǎguī yě bìxū yǔ shí jù jìn.","Regulations must also keep up with the times."]},
+{c:"前所未有",p:"qián suǒ wèi yǒu",e:"unprecedented",l:7,d:["formal","news"],x:["產業面臨前所未有的變局。","Chǎnyè miànlín qián suǒ wèi yǒu de biànjú.","The industry faces unprecedented upheaval."]},
+{c:"不可或缺",p:"bù kě huò quē",e:"indispensable",l:7,d:["formal"],x:["台灣在全球供應鏈中不可或缺。","Táiwān zài quánqiú gōngyìngliàn zhōng bù kě huò quē.","Taiwan is indispensable in global supply chains."]},
+{c:"刻不容緩",p:"kè bù róng huǎn",e:"brooks no delay",l:7,d:["formal","news"],x:["強化資安已刻不容緩。","Qiánghuà zī'ān yǐ kè bù róng huǎn.","Strengthening cybersecurity can't wait."]},
+{c:"首當其衝",p:"shǒu dāng qí chōng",e:"bear the brunt first",l:7,d:["formal","news"],x:["關稅一漲，出口商首當其衝。","Guānshuì yì zhǎng, chūkǒushāng shǒu dāng qí chōng.","When tariffs rise, exporters bear the brunt."]},
+{c:"得不償失",p:"dé bù cháng shī",e:"gains don't cover losses",l:7,d:["formal"],x:["為了省小錢犧牲品質，得不償失。","Wèile shěng xiǎo qián xīshēng pǐnzhí, dé bù cháng shī.","Sacrificing quality to save pennies costs more than it gains."]},
+{c:"因應",p:"yīnyìng",e:"to respond to, in response to",l:7,d:["formal","gov"],x:["政府提出配套措施以因應變化。","Zhèngfǔ tíchū pèitào cuòshī yǐ yīnyìng biànhuà.","The government proposed supporting measures in response to the changes."],n:"Extremely common in Taiwan official/news writing."},
+{c:"鑒於",p:"jiànyú",e:"in view of",l:7,d:["formal"],x:["鑒於情勢變化，會議延期。","Jiànyú qíngshì biànhuà, huìyì yánqí.","In view of the changing situation, the meeting is postponed."]},
+{c:"藉由",p:"jièyóu",e:"by means of",l:7,d:["formal"],x:["藉由演習檢驗部隊的整備。","Jièyóu yǎnxí jiǎnyàn bùduì de zhěngbèi.","The exercise serves to test unit readiness."],n:"Taiwan: 藉由/透過. Mainland: 通過."},
+{c:"進而",p:"jìn'ér",e:"and further, thereby",l:7,d:["formal"],x:["先站穩國內市場，進而拓展海外。","Xiān zhànwěn guónèi shìchǎng, jìn'ér tuòzhǎn hǎiwài.","Secure the domestic market first, then expand overseas."]},
+{c:"倘若",p:"tǎngruò",e:"if, supposing (formal)",l:7,d:["formal"],x:["倘若談判破裂，後果嚴重。","Tǎngruò tánpàn pòliè, hòuguǒ yánzhòng.","Should negotiations collapse, the consequences would be severe."]},
+{c:"顯著",p:"xiǎnzhù",e:"marked, significant",l:7,d:["formal","news"],x:["成效相當顯著。","Chéngxiào xiāngdāng xiǎnzhù.","The results are quite significant."]},
+{c:"崛起",p:"juéqǐ",e:"rise (of a power/industry)",l:7,d:["formal","news"],x:["新創公司在這個領域迅速崛起。","Xīnchuàng gōngsī zài zhège lǐngyù xùnsù juéqǐ.","Startups are rising fast in this field."],n:"新創 = startup (mainland: 初創/創業公司)."},
+{c:"弊端",p:"bìduān",e:"drawback, malpractice",l:7,d:["formal","gov"],x:["制度上的弊端必須改革。","Zhìdù shàng de bìduān bìxū gǎigé.","Systemic flaws must be reformed."]},
+{c:"癥結",p:"zhēngjié",e:"crux (of a problem)",l:7,d:["formal"],x:["問題的癥結在於預算不足。","Wèntí de zhēngjié zàiyú yùsuàn bùzú.","The crux of the problem is insufficient budget."]},
+{c:"契機",p:"qìjī",e:"opportunity, turning point",l:7,d:["formal","biz"],x:["危機也可能是轉型的契機。","Wéijī yě kěnéng shì zhuǎnxíng de qìjī.","A crisis can also be an opportunity to transform."]},
+{c:"面臨",p:"miànlín",e:"to face, confront",l:7,d:["formal","news"],x:["傳統產業正面臨轉型壓力。","Chuántǒng chǎnyè zhèng miànlín zhuǎnxíng yālì.","Traditional industries face pressure to transform."]},
+{c:"秉持",p:"bǐngchí",e:"to uphold, adhere to",l:7,d:["formal","gov"],x:["我們秉持互惠的原則合作。","Wǒmen bǐngchí hùhuì de yuánzé hézuò.","We cooperate on the principle of mutual benefit."]},
+{c:"換句話說",p:"huàn jù huà shuō",e:"in other words",l:7,d:["formal","daily"],x:["換句話說，成本會轉嫁給消費者。","Huàn jù huà shuō, chéngběn huì zhuǎnjià gěi xiāofèizhě.","In other words, costs get passed to consumers."]},
+{c:"總而言之",p:"zǒng ér yán zhī",e:"in summary, all in all",l:7,d:["formal"],x:["總而言之，這是值得投資的方向。","Zǒng ér yán zhī, zhè shì zhídé tóuzī de fāngxiàng.","In short, this is a direction worth investing in."]},
+{c:"舉例來說",p:"jǔ lì lái shuō",e:"for example (formal)",l:7,d:["formal"],x:["舉例來說，無人機可用於救災。","Jǔ lì lái shuō, wúrénjī kě yòng yú jiùzāi.","For example, drones can be used in disaster relief."]},
+{c:"相輔相成",p:"xiāng fǔ xiāng chéng",e:"complement each other",l:7,d:["formal"],x:["人工智慧與無人系統相輔相成。","Réngōng zhìhuì yǔ wúrén xìtǒng xiāng fǔ xiāng chéng.","AI and unmanned systems complement each other."]}
+);
+
+/* ---------- 台灣味 SLANG & Taiwan-isms (cross-level track) ---------- */
+const SLANG=[
+{c:"歹勢",p:"pháinn-sè (tái: dǎishì)",e:"sorry (Taiwanese Hokkien)",x:["歹勢歹勢，我來晚了！","Pháinn-sè, wǒ lái wǎn le!","Sorry sorry, I'm late!"],n:"Hokkien loan, used constantly in Mandarin speech. Casual version of 不好意思."},
+{c:"拍謝",p:"pāishè",e:"sorry (Hokkien, written in Mandarin chars)",x:["拍謝啦，忘記回你了。","Pāishè la, wàngjì huí nǐ le.","My bad, forgot to reply."],n:"Same as 歹勢 — the texting spelling."},
+{c:"傻眼",p:"shǎyǎn",e:"stunned, jaw-dropped",x:["他直接沒來，我整個傻眼。","Tā zhíjiē méi lái, wǒ zhěngge shǎyǎn.","He just didn't show — I was floored."],n:"整個 + adj = 'totally' in Taiwan speech."},
+{c:"超～的",p:"chāo...de",e:"super (intensifier)",x:["這家滷肉飯超好吃的！","Zhè jiā lǔròufàn chāo hǎochī de!","This braised pork rice place is amazing!"],n:"Taiwan's default intensifier; 超級 also fine."},
+{c:"蛤",p:"há?",e:"huh? what?",x:["蛤？你說什麼？","Há? Nǐ shuō shénme?","Huh? What did you say?"],n:"Ubiquitous. Rising tone = confusion or disbelief."},
+{c:"欸",p:"éi",e:"hey (attention-getter)",x:["欸，你看那個！","Éi, nǐ kàn nàge!","Hey, look at that!"]},
+{c:"啦",p:"la",e:"final particle (softener)",x:["好啦好啦，我知道啦。","Hǎo la hǎo la, wǒ zhīdào la.","Okay okay, I got it."],n:"Softens or shows mild impatience. Signature Taiwan particle."},
+{c:"喔",p:"o",e:"final particle (friendly note)",x:["記得帶傘喔！","Jìdé dài sǎn o!","Remember your umbrella!"],n:"Makes statements warm/friendly. Texts are full of 喔/唷/呦."},
+{c:"齁",p:"hō",e:"right? / final particle",x:["很好吃齁？","Hěn hǎochī hō?","Tasty, right?"],n:"Seeking agreement, very Taiwanese."},
+{c:"真假",p:"zhēnjiǎ",e:"no way, really?",x:["真假？他們要結婚了？","Zhēnjiǎ? Tāmen yào jiéhūn le?","No way — they're getting married?"],n:"Literally 'true-false'. Also 真的假的 zhēnde jiǎde."},
+{c:"是喔",p:"shì o",e:"oh really / I see",x:["是喔，我都不知道。","Shì o, wǒ dōu bù zhīdào.","Oh really? I had no idea."],n:"Can be genuine or dismissive depending on tone."},
+{c:"不會",p:"bú huì",e:"you're welcome (TW)",x:["「謝謝！」「不會。」","'Xièxie!' 'Bú huì.'","'Thanks!' 'No problem.'"],n:"THE Taiwanese reply to thanks. 不客氣 sounds textbook-ish."},
+{c:"辛苦了",p:"xīnkǔ le",e:"thanks for your hard work",x:["今天辛苦了，早點休息。","Jīntiān xīnkǔ le, zǎodiǎn xiūxí.","Good work today — rest up."],n:"Essential workplace phrase; say it to colleagues constantly."},
+{c:"加油",p:"jiāyóu",e:"go for it, hang in there",x:["明天面試加油！","Míngtiān miànshì jiāyóu!","Good luck at the interview tomorrow!"]},
+{c:"沒差",p:"méichā",e:"doesn't matter, whatever",x:["坐哪都沒差。","Zuò nǎ dōu méichā.","Doesn't matter where we sit."]},
+{c:"隨便",p:"suíbiàn",e:"whatever / anything's fine",x:["「吃什麼？」「隨便。」","'Chī shénme?' 'Suíbiàn.'","'What'll we eat?' 'Whatever.'"],n:"Careful: can sound dismissive. 都可以 is politer."},
+{c:"傻傻分不清楚",p:"shǎshǎ fēn bù qīngchǔ",e:"can't tell them apart",x:["這兩個牌子我傻傻分不清楚。","Zhè liǎng ge páizi wǒ shǎshǎ fēn bù qīngchǔ.","I honestly can't tell these two brands apart."]},
+{c:"機車",p:"jīchē",e:"(slang) difficult, annoying",x:["那個客戶超機車的。","Nàge kèhù chāo jīchē de.","That client is so difficult."],n:"Yes, same word as 'scooter'. Mildly rude — use with friends."},
+{c:"龜毛",p:"guīmáo",e:"nitpicky, fussy",x:["他很龜毛，什麼都要檢查三次。","Tā hěn guīmáo, shénme dōu yào jiǎnchá sāncì.","He's super fussy — checks everything three times."],n:"From Hokkien. Can be affectionate or critical."},
+{c:"白目",p:"báimù",e:"clueless, tactless",x:["不要那麼白目好嗎？","Búyào nàme báimù hǎo ma?","Don't be so clueless, okay?"],n:"Hokkien origin. Rude-ish; among friends only."},
+{c:"奧客",p:"àokè",e:"terrible customer",x:["服務業最怕遇到奧客。","Fúwùyè zuì pà yùdào àokè.","Service workers dread nightmare customers."],n:"From Hokkien àu-kheh."},
+{c:"很雷",p:"hěn léi",e:"terrible, a dud (person/thing)",x:["那家餐廳很雷，不要去。","Nà jiā cāntīng hěn léi, búyào qù.","That restaurant is a landmine — don't go."],n:"雷 = landmine. 踩雷 cǎiléi = to get burned by a bad choice."},
+{c:"小確幸",p:"xiǎoquèxìng",e:"small but certain happiness",x:["下班喝一杯手搖飲是我的小確幸。","Xiàbān hē yìbēi shǒuyáoyǐn shì wǒ de xiǎoquèxìng.","A bubble tea after work is my little joy."],n:"手搖飲 = hand-shaken drinks (bubble tea shops)."},
+{c:"爆肝",p:"bàogān",e:"work oneself to death (lit. burst liver)",x:["為了趕標案，整個團隊都在爆肝。","Wèile gǎn biāo'àn, zhěngge tuánduì dōu zài bàogān.","The whole team is killing themselves to make the bid deadline."]},
+{c:"放鳥",p:"fàngniǎo",e:"to stand someone up",x:["他又放我鳥！","Tā yòu fàng wǒ niǎo!","He stood me up again!"],n:"Hokkien-derived. Mainland: 放鴿子."},
+{c:"落跑",p:"làopǎo",e:"to run off, bail",x:["事情做一半就落跑了。","Shìqíng zuò yíbàn jiù làopǎo le.","He bailed halfway through the job."],n:"Hokkien loan (làu-phâu)."},
+{c:"讚",p:"zàn",e:"awesome; to 'like'",x:["這個主意很讚！","Zhège zhǔyì hěn zàn!","Great idea!"],n:"Also the Facebook 'like'. 按讚 = to like a post."},
+{c:"夯",p:"hāng",e:"trendy, hot",x:["這家店最近很夯。","Zhè jiā diàn zuìjìn hěn hāng.","This shop is really hot right now."],n:"From Hokkien 'to steam/hot'."},
+{c:"秒殺",p:"miǎoshā",e:"sell out instantly",x:["演唱會的票一開賣就秒殺。","Yǎnchànghuì de piào yì kāimài jiù miǎoshā.","Concert tickets sold out the second they went on sale."]},
+{c:"打卡",p:"dǎkǎ",e:"to check in (social media/work)",x:["大家都來這面牆打卡拍照。","Dàjiā dōu lái zhè miàn qiáng dǎkǎ pāizhào.","Everyone comes to this wall to check in and take photos."]},
+{c:"網美",p:"wǎngměi",e:"Instagram influencer (female)",x:["這是網美最愛的咖啡廳。","Zhè shì wǎngměi zuì ài de kāfēitīng.","This café is an influencer favorite."],n:"網美店 = photogenic café. 網紅 = influencer generally."},
+{c:"母湯",p:"mǔtāng",e:"don't / no good (Hokkien m̄-thang)",x:["開車滑手機？母湯喔！","Kāichē huá shǒujī? Mǔtāng o!","Texting while driving? Big no-no!"],n:"Internet-popular Hokkien spelling."},
+{c:"蝦米",p:"xiāmǐ",e:"what? (Hokkien siánn-mih)",x:["蝦米？你明天就要走了？","Xiāmǐ? Nǐ míngtiān jiù yào zǒu le?","What?! You're leaving tomorrow?"],n:"Written with 'dried shrimp' characters for the sound."},
+{c:"安捏",p:"ānniē",e:"like this / so (Hokkien án-ne)",x:["安捏好嗎？","Ānniē hǎo ma?","Is it okay like this?"],n:"甘安捏 gān ānniē = 'is that so?!'"},
+{c:"嘸",p:"wú (bô)",e:"without/no (Hokkien flavor)",x:["問了半天，嘸人知道。","Wènle bàntiān, wú rén zhīdào.","Asked around forever — nobody knew."],n:"Recognize it in memes/subtitles."},
+{c:"好險",p:"hǎoxiǎn",e:"phew, that was close",x:["好險有帶傘，不然就淋濕了。","Hǎoxiǎn yǒu dài sǎn, bùrán jiù línshī le.","Good thing I brought an umbrella, or I'd be soaked."]},
+{c:"唬爛",p:"hǔlàn",e:"to BS, talk nonsense",x:["他在唬爛啦，不要相信。","Tā zài hǔlàn la, búyào xiāngxìn.","He's full of it — don't believe him."],n:"Hokkien origin, coarse-casual. Friends only."},
+{c:"憨慢",p:"hānmàn",e:"clumsy, not capable (Hokkien)",x:["我講話比較憨慢，請多包涵。","Wǒ jiǎnghuà bǐjiào hānmàn, qǐng duō bāohán.","I'm not a smooth talker — please bear with me."],n:"Self-deprecating; famously used in a classic campaign ad."},
+{c:"差不多",p:"chàbùduō",e:"almost, about; good enough",x:["時間差不多了，我們走吧。","Shíjiān chàbùduō le, wǒmen zǒu ba.","It's about time — let's go."]},
+{c:"就醬",p:"jiù jiàng",e:"that's it / 'just like this' (texting)",x:["就醬，明天見！","Jiù jiàng, míngtiān jiàn!","That's it — see you tomorrow!"],n:"醬 = contraction of 這樣. Texting/casual speech."}
+];
+/* ============ LEVELS ============ */
+const LEVELS=[
+{n:1,zh:"基礎",en:"Foundations",band:"TOCFL Novice · A1",desc:"Greetings, names, numbers, food & drink. 來學華語 Books 1–2 territory."},
+{n:2,zh:"生活",en:"Daily Transactions",band:"TOCFL Level 1 · A2",desc:"MRT, taxis, ordering, receipts, hotels, convenience stores."},
+{n:3,zh:"在地生活",en:"Living in Taiwan",band:"TOCFL Level 2 · B1",desc:"Clinics & 健保, banking, phone plans, typhoons, renting."},
+{n:4,zh:"職場",en:"Work & Business",band:"TOCFL Level 3 · B2",desc:"Meetings, briefings, quotes, negotiation, workplace etiquette."},
+{n:5,zh:"時事",en:"News & Current Events",band:"TOCFL Level 4 · B2–C1 · ILR 2+/3",desc:"News register: government, economy, tech, elections."},
+{n:6,zh:"國防科技",en:"Defense, UxS & Government",band:"C1 · ILR 3/3+",desc:"Unmanned systems, military affairs, procurement, cross-strait."},
+{n:7,zh:"精通",en:"Mastery",band:"TOCFL Levels 5–6 · C2 · ILR 4",desc:"Chengyu, formal written register, editorial and official prose."}];
+
+const DOMAINS={daily:"日常 Daily",travel:"旅行 Travel",biz:"商務 Business",gov:"政府 Government",mil:"軍事 Military",tech:"科技 Tech",news:"新聞 News",formal:"正式 Formal"};
+
+/* ============ READINGS ============
+ toks: [trad, pinyin, gloss] — punctuation/known-name tokens may be [str] only */
+const READINGS=[
+{l:1,title:"自我介紹 Introducing Myself",toks:[
+["我","wǒ","I"],["叫","jiào","am called"],["Eric"],["，"],["是","shì","am"],["美國人","Měiguó rén","American"],["。"],
+["我","wǒ","I"],["是","shì","am"],["工程師","gōngchéngshī","engineer"],["。"],
+["我","wǒ","I"],["在","zài","am (at)"],["學","xué","learning"],["中文","Zhōngwén","Chinese"],["，"],["會","huì","can"],["說","shuō","speak"],["一點","yìdiǎn","a little"],["。"],
+["我","wǒ","I"],["很","hěn","really"],["喜歡","xǐhuān","like"],["台灣","Táiwān","Taiwan"],["，"],
+["台灣","Táiwān","Taiwan"],["的","de","'s"],["茶","chá","tea"],["很","hěn","very"],["好喝","hǎohē","tasty (drink)"],["，"],
+["人","rén","people"],["也","yě","also"],["很","hěn","very"],["好","hǎo","nice"],["。"]],
+qs:[{q:"What is the narrator's job?",ch:["Teacher","Engineer","Student","Doctor"],a:1},
+{q:"How is his Chinese?",ch:["Fluent","He speaks a little","He can't speak at all","Only reads"],a:1},
+{q:"What does he say about Taiwan's tea?",ch:["It's expensive","It's very tasty","It's too sweet","It's famous abroad"],a:1}],
+gram:{t:"也 + verb",d:"也 'also' goes BEFORE the verb, never at the end: 人也很好 (the people are nice too)."}},
+
+{l:1,title:"在咖啡店 At the Coffee Shop",toks:[
+["你好","nǐ hǎo","hello"],["，"],["我","wǒ","I"],["要","yào","want"],["一","yī","one"],["杯","bēi","cup (measure)"],["咖啡","kāfēi","coffee"],["。"],
+["請問","qǐngwèn","may I ask"],["多少","duōshǎo","how much"],["錢","qián","money"],["？"],
+["八十","bāshí","eighty"],["塊","kuài","dollars"],["。"],
+["好","hǎo","OK"],["，"],["謝謝","xièxie","thanks"],["！"],
+["不會","bú huì","you're welcome"],["。"]],
+qs:[{q:"What does the customer order?",ch:["Tea","Water","Coffee","Bubble tea"],a:2},
+{q:"How much is it?",ch:["NT$18","NT$80","NT$88","NT$800"],a:1},
+{q:"不會 here means…",ch:["I can't","You're welcome","No way","Wrong"],a:1}],
+gram:{t:"Measure words",d:"Chinese counts with measures: 一杯咖啡 'one CUP of coffee', 兩位客人 'two (persons of) guests'. You can't say 一咖啡."}},
+
+{l:2,title:"搭捷運 Taking the MRT",toks:[
+["今天","jīntiān","today"],["我","wǒ","I"],["搭","dā","take"],["捷運","jiéyùn","MRT"],["去","qù","go to"],["台北車站","Táiběi chēzhàn","Taipei Main Station"],["。"],
+["我","wǒ","I"],["先","xiān","first"],["用","yòng","use"],["悠遊卡","Yōuyóukǎ","EasyCard"],["加值","jiāzhí","top up"],["兩百","liǎngbǎi","two hundred"],["塊","kuài","NT$"],["，"],
+["然後","ránhòu","then"],["坐","zuò","ride"],["紅線","hóngxiàn","red line"],["。"],
+["車上","chēshàng","on the train"],["人","rén","people"],["很多","hěnduō","many"],["，"],["但是","dànshì","but"],["大家","dàjiā","everyone"],["都","dōu","all"],["很","hěn","very"],["安靜","ānjìng","quiet"],["，"],
+["也","yě","also"],["沒有","méiyǒu","don't"],["人","rén","anyone"],["吃","chī","eat"],["東西","dōngxi","things"],["，"],
+["因為","yīnwèi","because"],["捷運","jiéyùn","MRT"],["裡","lǐ","inside"],["不可以","bù kěyǐ","may not"],["飲食","yǐnshí","eat or drink"],["。"]],
+qs:[{q:"How much did he add to his EasyCard?",ch:["NT$100","NT$200","NT$250","NT$20"],a:1},
+{q:"Why is nobody eating on the train?",ch:["The ride is short","No one is hungry","Eating/drinking is banned on the MRT","Food is expensive"],a:2},
+{q:"Which line does he take?",ch:["Blue line","Green line","Red line","Brown line"],a:2}],
+gram:{t:"先…然後…",d:"'First… then…' sequences actions: 先加值，然後坐車 — top up first, then ride."}},
+
+{l:2,title:"夜市晚餐 Dinner at the Night Market",toks:[
+["晚上","wǎnshàng","evening"],["我","wǒ","I"],["跟","gēn","with"],["同事","tóngshì","coworker"],["去","qù","go"],["逛","guàng","stroll"],["夜市","yèshì","night market"],["。"],
+["我們","wǒmen","we"],["先","xiān","first"],["排隊","páiduì","queue"],["買","mǎi","buy"],["雞排","jīpái","fried chicken cutlet"],["，"],
+["再","zài","then"],["點","diǎn","order"],["一","yì","one"],["杯","bēi","cup"],["珍珠奶茶","zhēnzhū nǎichá","bubble tea"],["，"],
+["半糖","bàntáng","half sugar"],["少冰","shǎobīng","less ice"],["。"],
+["老闆","lǎobǎn","the vendor"],["問","wèn","asks"],["："],["「"],["要","yào","want"],["發票","fāpiào","receipt"],["嗎","ma","(question)"],["？"],["」"],
+["當然","dāngrán","of course"],["要","yào","(I) want"],["！"],
+["統一發票","tǒngyī fāpiào","the uniform invoice"],["可以","kěyǐ","can"],["對獎","duìjiǎng","match for the lottery"],["，"],
+["說不定","shuōbudìng","who knows, maybe"],["會","huì","will"],["中","zhòng","win"],["兩百萬","liǎngbǎi wàn","two million"],["！"]],
+qs:[{q:"What do they buy first?",ch:["Bubble tea","Fried chicken cutlet","Stinky tofu","Dumplings"],a:1},
+{q:"How does he order his tea?",ch:["Full sugar, full ice","No sugar, no ice","Half sugar, less ice","Extra sweet"],a:2},
+{q:"Why does he definitely want the receipt?",ch:["For his taxes","For a refund","It doubles as a lottery ticket","His boss requires it"],a:2}],
+gram:{t:"跟…去…",d:"跟 + person + verb = do something WITH someone: 我跟同事去夜市 — I go to the night market with a coworker."}},
+
+{l:3,title:"看醫生 Seeing a Doctor",toks:[
+["上個","shàng ge","last"],["星期","xīngqí","week"],["我","wǒ","I"],["感冒","gǎnmào","caught a cold"],["了","le","(completed)"],["，"],
+["有點","yǒudiǎn","a bit"],["發燒","fāshāo","feverish"],["，"],["所以","suǒyǐ","so"],["去","qù","went to"],["附近","fùjìn","nearby"],["的","de","(of)"],["診所","zhěnsuǒ","clinic"],["掛號","guàhào","register"],["。"],
+["櫃檯","guìtái","the front desk"],["小姐","xiǎojiě","lady"],["問","wèn","asked"],["我","wǒ","me"],["有沒有","yǒu méiyǒu","whether (I) have"],["健保卡","jiànbǎokǎ","NHI card"],["。"],
+["我","wǒ","I"],["是","shì","am"],["外國人","wàiguó rén","foreigner"],["，"],["還","hái","yet"],["沒有","méiyǒu","don't have"],["健保","jiànbǎo","NHI"],["，"],
+["自費","zìfèi","paying out of pocket"],["看診","kànzhěn","for the visit"],["大概","dàgài","roughly"],["五百","wǔbǎi","five hundred"],["塊","kuài","NT$"],["。"],
+["醫生","yīshēng","the doctor"],["說","shuō","said"],["多","duō","more"],["喝","hē","drink"],["水","shuǐ","water"],["、"],["多","duō","more"],["休息","xiūxí","rest"],["，"],
+["三","sān","three"],["天","tiān","days"],["就","jiù","then (soon)"],["會","huì","will"],["好","hǎo","be well"],["。"],
+["拿","ná","picking up"],["藥","yào","medicine"],["的","de","(of)"],["時候","shíhòu","when"],["，"],["藥師","yàoshī","the pharmacist"],["跟","gēn","to"],["我","wǒ","me"],["說明","shuōmíng","explained"],["怎麼","zěnme","how"],["吃","chī","to take (them)"],["。"]],
+qs:[{q:"Why did he go to the clinic?",ch:["Annual checkup","Cold with a slight fever","Stomachache","Injury"],a:1},
+{q:"Why did he pay out of pocket?",ch:["He lost his card","Clinic doesn't take NHI","He doesn't have NHI yet","It was after hours"],a:2},
+{q:"What was the doctor's advice?",ch:["Get a shot","Drink water and rest","Go to a hospital","Take a week off"],a:1}],
+gram:{t:"的時候",d:"[event] 的時候 = 'when/while [event]': 拿藥的時候 — when picking up the medicine."}},
+
+{l:3,title:"颱風假 Typhoon Day",toks:[
+["氣象","qìxiàng","weather (bureau)"],["預報","yùbào","forecast"],["說","shuō","says"],["，"],["強烈","qiángliè","a powerful"],["颱風","táifēng","typhoon"],["明天","míngtiān","tomorrow"],["會","huì","will"],["登陸","dēnglù","make landfall"],["。"],
+["市","shì","the city"],["政府","zhèngfǔ","government"],["晚上","wǎnshàng","in the evening"],["宣布","xuānbù","announced"],["："],["明天","míngtiān","tomorrow"],["停班","tíngbān","work is cancelled"],["停課","tíngkè","classes are cancelled"],["。"],
+["大家","dàjiā","everyone"],["都","dōu","all"],["跑去","pǎoqù","rushed to"],["超市","chāoshì","the supermarket"],["買","mǎi","buy"],["泡麵","pàomiàn","instant noodles"],["跟","gēn","and"],["零食","língshí","snacks"],["，"],
+["架上","jiàshàng","the shelves"],["幾乎","jīhū","almost"],["都","dōu","all"],["空","kōng","empty"],["了","le","(change)"],["。"],
+["雖然","suīrán","although"],["放假","fàngjià","having a day off"],["很","hěn","is very"],["開心","kāixīn","happy"],["，"],
+["但是","dànshì","but"],["颱風","táifēng","typhoons"],["也","yě","also"],["常常","chángcháng","often"],["造成","zàochéng","cause"],["淹水","yānshuǐ","flooding"],["和","hàn","and"],["停電","tíngdiàn","power outages"],["，"],
+["還是","háishì","(we) still"],["要","yào","must"],["小心","xiǎoxīn","be careful"],["。"]],
+qs:[{q:"What did the city government announce?",ch:["Evacuations","Work and classes cancelled","Trains stopped","Water rationing"],a:1},
+{q:"What did people rush to buy?",ch:["Umbrellas","Batteries","Instant noodles and snacks","Sandbags"],a:2},
+{q:"What risks does the passage mention?",ch:["Landslides and hail","Flooding and power outages","Fires","Traffic accidents"],a:1}],
+gram:{t:"雖然…但是…",d:"'Although… but…' — unlike English, Chinese uses BOTH connectors: 雖然放假很開心，但是要小心."}},
+
+{l:4,title:"第一次開會 First Meeting with a Client",toks:[
+["今天","jīntiān","today"],["下午","xiàwǔ","afternoon"],["，"],["我們","wǒmen","we"],["跟","gēn","with"],["一","yì","a"],["家","jiā","(measure for companies)"],["台灣","Táiwān","Taiwanese"],["廠商","chǎngshāng","manufacturer"],["開會","kāihuì","held a meeting"],["。"],
+["會議","huìyì","the meeting"],["一","yì","as soon as"],["開始","kāishǐ","it began"],["，"],["大家","dàjiā","everyone"],["先","xiān","first"],["交換","jiāohuàn","exchanged"],["名片","míngpiàn","business cards"],["，"],
+["再","zài","then"],["自我","zìwǒ","self-"],["介紹","jièshào","introduced"],["。"],
+["對方","duìfāng","the other side"],["的","de","'s"],["經理","jīnglǐ","manager"],["簡報","jiǎnbào","presented"],["了","le","(completed)"],["他們","tāmen","their"],["的","de","(of)"],["產品","chǎnpǐn","products"],["，"],
+["品質","pǐnzhí","the quality"],["不錯","búcuò","is quite good"],["，"],["但是","dànshì","but"],["報價","bàojià","the quote"],["比","bǐ","compared to"],["我們","wǒmen","our"],["的","de","(of)"],["預算","yùsuàn","budget"],["高","gāo","is higher"],["。"],
+["我","wǒ","I"],["建議","jiànyì","suggested"],["先","xiān","first"],["做","zuò","doing"],["小","xiǎo","a small"],["規模","guīmó","scale"],["的","de","(of)"],["測試","cèshì","test"],["，"],
+["雙方","shuāngfāng","both sides"],["都","dōu","both"],["同意","tóngyì","agreed"],["。"],
+["會後","huìhòu","after the meeting"],["，"],["他們","tāmen","they"],["請","qǐng","treated"],["我們","wǒmen","us"],["喝","hē","to drink"],["咖啡","kāfēi","coffee"],["，"],
+["氣氛","qìfēn","the atmosphere"],["很","hěn","was very"],["好","hǎo","good"],["。"]],
+qs:[{q:"What happened first in the meeting?",ch:["Product demo","Price talk","Exchanging business cards","Signing"],a:2},
+{q:"What was the problem with the vendor's offer?",ch:["Poor quality","Quote above budget","Late delivery","No warranty"],a:1},
+{q:"What did the narrator propose?",ch:["Walk away","A small-scale test first","50% discount","A new vendor"],a:1}],
+gram:{t:"比 comparisons",d:"A 比 B + adjective: 報價比預算高 — the quote is higher than the budget. Never add 很 before the adjective in a 比 sentence."}},
+
+{l:4,title:"加班文化 Overtime Culture",toks:[
+["在","zài","in"],["台灣","Táiwān","Taiwan"],["的","de","'s"],["科技","kējì","tech"],["業","yè","industry"],["，"],["加班","jiābān","overtime"],["是","shì","is"],["常態","chángtài","the norm"],["。"],
+["很多","hěnduō","many"],["工程師","gōngchéngshī","engineers"],["為了","wèile","in order to"],["趕","gǎn","rush"],["進度","jìndù","the schedule"],["，"],
+["常常","chángcháng","often"],["工作","gōngzuò","work"],["到","dào","until"],["晚上","wǎnshàng","night"],["十","shí","ten"],["點","diǎn","o'clock"],["。"],
+["公司","gōngsī","companies"],["雖然","suīrán","although"],["提供","tígōng","provide"],["加班費","jiābānfèi","overtime pay"],["，"],
+["但","dàn","but"],["員工","yuángōng","employees"],["普遍","pǔbiàn","generally"],["覺得","juéde","feel"],["壓力","yālì","pressure"],["很","hěn","very"],["大","dà","great"],["。"],
+["最近","zuìjìn","recently"],["有些","yǒuxiē","some"],["公司","gōngsī","companies"],["開始","kāishǐ","have begun"],["推動","tuīdòng","promoting"],["遠距","yuǎnjù","remote"],["工作","gōngzuò","work"],["，"],
+["希望","xīwàng","hoping"],["改善","gǎishàn","to improve"],["大家","dàjiā","everyone"],["的","de","'s"],["工作","gōngzuò","work"],["與","yǔ","and"],["生活","shēnghuó","life"],["平衡","pínghéng","balance"],["。"]],
+qs:[{q:"What is described as the norm in Taiwan's tech industry?",ch:["Remote work","Overtime","Four-day weeks","Job hopping"],a:1},
+{q:"How do employees generally feel?",ch:["Well paid and happy","Under great pressure","Bored","Ignored"],a:1},
+{q:"What are some companies promoting?",ch:["Longer hours","Remote work","Pay cuts","More meetings"],a:1}],
+gram:{t:"為了…",d:"為了 + goal, action: 為了趕進度，常常加班 — in order to catch the schedule, (they) often work overtime."}},
+
+{l:5,title:"晶片產業新聞 Chip Industry News",toks:[
+["根據","gēnjù","according to"],["媒體","méitǐ","media"],["報導","bàodǎo","reports"],["，"],["全球","quánqiú","global"],["對","duì","for"],["先進","xiānjìn","advanced"],["晶片","jīngpiàn","chips"],["的","de","(of)"],["需求","xūqiú","demand"],["持續","chíxù","continues to"],["增加","zēngjiā","increase"],["。"],
+["台灣","Táiwān","Taiwan"],["的","de","'s"],["半導體","bàndǎotǐ","semiconductor"],["產業","chǎnyè","industry"],["在","zài","in"],["全球","quánqiú","the global"],["供應鏈","gōngyìngliàn","supply chain"],["中","zhōng","within"],["占","zhàn","holds"],["關鍵","guānjiàn","a key"],["地位","dìwèi","position"],["，"],
+["因此","yīncǐ","therefore"],["被","bèi","is (passive)"],["稱為","chēngwéi","called"],["「"],["護國神山","hùguó shénshān","the sacred mountain protecting the nation"],["」"],["。"],
+["專家","zhuānjiā","experts"],["指出","zhǐchū","point out"],["，"],["雖然","suīrán","although"],["訂單","dìngdān","orders"],["成長","chéngzhǎng","are growing"],["，"],
+["產業","chǎnyè","the industry"],["仍","réng","still"],["面臨","miànlín","faces"],["缺工","quēgōng","labor shortage"],["、"],["缺電","quēdiàn","power shortage"],["等","děng","and other"],["挑戰","tiǎozhàn","challenges"],["。"],
+["政府","zhèngfǔ","the government"],["表示","biǎoshì","stated"],["，"],["將","jiāng","will"],["針對","zhēnduì","regarding"],["能源","néngyuán","energy"],["與","yǔ","and"],["人才","réncái","talent"],["問題","wèntí","issues"],["提出","tíchū","put forward"],["新","xīn","new"],["政策","zhèngcè","policies"],["，"],
+["以","yǐ","in order to"],["維持","wéichí","maintain"],["台灣","Táiwān","Taiwan"],["的","de","'s"],["競爭","jìngzhēng","competitive"],["優勢","yōushì","advantage"],["。"]],
+qs:[{q:"Why is the chip industry called 護國神山?",ch:["It's near a mountain","Its key position in global supply chains","It's state-owned","It builds temples"],a:1},
+{q:"What challenges does the industry face?",ch:["Falling demand","Labor and power shortages","Tariffs","Currency swings"],a:1},
+{q:"What will the government's new policies target?",ch:["Taxes and tariffs","Housing","Energy and talent","Exports"],a:2}],
+gram:{t:"News verb 指出",d:"News attribution ladder: 表示 (stated) < 指出 (pointed out) < 強調 (stressed). Master these and half of Taiwanese news prose unlocks."}},
+
+{l:5,title:"選舉民調 Election Polling",toks:[
+["總統","zǒngtǒng","presidential"],["選舉","xuǎnjǔ","election"],["只","zhǐ","only"],["剩","shèng","remain"],["三","sān","three"],["個","ge","(measure)"],["月","yuè","months"],["，"],
+["各","gè","each"],["政黨","zhèngdǎng","party"],["的","de","'s"],["候選人","hòuxuǎnrén","candidates"],["紛紛","fēnfēn","one after another"],["提出","tíchū","put forward"],["政見","zhèngjiàn","policy platforms"],["。"],
+["最新","zuìxīn","the latest"],["民調","míndiào","poll"],["顯示","xiǎnshì","shows"],["，"],
+["經濟","jīngjì","the economy"],["、"],["能源","néngyuán","energy"],["與","yǔ","and"],["兩岸","liǎng'àn","cross-strait"],["關係","guānxi","relations"],["是","shì","are"],["選民","xuǎnmín","voters"],["最","zuì","most"],["關心","guānxīn","concerned about"],["的","de","(of)"],["議題","yìtí","issues"],["。"],
+["有","yǒu","some"],["學者","xuézhě","scholars"],["認為","rènwéi","believe"],["，"],["年輕","niánqīng","young"],["選民","xuǎnmín","voters"],["的","de","'s"],["投票率","tóupiàolǜ","turnout"],["將","jiāng","will"],["決定","juédìng","decide"],["選舉","xuǎnjǔ","the election"],["結果","jiéguǒ","result"],["。"],
+["三","sān","the three"],["位","wèi","(measure, polite)"],["候選人","hòuxuǎnrén","candidates"],["下週","xiàzhōu","next week"],["將","jiāng","will"],["進行","jìnxíng","hold"],["電視","diànshì","televised"],["辯論","biànlùn","debates"],["，"],
+["預計","yùjì","expected"],["吸引","xīyǐn","to draw"],["數百萬","shùbǎi wàn","millions of"],["觀眾","guānzhòng","viewers"],["。"]],
+qs:[{q:"What are voters most concerned about?",ch:["Education and housing","Economy, energy, cross-strait relations","Crime","Healthcare"],a:1},
+{q:"What may decide the result, per scholars?",ch:["Debate performance","Young voter turnout","Endorsements","Weather on election day"],a:1},
+{q:"What happens next week?",ch:["The vote","Registration closes","Televised debates","Recounts"],a:2}],
+gram:{t:"將 = formal 'will'",d:"In news/formal prose, 將 replaces 會 for future: 候選人將進行辯論. Spoken Chinese would say 會."}},
+
+{l:6,title:"無人機國家隊 The Drone 'National Team'",toks:[
+["面對","miànduì","facing"],["新","xīn","new"],["型態","xíngtài","forms"],["的","de","(of)"],["安全","ānquán","security"],["威脅","wēixié","threats"],["，"],
+["政府","zhèngfǔ","the government"],["近年","jìnnián","in recent years"],["大力","dàlì","vigorously"],["推動","tuīdòng","has promoted"],["無人機","wúrénjī","drone"],["產業","chǎnyè","industry"],["發展","fāzhǎn","development"],["，"],
+["希望","xīwàng","hoping"],["打造","dǎzào","to build"],["所謂","suǒwèi","the so-called"],["的","de","(of)"],["「"],["無人機","wúrénjī","drone"],["國家隊","guójiāduì","national team"],["」"],["。"],
+["國防部","Guófángbù","the Ministry of National Defense"],["除了","chúle","besides"],["對外","duìwài","externally"],["採購","cǎigòu","procuring"],["，"],
+["也","yě","also"],["透過","tòuguò","through"],["公開","gōngkāi","open"],["標案","biāo'àn","tenders"],["鼓勵","gǔlì","encourages"],["本土","běntǔ","domestic"],["廠商","chǎngshāng","firms"],["投入","tóurù","to invest in"],["研發","yánfā","R&D"],["。"],
+["軍事","jūnshì","military"],["專家","zhuānjiā","experts"],["指出","zhǐchū","point out"],["，"],
+["無人","wúrén","unmanned"],["載具","zàijù","vehicles"],["成本","chéngběn","cost"],["低","dī","little"],["、"],["風險","fēngxiǎn","risk"],["小","xiǎo","little"],["，"],
+["非常","fēicháng","extremely"],["符合","fúhé","fits"],["不對稱","bú duìchèn","asymmetric"],["作戰","zuòzhàn","warfare"],["的","de","(of)"],["戰略","zhànlüè","strategic"],["概念","gàiniàn","concept"],["，"],
+["並","bìng","and moreover"],["能","néng","can"],["執行","zhíxíng","carry out"],["偵察","zhēnchá","reconnaissance"],["、"],["監視","jiānshì","surveillance"],["等","děng","and other"],["任務","rènwù","missions"],["，"],
+["提升","tíshēng","raising"],["整體","zhěngtǐ","overall"],["嚇阻","hèzǔ","deterrence"],["能力","nénglì","capability"],["。"]],
+qs:[{q:"What is the government trying to build?",ch:["A drone export ban","A drone 'national team'","A new air force branch","A chip alliance"],a:1},
+{q:"How does the MND encourage domestic firms?",ch:["Tax cuts","Open tenders for R&D","Free land","Conscription"],a:1},
+{q:"Why do drones fit asymmetric strategy?",ch:["They're fast","Low cost, low risk","They're stealthy","They're large"],a:1}],
+gram:{t:"除了…也…",d:"'Besides A, also B': 除了對外採購，也鼓勵本土研發 — besides foreign procurement, (it) also encourages domestic R&D."}},
+
+{l:6,title:"台海情勢分析 Strait Situation Analysis",toks:[
+["近","jìn","in recent"],["幾","jǐ","several"],["個","ge","(measure)"],["月","yuè","months"],["，"],["共軍","gòngjūn","the PLA"],["在","zài","around"],["台灣","Táiwān","Taiwan"],["周邊","zhōubiān","the periphery"],["的","de","(of)"],["演訓","yǎnxùn","exercises"],["明顯","míngxiǎn","noticeably"],["增加","zēngjiā","increased"],["，"],
+["區域","qūyù","regional"],["局勢","júshì","the situation"],["更加","gèngjiā","even more"],["緊張","jǐnzhāng","tense"],["。"],
+["國防部","Guófángbù","the MND"],["表示","biǎoshì","stated"],["，"],["國軍","guójūn","the ROC armed forces"],["全程","quánchéng","throughout"],["掌握","zhǎngwò","monitored"],["相關","xiāngguān","the relevant"],["動態","dòngtài","movements"],["，"],
+["並","bìng","and"],["依","yī","according to"],["規定","guīdìng","procedures"],["派遣","pàiqiǎn","dispatched"],["兵力","bīnglì","forces"],["應對","yìngduì","to respond"],["。"],
+["分析","fēnxī","analysts"],["人士","rénshì","(persons)"],["認為","rènwéi","believe"],["，"],
+["這","zhè","this"],["類","lèi","type of"],["灰色","huīsè","gray"],["地帶","dìdài","zone"],["行動","xíngdòng","operations"],["的","de","(of)"],["目的","mùdì","goal"],["，"],
+["是","shì","is"],["消耗","xiāohào","to wear down"],["台灣","Táiwān","Taiwan"],["的","de","'s"],["防衛","fángwèi","defense"],["資源","zīyuán","resources"],["，"],
+["因此","yīncǐ","therefore"],["强化","qiánghuà","strengthening"],["全","quán","whole-of-"],["社會","shèhuì","society"],["韌性","rènxìng","resilience"],["與","yǔ","and"],["盟友","méngyǒu","allied"],["合作","hézuò","cooperation"],["，"],
+["已","yǐ","has"],["成為","chéngwéi","become"],["當前","dāngqián","the current"],["國安","guó'ān","national security"],["政策","zhèngcè","policy"],["的","de","'s"],["重點","zhòngdiǎn","priority"],["。"]],
+qs:[{q:"What has noticeably increased?",ch:["Trade talks","PLA exercises around Taiwan","Tourism","Arms exports"],a:1},
+{q:"What is the assessed goal of gray-zone operations?",ch:["Territory seizure","Wearing down Taiwan's defense resources","Testing new weapons","Propaganda only"],a:1},
+{q:"What are the current policy priorities?",ch:["Tax reform","Societal resilience and ally cooperation","Conscription end","Naval expansion only"],a:1}],
+gram:{t:"依 + rules",d:"依/依據 + regulation = 'in accordance with': 依規定派遣兵力 — dispatched forces per procedure. Official register."}},
+
+{l:7,title:"社論：科技與國安 Editorial: Technology and Security",toks:[
+["眾所皆知","zhòng suǒ jiē zhī","as everyone knows"],["，"],["台灣","Táiwān","Taiwan"],["在","zài","in"],["全球","quánqiú","the global"],["半導體","bàndǎotǐ","semiconductor"],["供應鏈","gōngyìngliàn","supply chain"],["中","zhōng","within"],["扮演","bànyǎn","plays"],["不可或缺","bù kě huò quē","an indispensable"],["的","de","(of)"],["角色","juésè","role"],["。"],
+["然而","rán'ér","however"],["，"],["科技","kējì","technological"],["優勢","yōushì","advantage"],["並非","bìngfēi","is by no means"],["理所當然","lǐ suǒ dāng rán","a given"],["："],
+["各國","gèguó","countries"],["競相","jìngxiāng","are racing to"],["投入","tóurù","invest"],["，"],["競爭","jìngzhēng","competition"],["日益","rìyì","daily more"],["激烈","jīliè","fierce"],["，"],
+["人才","réncái","talent"],["外流","wàiliú","outflow"],["的","de","(of)"],["問題","wèntí","problem"],["亦","yì","also (formal)"],["層出不窮","céng chū bù qióng","keeps arising"],["。"],
+["鑒於","jiànyú","in view of"],["地緣","dìyuán","geo-"],["政治","zhèngzhì","political"],["風險","fēngxiǎn","risks"],["升高","shēnggāo","rising"],["，"],
+["政府","zhèngfǔ","the government"],["應","yīng","should"],["未雨綢繆","wèi yǔ chóu móu","prepare before the storm"],["，"],
+["藉由","jièyóu","by means of"],["教育","jiàoyù","education"],["投資","tóuzī","investment"],["與","yǔ","and"],["產業","chǎnyè","industrial"],["政策","zhèngcè","policy"],["，"],
+["確保","quèbǎo","ensure"],["下","xià","the next"],["一","yí","(one)"],["個","ge","(measure)"],["世代","shìdài","generation"],["的","de","(of)"],["競爭力","jìngzhēnglì","competitiveness"],["。"],
+["總而言之","zǒng ér yán zhī","all in all"],["，"],["科技","kējì","technology"],["實力","shílì","strength"],["與","yǔ","and"],["國家","guójiā","national"],["安全","ānquán","security"],["息息相關","xí xí xiāng guān","are inseparably linked"],["，"],
+["強化","qiánghuà","strengthening"],["前者","qiánzhě","the former"],["，"],["即","jí","is precisely"],["是","shì","(to be)"],["守護","shǒuhù","safeguarding"],["後者","hòuzhě","the latter"],["。"]],
+qs:[{q:"What is 'by no means a given'?",ch:["Peace","Taiwan's tech advantage","US support","Cheap energy"],a:1},
+{q:"What should the government do, per the editorial?",ch:["Cut taxes","Prepare early via education and industrial policy","Ban exports","Subsidize housing"],a:1},
+{q:"前者 and 後者 refer to…",ch:["Government and industry","Tech strength and national security","Education and policy","Taiwan and allies"],a:1}],
+gram:{t:"前者…後者…",d:"'The former… the latter…' — bookish anaphora you'll meet constantly in editorials and DLPT-style texts."}},
+
+{l:7,title:"正式邀請函 A Formal Invitation",toks:[
+["敬愛","jìng'ài","esteemed"],["的","de","(of)"],["貴賓","guìbīn","guests"],["您好","nín hǎo","greetings"],["："],
+["本","běn","this (our)"],["公司","gōngsī","company"],["謹","jǐn","respectfully"],["訂於","dìng yú","has scheduled on"],["十二月","shí'èr yuè","December"],["十日","shí rì","the 10th"],["，"],
+["假","jiǎ","at (formal 'borrowing')"],["台北","Táiběi","Taipei"],["國際","guójì","International"],["會議","huìyì","Convention"],["中心","zhōngxīn","Center"],["舉辦","jǔbàn","to hold"],["新","xīn","new"],["產品","chǎnpǐn","product"],["發表會","fābiǎohuì","launch event"],["。"],
+["屆時","jièshí","at that time"],["將","jiāng","(we) will"],["展示","zhǎnshì","demonstrate"],["最新","zuìxīn","our latest"],["無人","wúrén","unmanned"],["載具","zàijù","vehicle"],["系統","xìtǒng","systems"],["，"],
+["並","bìng","and"],["安排","ānpái","arrange"],["現場","xiànchǎng","on-site"],["飛行","fēixíng","flight"],["展演","zhǎnyǎn","demonstrations"],["。"],
+["敬請","jìngqǐng","we cordially request"],["撥冗","bōrǒng","that you spare the time"],["蒞臨","lìlín","to grace us with your presence"],["，"],
+["不勝","bùshèng","(we would be) exceedingly"],["感激","gǎnjī","grateful"],["。"],
+["順頌","shùnsòng","with respectful wishes for"],["　"],["時祺","shíqí","seasonal well-being"],["。"]],
+qs:[{q:"What kind of document is this?",ch:["A complaint letter","A formal event invitation","A contract","A resignation"],a:1},
+{q:"What will be demonstrated?",ch:["Chip wafers","Unmanned vehicle systems with live flights","Software only","Missiles"],a:1},
+{q:"撥冗蒞臨 politely asks the guest to…",ch:["Pay a fee","Make time to attend","Reply quickly","Bring a gift"],a:1}],
+gram:{t:"Formal letter frame",d:"謹訂於…假…舉辦… is the fixed skeleton of Taiwanese formal invitations; 順頌時祺 is a closing blessing. Recognize, don't translate word-by-word."}}
+];
+
+/* ============ LISTENING ============ */
+const LISTENING=[
+{l:1,dict:[
+{zh:"你好，我姓王。",py:"Nǐ hǎo, wǒ xìng Wáng.",en:"Hello, my surname is Wang."},
+{zh:"我要一杯咖啡，謝謝。",py:"Wǒ yào yì bēi kāfēi, xièxie.",en:"I'd like a coffee, thanks."},
+{zh:"請問現在幾點？",py:"Qǐngwèn xiànzài jǐ diǎn?",en:"Excuse me, what time is it?"},
+{zh:"這個多少錢？",py:"Zhège duōshǎo qián?",en:"How much is this?"},
+{zh:"我很喜歡台灣。",py:"Wǒ hěn xǐhuān Táiwān.",en:"I really like Taiwan."}],
+pass:{zh:"我叫小美，是台灣人。我家在台北。我喜歡喝茶，不喜歡喝咖啡。",qs:[
+{q:"Where is Xiaomei's home?",ch:["Tainan","Taipei","Taichung","Kaohsiung"],a:1},
+{q:"What does she like to drink?",ch:["Coffee","Tea","Juice","Milk"],a:1}]}},
+{l:2,dict:[
+{zh:"內用還是外帶？",py:"Nèiyòng háishì wàidài?",en:"For here or to go?"},
+{zh:"發票要不要？",py:"Fāpiào yào bú yào?",en:"Do you want the receipt?"},
+{zh:"請在下一個路口右轉。",py:"Qǐng zài xià yíge lùkǒu yòu zhuǎn.",en:"Please turn right at the next intersection."},
+{zh:"悠遊卡請先加值。",py:"Yōuyóukǎ qǐng xiān jiāzhí.",en:"Please top up your EasyCard first."},
+{zh:"珍珠奶茶半糖少冰。",py:"Zhēnzhū nǎichá bàntáng shǎobīng.",en:"Bubble tea, half sugar, less ice."}],
+pass:{zh:"歡迎光臨！我們今天飲料第二杯半價。內用的話請先找位子，我等一下幫您點餐。",qs:[
+{q:"What is today's deal?",ch:["Buy one get one free","Second drink half price","20% off everything","Free upsize"],a:1},
+{q:"If dining in, what should you do first?",ch:["Pay at the counter","Find a seat","Take a number","Order at the machine"],a:1}]}},
+{l:3,dict:[
+{zh:"請問你有健保卡嗎？",py:"Qǐngwèn nǐ yǒu jiànbǎokǎ ma?",en:"Do you have an NHI card?"},
+{zh:"颱風明天可能會登陸。",py:"Táifēng míngtiān kěnéng huì dēnglù.",en:"The typhoon may make landfall tomorrow."},
+{zh:"你的包裹已經到超商了。",py:"Nǐ de bāoguǒ yǐjīng dào chāoshāng le.",en:"Your package has arrived at the convenience store."},
+{zh:"我想辦一個月租型的門號。",py:"Wǒ xiǎng bàn yíge yuèzūxíng de ménhào.",en:"I'd like to set up a monthly phone plan."},
+{zh:"房租一個月一萬五，押金兩個月。",py:"Fángzū yíge yuè yíwàn wǔ, yājīn liǎng ge yuè.",en:"Rent is 15,000 a month, deposit is two months."}],
+pass:{zh:"各位旅客請注意，往台中的一二三次自強號列車，因為颱風的關係，誤點大約四十分鐘，造成您的不便，敬請見諒。",qs:[
+{q:"Why is the train delayed?",ch:["An accident","A typhoon","Track repairs","A strike"],a:1},
+{q:"How long is the delay?",ch:["About 14 minutes","About 40 minutes","About an hour","Cancelled entirely"],a:1}]}},
+{l:4,dict:[
+{zh:"我們先交換一下名片。",py:"Wǒmen xiān jiāohuàn yíxià míngpiàn.",en:"Let's exchange business cards first."},
+{zh:"這份報價超出我們的預算。",py:"Zhè fèn bàojià chāochū wǒmen de yùsuàn.",en:"This quote exceeds our budget."},
+{zh:"合約下週應該可以簽。",py:"Héyuē xiàzhōu yīnggāi kěyǐ qiān.",en:"The contract should be signable next week."},
+{zh:"麻煩把資料寄到我的信箱。",py:"Máfán bǎ zīliào jì dào wǒ de xìnxiāng.",en:"Please send the materials to my inbox."},
+{zh:"這個專案由誰負責？",py:"Zhège zhuān'àn yóu shéi fùzé?",en:"Who is responsible for this project?"}],
+pass:{zh:"跟大家報告一下進度：測試的部分已經完成百分之八十，但是客戶臨時增加了新的需求，所以交期可能要延後一個禮拜。我下午會跟對方的經理開會討論。",qs:[
+{q:"How much testing is done?",ch:["50%","80%","18%","100%"],a:1},
+{q:"Why might delivery slip a week?",ch:["Staff shortage","The client added new requirements","Parts are late","Budget cuts"],a:1}]}},
+{l:5,dict:[
+{zh:"政府宣布了新的能源政策。",py:"Zhèngfǔ xuānbù le xīn de néngyuán zhèngcè.",en:"The government announced a new energy policy."},
+{zh:"民調顯示支持度上升了五個百分點。",py:"Míndiào xiǎnshì zhīchídù shàngshēng le wǔ ge bǎifēndiǎn.",en:"Polls show support rose five points."},
+{zh:"半導體出口再創新高。",py:"Bàndǎotǐ chūkǒu zài chuàng xīngāo.",en:"Semiconductor exports hit another record."},
+{zh:"發言人表示目前不予置評。",py:"Fāyánrén biǎoshì mùqián bù yǔ zhìpíng.",en:"The spokesperson declined to comment for now."},
+{zh:"專家指出通膨壓力仍然存在。",py:"Zhuānjiā zhǐchū tōngpéng yālì réngrán cúnzài.",en:"Experts note inflationary pressure remains."}],
+pass:{zh:"晚間新聞快報：行政院今天通過明年度總預算案，其中國防預算成長百分之七，重點放在無人機與資安領域。在野黨立委批評，社會福利的成長幅度太低，揚言在立法院嚴格審查。",qs:[
+{q:"By how much does the defense budget grow?",ch:["3%","7%","17%","70%"],a:1},
+{q:"What are the spending priorities mentioned?",ch:["Ships and tanks","Drones and cybersecurity","Salaries","Recruiting"],a:1},
+{q:"What do opposition legislators criticize?",ch:["Defense growth too low","Social welfare growth too low","Taxes too high","Debt too high"],a:1}]}},
+{l:6,dict:[
+{zh:"這款無人機的續航力是十二個小時。",py:"Zhè kuǎn wúrénjī de xùhánglì shì shí'èr ge xiǎoshí.",en:"This UAV's endurance is twelve hours."},
+{zh:"通訊中斷時系統會自動返航。",py:"Tōngxùn zhōngduàn shí xìtǒng huì zìdòng fǎnháng.",en:"If comms are lost, the system auto-returns."},
+{zh:"國防部證實將採購新型飛彈。",py:"Guófángbù zhèngshí jiāng cǎigòu xīnxíng fēidàn.",en:"The MND confirmed procurement of new missiles."},
+{zh:"這個標案下個月開標。",py:"Zhège biāo'àn xià ge yuè kāibiāo.",en:"Bids for this tender open next month."},
+{zh:"演習的重點是聯合作戰能力。",py:"Yǎnxí de zhòngdiǎn shì liánhé zuòzhàn nénglì.",en:"The exercise focuses on joint operations capability."}],
+pass:{zh:"軍聞快訊：國軍今天在東部外海進行實彈演習，首次驗證無人艇與直升機的協同作戰。國防部表示，這套戰術主要針對灰色地帶威脅，未來將擴大部署到外島。分析人士認為，低成本的無人載具能有效提升不對稱嚇阻能力。",qs:[
+{q:"What was tested for the first time?",ch:["A new tank","USV-helicopter coordinated operations","A submarine","A satellite"],a:1},
+{q:"What threat are these tactics aimed at?",ch:["Cyber attacks","Gray-zone threats","Terrorism","Piracy"],a:1},
+{q:"Why are unmanned vehicles valued here?",ch:["They look impressive","Low cost, better asymmetric deterrence","They're fast to build","Allies demand them"],a:1}]}},
+{l:7,dict:[
+{zh:"強化供應鏈韌性已刻不容緩。",py:"Qiánghuà gōngyìngliàn rènxìng yǐ kè bù róng huǎn.",en:"Strengthening supply chain resilience brooks no delay."},
+{zh:"倘若談判破裂，衝擊將難以估計。",py:"Tǎngruò tánpàn pòliè, chōngjí jiāng nányǐ gūjì.",en:"Should talks collapse, the impact would be hard to estimate."},
+{zh:"雙方秉持互惠原則展開對話。",py:"Shuāngfāng bǐngchí hùhuì yuánzé zhǎnkāi duìhuà.",en:"Both sides opened dialogue on the principle of reciprocity."},
+{zh:"此一趨勢對區域安全影響深遠。",py:"Cǐ yī qūshì duì qūyù ānquán yǐngxiǎng shēnyuǎn.",en:"This trend has far-reaching implications for regional security."},
+{zh:"科技實力與國家安全息息相關。",py:"Kējì shílì yǔ guójiā ānquán xí xí xiāng guān.",en:"Technological strength and national security are inseparably linked."}],
+pass:{zh:"評論節目摘要：學者於節目中指出，全球供應鏈重組並非短期現象，而是地緣政治結構性變化的一環。台灣不應僅滿足於現有優勢，而應未雨綢繆，藉由人才培育與國際合作，將挑戰轉化為契機，否則恐在下一波科技競賽中首當其衝。",qs:[
+{q:"How does the scholar characterize supply chain restructuring?",ch:["A short-term blip","Part of structural geopolitical change","Media exaggeration","Reversible"],a:1},
+{q:"What does the scholar urge Taiwan to do?",ch:["Rest on its advantages","Cultivate talent and cooperate internationally","Restrict exports","Cut budgets"],a:1},
+{q:"首當其衝 warns Taiwan could…",ch:["Lead the next race","Bear the brunt of the next tech race","Skip the race","Referee the race"],a:1}]}}
+];
+
+/* ============ SCENARIOS ============
+ turns: them={zh,py,en} spoken by partner; task=your objective (EN);
+ ans={zh,py,en} model answer; keys=chars for speech scoring */
+const SCENARIOS=[
+{id:"taxi",l:2,zh:"搭計程車",en:"Taking a Taxi",who:"司機 Driver",intro:"You've flagged a cab outside your hotel in Taipei. Get to your destination, make small talk, pay, and get your receipt.",
+turns:[
+{them:{zh:"你好，請問要去哪裡？",py:"Nǐ hǎo, qǐngwèn yào qù nǎlǐ?",en:"Hello, where to?"},task:"Tell him: to Taipei Main Station, thanks.",ans:{zh:"你好，麻煩到台北車站，謝謝。",py:"Nǐ hǎo, máfán dào Táiběi chēzhàn, xièxie.",en:"Hi, Taipei Main Station please, thanks."},keys:"台北車站"},
+{them:{zh:"好的。你的中文不錯欸！來台灣多久了？",py:"Hǎo de. Nǐ de Zhōngwén búcuò éi! Lái Táiwān duōjiǔ le?",en:"Sure. Your Chinese is pretty good! How long have you been in Taiwan?"},task:"Say you've been here two weeks; you're here for work.",ans:{zh:"我來兩個星期了，我是來工作的。",py:"Wǒ lái liǎng ge xīngqí le, wǒ shì lái gōngzuò de.",en:"I've been here two weeks. I'm here for work."},keys:"兩個星期工作"},
+{them:{zh:"這個時間有一點塞車，可能要二十分鐘喔。",py:"Zhège shíjiān yǒu yìdiǎn sāichē, kěnéng yào èrshí fēnzhōng o.",en:"Traffic's a bit heavy right now — maybe twenty minutes."},task:"Say no problem, you're not in a hurry.",ans:{zh:"沒關係，我不趕時間。",py:"Méi guānxi, wǒ bù gǎn shíjiān.",en:"No worries, I'm not in a hurry."},keys:"沒關係趕時間"},
+{them:{zh:"到了，台北車站。總共兩百三十塊。",py:"Dào le, Táiběi chēzhàn. Zǒnggòng liǎngbǎi sānshí kuài.",en:"Here we are, Taipei Main Station. 230 total."},task:"Say you'll pay cash, and ask for a receipt.",ans:{zh:"我付現金。麻煩給我收據，謝謝。",py:"Wǒ fù xiànjīn. Máfán gěi wǒ shōujù, xièxie.",en:"I'll pay cash. Could I get a receipt, thanks."},keys:"現金收據"},
+{them:{zh:"好，收據在這裡。祝你工作順利！",py:"Hǎo, shōujù zài zhèlǐ. Zhù nǐ gōngzuò shùnlì!",en:"Here's your receipt. Good luck with work!"},task:"Thank him and say goodbye.",ans:{zh:"謝謝你，再見！",py:"Xièxie nǐ, zàijiàn!",en:"Thanks! Bye!"},keys:"謝謝再見"}]},
+
+{id:"boba",l:2,zh:"手搖飲點餐",en:"Ordering Bubble Tea",who:"店員 Clerk",intro:"You're at a drink stand. Order a bubble tea exactly how you like it — sweetness, ice, size — and handle the receipt-and-bag questions.",
+turns:[
+{them:{zh:"歡迎光臨！請問要點什麼？",py:"Huānyíng guānglín! Qǐngwèn yào diǎn shénme?",en:"Welcome! What would you like?"},task:"Order one large bubble milk tea.",ans:{zh:"我要一杯大杯的珍珠奶茶。",py:"Wǒ yào yì bēi dàbēi de zhēnzhū nǎichá.",en:"One large bubble milk tea, please."},keys:"大杯珍珠奶茶"},
+{them:{zh:"好的，甜度冰塊呢？",py:"Hǎo de, tiándù bīngkuài ne?",en:"Sure — sweetness and ice level?"},task:"Say: half sugar, less ice.",ans:{zh:"半糖少冰，謝謝。",py:"Bàntáng shǎobīng, xièxie.",en:"Half sugar, less ice, thanks."},keys:"半糖少冰"},
+{them:{zh:"這樣一共六十五塊。需要袋子嗎？袋子要加一塊喔。",py:"Zhèyàng yígòng liùshíwǔ kuài. Xūyào dàizi ma? Dàizi yào jiā yí kuài o.",en:"That's 65 total. Need a bag? Bags are one dollar extra."},task:"Say no bag needed; you'll pay with EasyCard.",ans:{zh:"不用袋子，我用悠遊卡付。",py:"Búyòng dàizi, wǒ yòng Yōuyóukǎ fù.",en:"No bag. I'll pay with EasyCard."},keys:"不用袋子悠遊卡"},
+{them:{zh:"好，發票幫您印出來。請稍等，做好叫您。",py:"Hǎo, fāpiào bāng nín yìn chūlái. Qǐng shāoděng, zuòhǎo jiào nín.",en:"OK, I'll print your receipt. One moment — we'll call you when it's ready."},task:"Say thanks — and ask them to make it less sweet if possible (you're cutting back!).",ans:{zh:"謝謝。可以的話請做淡一點，我最近在減糖。",py:"Xièxie. Kěyǐ dehuà qǐng zuò dàn yìdiǎn, wǒ zuìjìn zài jiǎn táng.",en:"Thanks. If possible make it on the light side — I'm cutting sugar lately."},keys:"淡一點減糖"},
+{them:{zh:"沒問題！您的珍奶好了，請慢用！",py:"Méi wèntí! Nín de zhēnnǎi hǎo le, qǐng mànyòng!",en:"No problem! Your boba's ready — enjoy!"},task:"Thank them with the local 'thanks / no rush' tone.",ans:{zh:"謝謝，辛苦了！",py:"Xièxie, xīnkǔ le!",en:"Thanks — appreciate your work!"},keys:"謝謝辛苦"}]},
+
+{id:"hotel",l:2,zh:"飯店入住",en:"Hotel Check-in",who:"櫃檯 Front Desk",intro:"You arrive at your Taipei hotel after a long flight. Check in, confirm breakfast and Wi-Fi, and store your luggage timing.",
+turns:[
+{them:{zh:"晚安，歡迎光臨。請問有訂房嗎？",py:"Wǎn'ān, huānyíng guānglín. Qǐngwèn yǒu dìngfáng ma?",en:"Good evening, welcome. Do you have a reservation?"},task:"Say yes, you booked a double room; your surname is Ma.",ans:{zh:"有，我訂了一間雙人房，我姓馬。",py:"Yǒu, wǒ dìng le yì jiān shuāngrén fáng, wǒ xìng Mǎ.",en:"Yes, I booked a double room. Surname Ma."},keys:"訂雙人房姓"},
+{them:{zh:"馬先生您好，麻煩給我看一下護照。住三個晚上，含早餐，對嗎？",py:"Mǎ xiānshēng nín hǎo, máfán gěi wǒ kàn yíxià hùzhào. Zhù sān ge wǎnshàng, hán zǎocān, duì ma?",en:"Hello Mr. Ma — your passport please. Three nights with breakfast, correct?"},task:"Confirm, and ask what time breakfast is.",ans:{zh:"對。請問早餐是幾點到幾點？",py:"Duì. Qǐngwèn zǎocān shì jǐ diǎn dào jǐ diǎn?",en:"Correct. What time is breakfast served?"},keys:"早餐幾點"},
+{them:{zh:"早餐是六點半到十點，在二樓餐廳。這是您的房卡，八一五號房。",py:"Zǎocān shì liù diǎn bàn dào shí diǎn, zài èr lóu cāntīng. Zhè shì nín de fángkǎ, bā yāo wǔ hào fáng.",en:"Breakfast is 6:30–10:00 in the 2nd floor restaurant. Here's your key card — room 815."},task:"Ask for the Wi-Fi password.",ans:{zh:"謝謝。請問無線網路的密碼是什麼？",py:"Xièxie. Qǐngwèn wúxiàn wǎnglù de mìmǎ shì shénme?",en:"Thanks. What's the Wi-Fi password?"},keys:"網路密碼"},
+{them:{zh:"密碼就在房卡的套子上。還有其他需要嗎？",py:"Mìmǎ jiù zài fángkǎ de tàozi shàng. Háiyǒu qítā xūyào ma?",en:"The password's on the key card sleeve. Anything else?"},task:"Ask: on checkout day, can they store your luggage until evening?",ans:{zh:"退房那天可以幫我寄放行李到晚上嗎？",py:"Tuìfáng nà tiān kěyǐ bāng wǒ jìfàng xínglǐ dào wǎnshàng ma?",en:"On checkout day, could you store my luggage until evening?"},keys:"寄放行李晚上"},
+{them:{zh:"當然可以，跟櫃檯說一聲就好。祝您住宿愉快！",py:"Dāngrán kěyǐ, gēn guìtái shuō yì shēng jiù hǎo. Zhù nín zhùsù yúkuài!",en:"Of course — just tell the front desk. Enjoy your stay!"},task:"Thank them politely.",ans:{zh:"太好了，麻煩你們了，謝謝！",py:"Tài hǎo le, máfán nǐmen le, xièxie!",en:"Great — much obliged, thank you!"},keys:"麻煩謝謝"}]},
+
+{id:"clinic",l:3,zh:"診所看病",en:"At the Clinic",who:"櫃檯/醫生 Desk & Doctor",intro:"You've had a sore throat and slight fever for two days. Register at a neighborhood clinic and describe your symptoms.",
+turns:[
+{them:{zh:"你好，請問要看診嗎？有沒有健保卡？",py:"Nǐ hǎo, qǐngwèn yào kànzhěn ma? Yǒu méiyǒu jiànbǎokǎ?",en:"Hello — here to see the doctor? Do you have an NHI card?"},task:"Say you'd like to see a doctor; you don't have NHI, you'll pay out of pocket.",ans:{zh:"我要看診。我沒有健保，自費沒關係。",py:"Wǒ yào kànzhěn. Wǒ méiyǒu jiànbǎo, zìfèi méi guānxi.",en:"I'd like to see the doctor. No NHI — out of pocket is fine."},keys:"看診健保自費"},
+{them:{zh:"好的，先幫您掛號。請坐一下，等叫號。",py:"Hǎo de, xiān bāng nín guàhào. Qǐng zuò yíxià, děng jiàohào.",en:"OK, I'll register you. Please have a seat until your number is called."},task:"(Now with the doctor) Describe: sore throat and a slight fever for two days.",ans:{zh:"醫生你好，我喉嚨痛，有點發燒，已經兩天了。",py:"Yīshēng nǐ hǎo, wǒ hóulóng tòng, yǒudiǎn fāshāo, yǐjīng liǎng tiān le.",en:"Doctor, my throat hurts and I have a slight fever — two days now."},keys:"喉嚨痛發燒兩天"},
+{them:{zh:"嘴巴張開我看一下……喉嚨有點發炎。有沒有咳嗽或流鼻水？",py:"Zuǐbā zhāngkāi wǒ kàn yíxià... hóulóng yǒudiǎn fāyán. Yǒu méiyǒu késòu huò liú bíshuǐ?",en:"Open up, let me look… throat's a bit inflamed. Any cough or runny nose?"},task:"Say a little cough, no runny nose. Ask if it's serious.",ans:{zh:"有一點咳嗽，沒有流鼻水。請問嚴重嗎？",py:"Yǒu yìdiǎn késòu, méiyǒu liú bíshuǐ. Qǐngwèn yánzhòng ma?",en:"A little cough, no runny nose. Is it serious?"},keys:"咳嗽流鼻水嚴重"},
+{them:{zh:"不嚴重，一般的感冒。我開三天的藥，一天三次，飯後吃。",py:"Bù yánzhòng, yìbān de gǎnmào. Wǒ kāi sān tiān de yào, yì tiān sān cì, fànhòu chī.",en:"Not serious — a common cold. I'll prescribe three days of medicine: three times daily, after meals."},task:"Ask whether you can drink coffee while on the medicine.",ans:{zh:"好的。請問吃藥的時候可以喝咖啡嗎？",py:"Hǎo de. Qǐngwèn chī yào de shíhòu kěyǐ hē kāfēi ma?",en:"OK. Can I drink coffee while taking the medicine?"},keys:"吃藥咖啡"},
+{them:{zh:"最好不要，多喝溫開水，多休息。三天沒好再回來。",py:"Zuìhǎo búyào, duō hē wēn kāishuǐ, duō xiūxí. Sān tiān méi hǎo zài huílái.",en:"Better not — drink warm water and rest. Come back if you're not better in three days."},task:"Thank the doctor and say you understand.",ans:{zh:"我知道了，謝謝醫生！",py:"Wǒ zhīdào le, xièxie yīshēng!",en:"Understood — thank you, doctor!"},keys:"知道謝謝醫生"}]},
+
+{id:"meeting",l:4,zh:"商務會議",en:"Business Meeting Opening",who:"陳經理 Manager Chen",intro:"First meeting with a prospective Taiwanese partner company. Open politely, introduce yourself and your company, and set up the agenda.",
+turns:[
+{them:{zh:"歡迎歡迎！我是陳經理，久仰大名。",py:"Huānyíng huānyíng! Wǒ shì Chén jīnglǐ, jiǔyǎng dàmíng.",en:"Welcome! I'm Manager Chen — I've heard a lot about you."},task:"Introduce yourself: name, innovation engineer, here on behalf of your company. Offer your card.",ans:{zh:"陳經理您好，我叫 Eric，是創新工程師。這是我的名片，請多指教。",py:"Chén jīnglǐ nín hǎo, wǒ jiào Eric, shì chuàngxīn gōngchéngshī. Zhè shì wǒ de míngpiàn, qǐng duō zhǐjiào.",en:"Hello Manager Chen. I'm Eric, an innovation engineer. Here's my card — pleased to meet you."},keys:"創新工程師名片指教"},
+{them:{zh:"請坐請坐。聽說你們公司專門做無人系統？",py:"Qǐng zuò qǐng zuò. Tīngshuō nǐmen gōngsī zhuānmén zuò wúrén xìtǒng?",en:"Please, sit. I hear your company specializes in unmanned systems?"},task:"Confirm: yes, mainly unmanned systems — you handle new technology evaluation and integration.",ans:{zh:"對，我們主要做無人系統。我負責新技術的評估跟整合。",py:"Duì, wǒmen zhǔyào zuò wúrén xìtǒng. Wǒ fùzé xīn jìshù de pínggū gēn zhěnghé.",en:"Right, mainly unmanned systems. I handle new tech evaluation and integration."},keys:"無人系統負責技術整合"},
+{them:{zh:"太好了。我們正在找合作夥伴。今天想先了解你們的產品跟報價。",py:"Tài hǎo le. Wǒmen zhèngzài zhǎo hézuò huǒbàn. Jīntiān xiǎng xiān liǎojiě nǐmen de chǎnpǐn gēn bàojià.",en:"Excellent. We're looking for partners. Today we'd like to understand your products and pricing."},task:"Propose an agenda: first a 10-minute briefing, then discuss requirements, then talk price.",ans:{zh:"沒問題。我建議先做十分鐘的簡報，再討論你們的需求，最後談報價。",py:"Méi wèntí. Wǒ jiànyì xiān zuò shí fēnzhōng de jiǎnbào, zài tǎolùn nǐmen de xūqiú, zuìhòu tán bàojià.",en:"Sure. I suggest a 10-minute briefing first, then your requirements, and finally pricing."},keys:"建議簡報需求報價"},
+{them:{zh:"很好。對了，價格方面，我們的預算比較有限。",py:"Hěn hǎo. Duìle, jiàgé fāngmiàn, wǒmen de yùsuàn bǐjiào yǒuxiàn.",en:"Great. By the way, on price — our budget is rather limited."},task:"Reassure them: pricing is flexible; quality and long-term cooperation matter most to you.",ans:{zh:"價格可以談。對我們來說，品質跟長期合作最重要。",py:"Jiàgé kěyǐ tán. Duì wǒmen láishuō, pǐnzhí gēn chángqí hézuò zuì zhòngyào.",en:"Price is negotiable. For us, quality and long-term cooperation matter most."},keys:"價格品質長期合作"},
+{them:{zh:"我們的想法一樣。那就開始吧，請！",py:"Wǒmen de xiǎngfǎ yíyàng. Nà jiù kāishǐ ba, qǐng!",en:"We think alike. Let's begin — please!"},task:"Thank him and kick off your briefing.",ans:{zh:"謝謝。那我開始簡報，有問題請隨時打斷我。",py:"Xièxie. Nà wǒ kāishǐ jiǎnbào, yǒu wèntí qǐng suíshí dǎduàn wǒ.",en:"Thanks. I'll start the briefing — feel free to interrupt with questions."},keys:"開始簡報問題隨時"}]},
+
+{id:"demo",l:6,zh:"向政府客戶簡報",en:"UxS Briefing to a Government Customer",who:"林處長 Director Lin",intro:"You're briefing a government delegation on your company's unmanned systems. Handle capability questions in Mandarin: endurance, payload, comms loss, and procurement.",
+turns:[
+{them:{zh:"Eric 你好。先請教一下，這款無人機的續航力跟酬載是多少？",py:"Eric nǐ hǎo. Xiān qǐngjiào yíxià, zhè kuǎn wúrénjī de xùhánglì gēn chóuzài shì duōshǎo?",en:"Hello Eric. First — what are this UAV's endurance and payload?"},task:"Answer: endurance about 8 hours; max payload 5 kg, supporting EO sensors.",ans:{zh:"續航力大約八個小時，最大酬載五公斤，可以搭載光電感測器。",py:"Xùhánglì dàyuē bā ge xiǎoshí, zuìdà chóuzài wǔ gōngjīn, kěyǐ dāzài guāngdiàn gǎncèqì.",en:"Endurance is about 8 hours; max payload 5 kg, and it can carry EO sensors."},keys:"續航力八小時酬載五公斤感測器"},
+{them:{zh:"如果通訊被干擾，中斷了，系統會怎麼處理？",py:"Rúguǒ tōngxùn bèi gānrǎo, zhōngduàn le, xìtǒng huì zěnme chǔlǐ?",en:"If comms are jammed and the link drops, how does the system respond?"},task:"Explain: on link loss it switches to autonomous mode and auto-returns to launch.",ans:{zh:"通訊中斷的時候，系統會切換到自主模式，自動返航。",py:"Tōngxùn zhōngduàn de shíhòu, xìtǒng huì qiēhuàn dào zìzhǔ móshì, zìdòng fǎnháng.",en:"On link loss, it switches to autonomous mode and automatically returns to launch."},keys:"通訊中斷自主返航"},
+{them:{zh:"我們主要的需求是海上監偵任務。你們有實際部署的經驗嗎？",py:"Wǒmen zhǔyào de xūqiú shì hǎishàng jiānzhēn rènwù. Nǐmen yǒu shíjì bùshǔ de jīngyàn ma?",en:"Our main requirement is maritime ISR missions. Do you have real deployment experience?"},task:"Say yes — deployed with multiple partners; you can arrange a live flight demonstration.",ans:{zh:"有，我們跟多個夥伴實際部署過。我們也可以安排現場的飛行展示。",py:"Yǒu, wǒmen gēn duō ge huǒbàn shíjì bùshǔguò. Wǒmen yě kěyǐ ānpái xiànchǎng de fēixíng zhǎnshì.",en:"Yes — we've deployed with several partners, and we can arrange a live flight demo."},keys:"部署夥伴安排飛行展示"},
+{them:{zh:"不錯。不過採購要走標案程序，時程可能比較長，你們可以配合嗎？",py:"Búcuò. Búguò cǎigòu yào zǒu biāo'àn chéngxù, shíchéng kěnéng bǐjiào cháng, nǐmen kěyǐ pèihé ma?",en:"Good. But procurement must go through the tender process — timelines can be long. Can you accommodate that?"},task:"Confirm you understand the tender process and will fully cooperate; ask when the tender is expected to open.",ans:{zh:"我們了解標案程序，一定全力配合。請問預計什麼時候招標？",py:"Wǒmen liǎojiě biāo'àn chéngxù, yídìng quánlì pèihé. Qǐngwèn yùjì shénme shíhòu zhāobiāo?",en:"We understand the tender process and will fully cooperate. When do you expect bids to open?"},keys:"標案程序配合招標"},
+{them:{zh:"大概明年第一季。今天談得很好，後續請跟我們的承辦人聯絡。",py:"Dàgài míngnián dì yī jì. Jīntiān tán de hěn hǎo, hòuxù qǐng gēn wǒmen de chéngbànrén liánluò.",en:"Probably Q1 next year. Good discussion today — please follow up with our case officer."},task:"Thank the director; say you'll send the specs and quote by email this week.",ans:{zh:"謝謝處長。我們這禮拜會把規格跟報價用電子郵件寄過去。",py:"Xièxie chùzhǎng. Wǒmen zhè lǐbài huì bǎ guīgé gēn bàojià yòng diànzǐ yóujiàn jì guòqù.",en:"Thank you, Director. We'll email the specs and quote this week."},keys:"處長規格報價郵件"}]},
+
+{id:"opinion",l:5,zh:"時事訪談",en:"Current Events Interview (OPI-style)",who:"主持人 Host",intro:"A podcast host interviews you about tech and defense topics. OPI raters want supported opinions: state a view, give reasons, handle a follow-up. Speak in paragraphs, not sentences.",
+turns:[
+{them:{zh:"今天邀請到一位在無人系統產業工作的來賓。可以先簡單介紹一下你的工作嗎？",py:"Jīntiān yāoqǐng dào yí wèi zài wúrén xìtǒng chǎnyè gōngzuò de láibīn. Kěyǐ xiān jiǎndān jièshào yíxià nǐ de gōngzuò ma?",en:"Today's guest works in the unmanned systems industry. Could you briefly introduce your work?"},task:"Give a 2-3 sentence intro: innovation engineer, unmanned systems, working with businesses and governments.",ans:{zh:"大家好。我是創新工程師，在無人系統產業工作，主要負責新技術的評估，也常常跟企業和政府單位合作。",py:"Dàjiā hǎo. Wǒ shì chuàngxīn gōngchéngshī, zài wúrén xìtǒng chǎnyè gōngzuò, zhǔyào fùzé xīn jìshù de pínggū, yě chángcháng gēn qìyè hàn zhèngfǔ dānwèi hézuò.",en:"Hi everyone. I'm an innovation engineer in the unmanned systems industry — I evaluate new technologies and often work with companies and government agencies."},keys:"創新工程師無人系統評估政府合作"},
+{them:{zh:"你認為無人機會怎麼改變未來的產業和國防？",py:"Nǐ rènwéi wúrénjī huì zěnme gǎibiàn wèilái de chǎnyè hàn guófáng?",en:"How do you think drones will change industry and defense in the future?"},task:"Give an opinion with two reasons: low cost and low risk → wider use in both civilian and defense fields.",ans:{zh:"我認為影響會非常大。第一，無人機成本低；第二，風險也小，所以不管是民間還是國防，應用一定會越來越廣。",py:"Wǒ rènwéi yǐngxiǎng huì fēicháng dà. Dì yī, wúrénjī chéngběn dī; dì èr, fēngxiǎn yě xiǎo, suǒyǐ bùguǎn shì mínjiān háishì guófáng, yìngyòng yídìng huì yuèláiyuè guǎng.",en:"I think the impact will be huge. First, drones are cheap; second, low-risk — so civilian and defense applications will only widen."},keys:"認為成本風險應用越來越"},
+{them:{zh:"可是也有人擔心無人機被濫用，比如侵犯隱私。你怎麼看？",py:"Kěshì yě yǒu rén dānxīn wúrénjī bèi lànyòng, bǐrú qīnfàn yǐnsī. Nǐ zěnme kàn?",en:"But some worry drones will be misused — privacy invasion, for instance. Your take?"},task:"Concede the concern is reasonable, then argue regulation — not bans — is the answer.",ans:{zh:"這個擔心很合理。不過我覺得問題不在技術本身，而在管理。與其禁止，不如訂出清楚的法規來規範使用。",py:"Zhège dānxīn hěn hélǐ. Búguò wǒ juéde wèntí bú zài jìshù běnshēn, ér zài guǎnlǐ. Yǔqí jìnzhǐ, bùrú dìngchū qīngchǔ de fǎguī lái guīfàn shǐyòng.",en:"That concern is fair. But the issue isn't the tech itself — it's governance. Rather than banning, better to set clear regulations."},keys:"合理技術管理法規"},
+{them:{zh:"最後一題：對想進入這個產業的年輕人，你有什麼建議？",py:"Zuìhòu yì tí: duì xiǎng jìnrù zhège chǎnyè de niánqīngrén, nǐ yǒu shénme jiànyì?",en:"Last question: any advice for young people wanting to enter this industry?"},task:"Give two pieces of advice: build hands-on skills; the field changes daily so keep learning.",ans:{zh:"我有兩個建議。第一，動手做，實作經驗最重要；第二，這個領域日新月異，一定要持續學習。",py:"Wǒ yǒu liǎng ge jiànyì. Dì yī, dòngshǒu zuò, shízuò jīngyàn zuì zhòngyào; dì èr, zhège lǐngyù rì xīn yuè yì, yídìng yào chíxù xuéxí.",en:"Two suggestions. First, build things — hands-on experience matters most. Second, this field changes daily, so never stop learning."},keys:"建議實作經驗持續學習"},
+{them:{zh:"講得太好了！謝謝你今天的分享。",py:"Jiǎng de tài hǎo le! Xièxie nǐ jīntiān de fēnxiǎng.",en:"Wonderfully put! Thanks for sharing today."},task:"Thank the host; say you'd be happy to come again.",ans:{zh:"謝謝主持人，很開心跟大家聊，歡迎下次再找我來！",py:"Xièxie zhǔchírén, hěn kāixīn gēn dàjiā liáo, huānyíng xiàcì zài zhǎo wǒ lái!",en:"Thanks for having me — happy to chat, and glad to come back anytime!"},keys:"謝謝開心下次"}]},
+
+{id:"convenience",l:2,zh:"便利商店",en:"Convenience Store Run",who:"店員 Clerk",intro:"A 7-11 run: pick up a package, buy a few things, top up your EasyCard, and deal with the receipt.",
+turns:[
+{them:{zh:"歡迎光臨！",py:"Huānyíng guānglín!",en:"Welcome!"},task:"Say you're here to pick up a package; give your name (Ma) and say you have the pickup code.",ans:{zh:"你好，我要取貨。我姓馬，有取貨號碼。",py:"Nǐ hǎo, wǒ yào qǔhuò. Wǒ xìng Mǎ, yǒu qǔhuò hàomǎ.",en:"Hi, I'm here for a package pickup. Surname Ma — I have the pickup code."},keys:"取貨姓號碼"},
+{them:{zh:"好的，請給我看號碼……找到了。還需要什麼嗎？",py:"Hǎo de, qǐng gěi wǒ kàn hàomǎ... zhǎodào le. Hái xūyào shénme ma?",en:"OK, show me the code… found it. Anything else?"},task:"Say you'll also take this coffee and onigiri, and you want to top up your EasyCard 300.",ans:{zh:"我還要這杯咖啡跟飯糰，然後悠遊卡加值三百。",py:"Wǒ hái yào zhè bēi kāfēi gēn fàntuán, ránhòu Yōuyóukǎ jiāzhí sānbǎi.",en:"I'll also take this coffee and rice ball, and top up my EasyCard NT$300."},keys:"咖啡飯糰加值三百"},
+{them:{zh:"飯糰需要幫您加熱嗎？",py:"Fàntuán xūyào bāng nín jiārè ma?",en:"Want the rice ball heated up?"},task:"Say yes please, heat it up.",ans:{zh:"好，麻煩幫我加熱，謝謝。",py:"Hǎo, máfán bāng wǒ jiārè, xièxie.",en:"Yes, please heat it — thanks."},keys:"加熱謝謝"},
+{them:{zh:"一共一百二。發票要印出來還是存悠遊卡的載具？",py:"Yígòng yìbǎi èr. Fāpiào yào yìn chūlái háishì cún Yōuyóukǎ de zàijù?",en:"120 total. Print the receipt, or store it digitally on your EasyCard carrier?"},task:"Say store it on the card — no need to print.",ans:{zh:"存載具就好，不用印，謝謝。",py:"Cún zàijù jiù hǎo, búyòng yìn, xièxie.",en:"Store it digitally — no need to print, thanks."},keys:"載具不用印"},
+{them:{zh:"好的，都幫您用好了。謝謝光臨！",py:"Hǎo de, dōu bāng nín yòng hǎo le. Xièxie guānglín!",en:"All set for you. Thanks for coming!"},task:"Say thanks, goodbye.",ans:{zh:"謝謝，再見！",py:"Xièxie, zàijiàn!",en:"Thanks, bye!"},keys:"謝謝再見"}]}
+];
+
+/* ============ RESOURCES ============ */
+const RESOURCES=[
+{lv:"1-3",cat:"Podcast",t:"Talk Taiwanese Mandarin with Abby",d:"Slow, clear Taiwan-accent Mandarin about daily life. Ideal A2–B1 listening.",u:"https://open.spotify.com/show/2os7bXQqPD2EmLENnJXWKZ"},
+{lv:"1-3",cat:"YouTube",t:"Grace Mandarin Chinese",d:"Taiwan-based teacher; Taiwan vs. mainland usage, tones, natural phrases.",u:"https://www.youtube.com/@GraceMandarinChinese"},
+{lv:"2-4",cat:"Podcast",t:"台灣通勤第一品牌",d:"Wildly popular comedy chat podcast — real unscripted Taipei speech + slang.",u:"https://open.spotify.com/show/3S1zZViC1nQOtJnAy4at8k"},
+{lv:"3-5",cat:"Podcast",t:"百靈果 News (Bailingguo)",d:"Bilingual news comedy duo; great bridge from conversation to news register.",u:"https://open.spotify.com/show/6qtCP3E9M9Yq8onCLKM7bY"},
+{lv:"3-5",cat:"Podcast",t:"敏迪選讀",d:"International news explained in friendly Taiwanese Mandarin. Perfect DLPT ramp.",u:"https://www.mindiworldnews.com/"},
+{lv:"4-6",cat:"Podcast",t:"股癌 Gooaye",d:"Taiwan's top investing/tech podcast — business vocab at native speed.",u:"https://open.spotify.com/show/1qLE1tLBjbxRQIT4Ls1agN"},
+{lv:"4-7",cat:"News",t:"中央社 CNA",d:"Taiwan's national news agency. Clean formal prose — DLPT reading gold.",u:"https://www.cna.com.tw/"},
+{lv:"4-7",cat:"News",t:"天下雜誌 CommonWealth",d:"Long-form business/economics journalism, Taiwan's The Economist.",u:"https://www.cw.com.tw/"},
+{lv:"4-6",cat:"News",t:"數位時代 Business Next",d:"Tech-industry news: AI, chips, startups — your professional domain vocab.",u:"https://www.bnext.com.tw/"},
+{lv:"5-7",cat:"News",t:"青年日報",d:"Taiwan's military newspaper: 國防, weapons, exercises — UxS/defense register.",u:"https://www.ydn.com.tw/"},
+{lv:"4-7",cat:"TV News",t:"公視新聞網 PTS News (YouTube)",d:"Taiwan public broadcaster: standard anchor Mandarin, live and clipped.",u:"https://www.youtube.com/@PTSNews"},
+{lv:"3-6",cat:"TV",t:"TaiwanPlus",d:"Taiwan's English-language platform — watch EN first, then re-watch source clips in zh.",u:"https://www.taiwanplus.com/"},
+{lv:"4-7",cat:"YouTube",t:"志祺七七 X 圖文不符",d:"Daily current-affairs explainers with full zh subtitles. B2+ listening drills.",u:"https://www.youtube.com/@shasha77"},
+{lv:"5-7",cat:"Drama",t:"人選之人—造浪者 Wave Makers (Netflix)",d:"Political-campaign drama: election, staffer, media vocab in context.",u:"https://www.netflix.com/title/81497761"},
+{lv:"5-7",cat:"Drama",t:"茶金 Gold Leaf (PTS)",d:"1950s business-family epic; formal negotiation Mandarin + Hakka flavor.",u:"https://www.pts.org.tw/goldleaf/"},
+{lv:"4-6",cat:"Drama",t:"我們與惡的距離 The World Between Us",d:"Acclaimed drama on media & justice — natural high-register dialogue.",u:"https://www.pts.org.tw/"},
+{lv:"3-7",cat:"DLPT prep",t:"GLOSS (DLIFLC)",d:"Official DLI lessons sorted by ILR level (1+ to 3). Do 2-3 Chinese lessons weekly.",u:"https://gloss.dliflc.edu/"},
+{lv:"1-6",cat:"TOCFL",t:"TOCFL Official (SC-TOP)",d:"Mock tests, vocab lists (8000 words), band descriptions.",u:"https://tocfl.edu.tw/"},
+{lv:"1-5",cat:"Reference",t:"Chinese Grammar Wiki",d:"Every grammar point by CEFR level, with examples.",u:"https://resources.allsetlearning.com/chinese/grammar/"},
+{lv:"1-7",cat:"Dictionary",t:"MoE 重編國語辭典 / 萌典 moedict",d:"Taiwan Ministry of Education dictionary — Taiwan-standard readings (歹勢 included).",u:"https://www.moedict.tw/"}];
+/* ================= STORAGE ================= */
+const S={mem:{},ok:true};
+try{localStorage.setItem("__t","1");localStorage.removeItem("__t");}catch(e){S.ok=false;}
+S.load=()=>{try{if(S.ok){const r=localStorage.getItem("twm_state_v1");return r?JSON.parse(r):null;}return S.mem.state||null;}catch(e){return null;}};
+S.save=()=>{try{if(S.ok)localStorage.setItem("twm_state_v1",JSON.stringify(ST));else S.mem.state=ST;}catch(e){}};
+
+let ST=S.load()||{placed:false,level:3,session:0,streak:0,lastDay:"",newPer:12,recycleN:5,
+srs:{},gradQ:[],custom:[],readDone:{},listenDone:{},scenDone:{},today:{},todayDay:"",
+voice:"",rate:0.92,showPy:true,stats:{rev:0,ok:0},slangSeen:0,packs:[]};
+ST.packs=ST.packs||[];
+
+function allVocab(){return VOCAB.concat(ST.custom);}
+function vid(i){return i<VOCAB.length?"v"+i:"c"+(i-VOCAB.length);}
+function byId(id){const n=parseInt(id.slice(1));return id[0]==="v"?VOCAB[n]:ST.custom[n];}
+
+/* ================= SRS ENGINE =================
+   States: (absent)=unseen -> learn -> rev -> grad (leaves main cycle, joins gradQ)
+   due measured in session counts. Recycle: after each completed daily lesson,
+   ST.recycleN graduated words are pulled back in as review. */
+function srsGet(id){return ST.srs[id];}
+function srsDue(){const out=[];for(const id in ST.srs){const r=ST.srs[id];if(r.st!=="grad"&&r.due<=ST.session)out.push(id);}return out;}
+function srsNewCandidates(){const out=[];const av=allVocab();for(let i=0;i<av.length;i++){const id=vid(i);if(!ST.srs[id]&&av[i].l<=ST.level)out.push(id);}
+out.sort((a,b)=>byId(a).l-byId(b).l);return out;}
+function grade(id,g){ // g:0 again 1 good 2 easy
+  let r=ST.srs[id]||{st:"learn",iv:0,reps:0,due:ST.session};
+  ST.stats.rev++;if(g>0)ST.stats.ok++;
+  if(g===0){r.st="learn";r.iv=0;r.due=ST.session;r.lapses=(r.lapses||0)+1;}
+  else{
+    r.reps=(r.reps||0)+1;
+    if(r.st==="learn"){r.st="rev";r.iv=g===2?2:1;}
+    else{r.iv=Math.max(1,Math.round(r.iv*(g===2?3:2)));}
+    r.due=ST.session+r.iv;
+    if(r.iv>=8&&r.reps>=4){r.st="grad";if(!ST.gradQ.includes(id))ST.gradQ.push(id);}
+  }
+  ST.srs[id]=r;S.save();
+}
+function injectRecycle(){ // pull oldest graduated back for a review pass
+  let n=Math.min(ST.recycleN,ST.gradQ.length);
+  for(let i=0;i<n;i++){const id=ST.gradQ.shift();const r=ST.srs[id];r.st="rev";r.iv=4;r.due=ST.session;ST.srs[id]=r;ST.gradQ.push(id);} // stays in rotation queue
+  return n;
+}
+
+/* ================= SPEECH ================= */
+let VOICES=[];
+function loadVoices(){VOICES=(speechSynthesis.getVoices()||[]).filter(v=>/^zh/i.test(v.lang));}
+if("speechSynthesis" in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices;}
+function pickVoice(){if(!VOICES.length)loadVoices();
+  let v=VOICES.find(x=>x.name===ST.voice);if(v)return v;
+  v=VOICES.find(x=>/TW/i.test(x.lang))||VOICES.find(x=>/HK/i.test(x.lang))||VOICES[0];return v||null;}
+function say(zh,rate){if(!("speechSynthesis" in window)){toast("This browser has no text-to-speech.");return;}
+  speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(zh);const v=pickVoice();
+  if(v)u.voice=v;u.lang=v?v.lang:"zh-TW";u.rate=rate||ST.rate;speechSynthesis.speak(u);}
+const SRcls=window.SpeechRecognition||window.webkitSpeechRecognition||null;
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s);
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>t.style.display="none",2600);}
+function norm(s){return String(s).replace(/[^\u3400-\u9FFF\uF900-\uFAFF0-9A-Za-z]/g,"");}
+function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);
+for(let i=1;i<=m;i++){let c=[i];for(let j=1;j<=n;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));}p=c;}return p[n];}
+function sim(a,b){a=norm(a);b=norm(b);if(!a.length&&!b.length)return 1;return 1-lev(a,b)/Math.max(a.length,b.length);}
+function todayStr(){return new Date().toISOString().slice(0,10);}
+function domTags(d){return (d||[]).map(x=>'<span class="tag">'+esc(DOMAINS[x]||x)+'</span>').join("");}
+function attrJS(s){return esc(JSON.stringify(s));}
+function pyHtml(p){return '<span class="py">'+esc(p)+'</span>';}
+function speakerBtn(zh,sm){return '<button class="audiobtn'+(sm?' sm':'')+'" onclick="say('+attrJS(zh)+')" title="Listen">&#9654;</button>';}
+
+/* ================= NAV / ROUTER ================= */
+const NAV=[["today","今","Today's Lesson"],["vocab","詞","Vocab"],["read","讀","Reading"],["listen","聽","Listening"],["speak","說","Speaking"],["slang","味","台灣味 Slang"],["res","源","Resources"],["prog","進","Progress"],["set","設","Settings"]];
+function nav(){$("#nav").innerHTML=NAV.map(n=>'<button class="navbtn'+(VIEW===n[0]?" on":"")+'" onclick="go(\''+n[0]+'\')"><span class="seal">'+n[1]+'</span>'+n[2]+'</button>').join("");
+$("#streakSeal").textContent=ST.streak;const L=LEVELS[ST.level-1];$("#sideLevel").textContent="Level "+ST.level+" · "+L.zh+" "+L.en;}
+let VIEW="today";
+function go(v){VIEW=v;render();window.scrollTo(0,0);}
+function render(){nav();({today:rToday,vocab:rVocab,read:rRead,listen:rListen,speak:rSpeak,slang:rSlang,res:rRes,prog:rProg,set:rSet})[VIEW]();}
+
+/* ================= TODAY ================= */
+function ensureToday(){const d=todayStr();
+  if(ST.todayDay!==d){ST.todayDay=d;
+    const reads=READINGS.map((r,i)=>i).filter(i=>READINGS[i].l===ST.level);
+    const read=reads.find(i=>!ST.readDone[i]);
+    const lis=LISTENING.map((x,i)=>i).filter(i=>LISTENING[i].l===ST.level);
+    const liU=lis.find(i=>!ST.listenDone[i]);
+    const li=(liU!==undefined)?liU:(lis.length?lis[0]:0);
+    const scByLv=SCENARIOS.map((s,i)=>i).sort((a,b)=>Math.abs(SCENARIOS[a].l-ST.level)-Math.abs(SCENARIOS[b].l-ST.level));
+    const sc=scByLv.find(i=>!ST.scenDone[i]);
+    ST.today={read:read!==undefined?read:(reads[0]!==undefined?reads[0]:0),
+      listen:li>=0?li:0,scen:sc!==undefined?sc:scByLv[0],
+      vocabDone:false,readDone:false,listenDone:false,scenDone:false,claimed:false};
+    S.save();}
+}
+function markToday(part){ensureToday();ST.today[part+"Done"]=true;S.save();if(VIEW==="today")render();}
+function rToday(){ensureToday();const T=ST.today;
+  if(!ST.placed){$("#main").innerHTML='<div class="eyebrow">開始 First things first</div><h1 class="pagetitle">Where should we start?</h1>'+
+  '<p class="pagesub">Pick the level that matches you today — you can change it anytime in Settings. You said A2–B1, so Level 3 is the recommended door in.</p>'+
+  LEVELS.map(L=>'<div class="card" style="cursor:pointer" onclick="ST.level='+L.n+';ST.placed=true;S.save();render()"><div class="spread"><div><span class="levelchip">L'+L.n+'</span> <b class="zh" style="font-size:20px">'+L.zh+'</b> '+esc(L.en)+(L.n===3?' <span class="tag red">recommended</span>':'')+'<div class="muted">'+esc(L.desc)+'</div></div><div class="muted">'+esc(L.band)+'</div></div></div>').join("");return;}
+  const due=srsDue().length,fresh=Math.min(ST.newPer,srsNewCandidates().length);
+  const R=READINGS[T.read],Li=LISTENING[T.listen],Sc=SCENARIOS[T.scen];
+  const items=[
+    {k:"vocab",t:"詞彙 Vocab session",d:due+" due reviews + "+fresh+" new words",done:T.vocabDone,go:"go('vocab')"},
+    {k:"read",t:"閱讀 Reading · "+R.title,d:"Level "+R.l+" passage with questions",done:T.readDone,go:"openReading("+T.read+")"},
+    {k:"listen",t:"聽力 Listening · Level "+Li.l,d:Li.dict.length+" dictations + 1 passage",done:T.listenDone,go:"openListen("+T.listen+")"},
+    {k:"scen",t:"會話 Scenario · "+Sc.zh+" "+Sc.en,d:"Speak with "+Sc.who,done:T.scenDone,go:"openScen("+T.scen+")"}];
+  const doneN=items.filter(i=>i.done).length;
+  const slang=SLANG[Math.floor(Date.now()/864e5)%SLANG.length];
+  let h='<div class="eyebrow">'+todayStr()+' · session '+(ST.session+1)+'</div><h1 class="pagetitle">今日課 Today\'s Lesson</h1>'+
+  '<p class="pagesub">One pass through all four skills ≈ 45–60 min. Streak counts <b>sessions</b>, not calendar days — every-other-day keeps it alive.</p>'+
+  '<div class="progressbar" style="margin-bottom:18px"><div style="width:'+(doneN/4*100)+'%"></div></div>'+
+  items.map(i=>'<div class="card"><div class="spread"><div><b>'+i.t+'</b><div class="muted">'+esc(i.d)+'</div></div><div class="row">'+(i.done?'<span class="stamp" style="width:44px;height:44px;font-size:20px">畢</span>':'<button class="btn red" onclick="'+i.go+'">Start</button>')+'</div></div></div>').join("");
+  h+='<div class="card" style="background:#FDF7EC"><div class="eyebrow" style="color:var(--gold)">今日台灣味 Slang of the day</div><div class="row" style="align-items:baseline"><span class="zh" style="font-size:26px;font-weight:900">'+esc(slang.c)+'</span> '+pyHtml(slang.p)+' <span>'+esc(slang.e)+'</span> '+speakerBtn(slang.x[0],1)+'</div><div class="muted zh" style="font-size:15px">'+esc(slang.x[0])+'</div><div class="muted">'+esc(slang.x[2])+(slang.n?" · "+esc(slang.n):"")+'</div></div>';
+  if(doneN===4&&!T.claimed){h+='<div class="card" style="text-align:center"><button class="btn jade" onclick="finishSession()">Complete session · stamp it 蓋章</button></div>';}
+  if(T.claimed){h+='<div class="card" style="text-align:center"><span class="stamp">完</span><div style="margin-top:10px"><b>Session '+ST.session+' complete.</b> '+(ST.gradQ.length?ST.recycleN+" graduated words were recycled into your next review pile.":"")+'</div></div>';}
+  $("#main").innerHTML=h;}
+function finishSession(){ST.session++;const d=todayStr();
+  if(ST.lastDay!==d){ST.streak++;ST.lastDay=d;}
+  ST.today.claimed=true;injectRecycle();S.save();render();toast("蓋章！Session "+ST.session+" in the books.");}
+
+/* ================= VOCAB ================= */
+let VQ=null; // {ids:[],i,revealed,mode}
+function buildQueue(){const due=srsDue();const fresh=srsNewCandidates().slice(0,ST.newPer);
+  const ids=due.concat(fresh);return {ids,i:0,revealed:false,newCount:fresh.length,dueCount:due.length};}
+function rVocab(){
+  if(VQ&&VQ.i<VQ.ids.length){return renderCard();}
+  const due=srsDue().length,fresh=Math.min(ST.newPer,srsNewCandidates().length);
+  const counts={learn:0,rev:0,grad:0};for(const id in ST.srs)counts[ST.srs[id].st]++;
+  let h='<div class="eyebrow">Spaced repetition</div><h1 class="pagetitle">詞彙 Vocab</h1>'+
+  '<p class="pagesub">'+due+' reviews due · '+fresh+' new available at your level · '+counts.grad+' graduated (recycled '+ST.recycleN+' per session)</p>'+
+  '<div class="row" style="margin-bottom:20px"><button class="btn red" '+(due+fresh?'':'disabled ')+'onclick="VQ=buildQueue();render()">Start session</button>'+
+  '<button class="btn ghost" onclick="window.showBrowse=!window.showBrowse;render()">Browse all words</button>'+
+  '<button class="btn ghost" onclick="window.showAdd=!window.showAdd;render()">+ Add my own word</button></div>';
+  if(VQ&&VQ.i>=VQ.ids.length&&VQ.ids.length){h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">學</span><div style="margin-top:8px"><b>Vocab session done</b> — '+VQ.ids.length+' cards.</div></div>';markToday("vocab");VQ=null;}
+  if(window.showAdd)h+=addForm();
+  if(window.showBrowse)h+=browse();
+  $("#main").innerHTML=h;}
+function addForm(){return '<div class="card"><b>Add a word</b><div class="grid2" style="margin-top:10px"><input id="aw_c" placeholder="漢字 characters (trad.)"><input id="aw_p" placeholder="pinyin"><input id="aw_e" placeholder="English meaning"><select id="aw_l">'+LEVELS.map(L=>'<option value="'+L.n+'"'+(L.n===ST.level?' selected':'')+'>Level '+L.n+' '+L.zh+'</option>').join("")+'</select></div><div style="margin-top:10px"><button class="btn sm jade" onclick="addWord()">Save word</button></div></div>';}
+function addWord(){const c=$("#aw_c").value.trim(),p=$("#aw_p").value.trim(),e=$("#aw_e").value.trim(),l=parseInt($("#aw_l").value);
+  if(!c||!e){toast("Need at least characters + meaning.");return;}
+  ST.custom.push({c,p:p||"—",e,l,d:["daily"],x:null});S.save();window.showAdd=false;toast("Added "+c);render();}
+function browse(){const av=allVocab();
+  let rows=av.map((w,i)=>{const r=ST.srs[vid(i)];const st=r?({learn:"learning",rev:"review",grad:"★ graduated"})[r.st]:"unseen";
+  return '<div class="vocabrow"><span class="zh">'+esc(w.c)+'</span>'+pyHtml(w.p)+'<span class="en">'+esc(w.e)+'</span><span class="tag gray">L'+w.l+'</span><span class="muted">'+st+'</span>'+speakerBtn(w.c,1)+'</div>';}).join("");
+  return '<div class="card"><b>All words ('+av.length+')</b>'+rows+'</div>';}
+function renderCard(){const id=VQ.ids[VQ.i];const w=byId(id);const r=ST.srs[id];const isNew=!r;
+  let inner='<div class="domtags">'+domTags(w.d)+'</div><div class="srsinfo">'+(isNew?'<span class="tag red">NEW</span>':'<span class="tag gray">'+(r.st==="grad"?"recycle":r.st)+'</span>')+' <span class="tag gold">L'+w.l+'</span></div>'+
+  '<div class="big-zh">'+esc(w.c)+'</div>';
+  if(VQ.revealed||isNew){inner+='<div>'+pyHtml(w.p)+'</div><div style="font-size:18px">'+esc(w.e)+'</div>'+speakerBtn(w.c)+
+    (w.x?'<div class="hr" style="width:60%"></div><div class="zh" style="font-size:19px;font-weight:600">'+esc(w.x[0])+'</div><div>'+pyHtml(w.x[1])+'</div><div class="muted">'+esc(w.x[2])+'</div>'+speakerBtn(w.x[0],1):"")+
+    (w.n?'<div class="objbox" style="font-size:13.5px;text-align:left">台灣 note · '+esc(w.n)+'</div>':"");}
+  else inner+='<div class="muted">Say it aloud, then reveal.</div>';
+  let btns;
+  if(isNew&&!VQ.revealed)VQ.revealed=true; // new cards show everything
+  if(!VQ.revealed)btns='<div class="gradebtns"><button class="btn" onclick="VQ.revealed=true;render()">Reveal 翻牌</button></div>';
+  else if(isNew)btns='<div class="gradebtns"><button class="btn jade" onclick="grade(\''+id+'\',1);nextCard()">Got it 學了</button></div>';
+  else btns='<div class="gradebtns"><button class="btn red" onclick="grade(\''+id+'\',0);nextCard()">Again 再來</button><button class="btn" onclick="grade(\''+id+'\',1);nextCard()">Good 記得</button><button class="btn jade" onclick="grade(\''+id+'\',2);nextCard()">Easy 簡單</button></div>';
+  $("#main").innerHTML='<div class="eyebrow">card '+(VQ.i+1)+' / '+VQ.ids.length+'</div><div class="flashcard">'+inner+'</div>'+btns+
+  '<div style="text-align:center;margin-top:14px"><button class="btn ghost sm" onclick="VQ=null;render()">Exit session</button></div>';}
+function nextCard(){VQ.i++;VQ.revealed=false;render();}
+
+/* ================= READING ================= */
+let RD=null; // {idx, showPy, answers:[]}
+function rRead(){if(RD)return renderReading();
+  let h='<div class="eyebrow">Graded readers · tap any word</div><h1 class="pagetitle">閱讀 Reading</h1><p class="pagesub">Characters always stay characters — pinyin rides above (toggle it off to self-test) and every word is tappable for a gloss.</p>'+lvlBand();
+  READINGS.forEach((r,i)=>{if(r.l!==ST.level&&!window.showAllRead)return;
+    h+='<div class="card"><div class="spread"><div><span class="levelchip">L'+r.l+'</span> <b class="zh" style="font-size:18px">'+esc(r.title)+'</b>'+(ST.readDone[i]?' <span class="tag">done ✓</span>':'')+'</div><button class="btn sm" onclick="openReading('+i+')">Read</button></div></div>';});
+  h+='<button class="btn ghost sm" onclick="window.showAllRead=!window.showAllRead;render()">'+(window.showAllRead?"Show my level only":"Show all levels")+'</button>';
+  $("#main").innerHTML=h;}
+function lvlBand(){return '<div class="lvlband">'+LEVELS.map(L=>'<div class="lvlseg'+(L.n===ST.level?" cur":(L.n<ST.level?" done":""))+'" style="cursor:pointer" onclick="ST.level='+L.n+';S.save();render()"><div class="zh">'+L.zh+'</div><div class="muted">L'+L.n+'</div></div>').join("")+'</div>';}
+function openReading(i){RD={idx:i,showPy:ST.showPy,ans:{}};VIEW="read";render();}
+function tokHtml(t,ri,ti){if(t.length===1)return '<span class="tokv"><span class="rubytop"></span><span>'+esc(t[0])+'</span></span>';
+  return '<span class="tokv"><span class="rubytop">'+(RD.showPy?esc(t[1]):"")+'</span><span class="tok hasdef" onclick="tipTok(event,'+ri+','+ti+')">'+esc(t[0])+'</span></span>';}
+function tipTok(ev,ri,ti){const t=READINGS[ri].toks[ti];const tip=$("#tip");
+  tip.innerHTML='<b class="zh">'+esc(t[0])+'</b> <span class="py">'+esc(t[1])+'</span><br>'+esc(t[2]);
+  tip.style.display="block";const x=Math.min(ev.clientX,window.innerWidth-300);tip.style.left=x+"px";tip.style.top=(ev.clientY+18)+"px";
+  clearTimeout(tip._h);tip._h=setTimeout(()=>tip.style.display="none",3200);say(t[0],1);}
+function renderReading(){const r=READINGS[RD.idx];
+  let h='<button class="btn ghost sm" onclick="RD=null;render()">← All readings</button><div class="eyebrow" style="margin-top:14px">Level '+r.l+' · '+LEVELS[r.l-1].zh+'</div><h1 class="pagetitle" style="font-size:24px">'+esc(r.title)+'</h1>'+
+  '<div class="row" style="margin:10px 0"><button class="btn sm ghost" onclick="RD.showPy=!RD.showPy;render()">'+(RD.showPy?"Hide":"Show")+' pinyin</button><button class="btn sm ghost" onclick="say('+attrJS(r.toks.map(t=>t[0]).join(""))+')">▶ Listen to passage</button></div>'+
+  '<div class="card"><div class="reading-zh">'+r.toks.map((t,ti)=>tokHtml(t,RD.idx,ti)).join("")+'</div></div>';
+  h+='<div class="card" style="background:var(--jade-lt)"><b>語法 Grammar point · '+esc(r.gram.t)+'</b><div>'+esc(r.gram.d)+'</div></div>';
+  h+='<div class="card"><b>理解 Comprehension</b>';
+  r.qs.forEach((q,qi)=>{h+='<div style="margin-top:12px"><b>'+(qi+1)+'. '+esc(q.q)+'</b></div>';
+    q.ch.forEach((c,ci)=>{const picked=RD.ans[qi];let cls="choice";
+      if(picked!==undefined){if(ci===q.a&&picked===ci)cls+=" picked-ok";else if(picked===ci)cls+=" picked-bad";else if(ci===q.a&&picked!==undefined)cls+=" picked-ok";}
+      h+='<button class="'+cls+'" '+(picked!==undefined?"disabled":"")+' onclick="RD.ans['+qi+']='+ci+';render()">'+esc(c)+'</button>';});});
+  const done=r.qs.every((q,qi)=>RD.ans[qi]!==undefined);
+  if(done){const score=r.qs.filter((q,qi)=>RD.ans[qi]===q.a).length;
+    if(!ST.readDone[RD.idx]){ST.readDone[RD.idx]=true;S.save();if(RD.idx===ST.today.read)markToday("read");}
+    h+='<div style="margin-top:14px;text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">讀</span><div style="margin-top:6px"><b>'+score+' / '+r.qs.length+'</b> — passage complete.</div></div>';}
+  h+='</div>';$("#main").innerHTML=h;}
+
+/* ================= LISTENING ================= */
+let LS=null; // {idx, di, typed, checked, pAns:{}}
+function rListen(){if(LS)return renderListen();
+  let h='<div class="eyebrow">Ear training · browser TTS (zh-TW)</div><h1 class="pagetitle">聽力 Listening</h1><p class="pagesub">Dictation first — type exactly what you hear. Then a blind passage with questions. For real-voice input, hit the Resources 源 tab.</p>'+lvlBand();
+  LISTENING.forEach((li,i)=>{if(li.l!==ST.level&&!window.showAllLis)return;
+    h+='<div class="card"><div class="spread"><div><span class="levelchip">L'+li.l+'</span> <b>'+li.dict.length+' dictations + passage</b>'+(ST.listenDone[i]?' <span class="tag">done ✓</span>':'')+'</div><button class="btn sm" onclick="openListen('+i+')">Start</button></div></div>';});
+  h+='<button class="btn ghost sm" onclick="window.showAllLis=!window.showAllLis;render()">'+(window.showAllLis?"Show my level only":"Show all levels")+'</button>';
+  $("#main").innerHTML=h;}
+function openListen(i){LS={idx:i,di:0,typed:"",checked:false,pAns:{},phase:"dict"};VIEW="listen";render();}
+function renderListen(){const li=LISTENING[LS.idx];
+  let h='<button class="btn ghost sm" onclick="LS=null;render()">← Listening sets</button>';
+  if(LS.phase==="dict"){const d=li.dict[LS.di];
+    h+='<div class="eyebrow" style="margin-top:14px">Dictation '+(LS.di+1)+' / '+li.dict.length+' · Level '+li.l+'</div><h1 class="pagetitle" style="font-size:24px">聽寫 Type what you hear</h1>'+
+    '<div class="card"><div class="row"><button class="audiobtn" onclick="say('+attrJS(d.zh)+')">&#9654;</button><button class="btn sm ghost" onclick="say('+attrJS(d.zh)+',0.7)">🐢 slower</button></div>'+
+    '<textarea id="dictIn" rows="2" style="margin-top:12px" placeholder="輸入中文…(paste/type characters)">'+esc(LS.typed)+'</textarea>'+
+    '<div class="row" style="margin-top:10px"><button class="btn" onclick="LS.typed=$(\'#dictIn\').value;LS.checked=true;render()">Check 對答案</button></div>';
+    if(LS.checked){const sc=Math.round(sim(LS.typed,d.zh)*100);
+      h+='<div class="hr"></div><div><b class="'+(sc>=80?"correct":"wrong")+'">'+sc+'% match</b></div><div class="zh" style="font-size:21px;font-weight:600;margin-top:6px">'+esc(d.zh)+'</div><div>'+pyHtml(d.py)+'</div><div class="muted">'+esc(d.en)+'</div>'+
+      '<div class="row" style="margin-top:10px"><button class="btn jade sm" onclick="LS.di++;LS.typed=\'\';LS.checked=false;if(LS.di>=li_len())LS.phase=\'pass\';render()">Next →</button></div>';}
+    h+='</div>';}
+  else{const p=li.pass;
+    h+='<div class="eyebrow" style="margin-top:14px">Passage · Level '+li.l+'</div><h1 class="pagetitle" style="font-size:24px">短文理解 Listen & answer</h1>'+
+    '<div class="card"><div class="row"><button class="audiobtn" onclick="say('+attrJS(p.zh)+')">&#9654;</button><button class="btn sm ghost" onclick="say('+attrJS(p.zh)+',0.75)">🐢 slower</button><span class="muted">Listen as many times as you need — text stays hidden until you answer.</span></div>';
+    p.qs.forEach((q,qi)=>{h+='<div style="margin-top:12px"><b>'+(qi+1)+'. '+esc(q.q)+'</b></div>';
+      q.ch.forEach((c,ci)=>{const picked=LS.pAns[qi];let cls="choice";
+        if(picked!==undefined){if(ci===q.a)cls+=" picked-ok";else if(picked===ci)cls+=" picked-bad";}
+        h+='<button class="'+cls+'" '+(picked!==undefined?"disabled":"")+' onclick="LS.pAns['+qi+']='+ci+';render()">'+esc(c)+'</button>';});});
+    const done=p.qs.every((q,qi)=>LS.pAns[qi]!==undefined);
+    if(done){const score=p.qs.filter((q,qi)=>LS.pAns[qi]===q.a).length;
+      if(!ST.listenDone[LS.idx]){ST.listenDone[LS.idx]=true;S.save();if(LS.idx===ST.today.listen)markToday("listen");}
+      h+='<div class="hr"></div><div class="zh" style="font-size:19px;font-weight:600">'+esc(p.zh)+'</div><div style="margin-top:10px;text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">聽</span><div style="margin-top:6px"><b>'+score+' / '+p.qs.length+'</b></div></div>';}
+    h+='</div>';}
+  $("#main").innerHTML=h;}
+function li_len(){return LISTENING[LS.idx].dict.length;}
+
+/* ================= SPEAKING ================= */
+let SP=null; // {idx,ti,shown,transcript,score,listening}
+function rSpeak(){if(SP)return renderScen();
+  let h='<div class="eyebrow">Realistic roleplay · mic + zh-TW recognition</div><h1 class="pagetitle">會話 Speaking</h1><p class="pagesub">Your partner speaks (turn your sound on), you get a mission in English, and you answer out loud in Mandarin. '+(SRcls?"Speech recognition is available in this browser.":"⚠ No speech recognition in this browser — use Chrome or Edge, or self-grade with the reveal button.")+'</p>';
+  SCENARIOS.forEach((s,i)=>{h+='<div class="card"><div class="spread"><div><span class="levelchip">L'+s.l+'</span> <b class="zh" style="font-size:18px">'+esc(s.zh)+'</b> '+esc(s.en)+(ST.scenDone[i]?' <span class="tag">done ✓</span>':'')+'<div class="muted">'+esc(s.intro)+'</div></div><button class="btn sm red" onclick="openScen('+i+')">Enter</button></div></div>';});
+  $("#main").innerHTML=h;}
+function openScen(i){SP={idx:i,ti:0,shown:false,transcript:"",score:null,history:[]};VIEW="speak";render();
+  setTimeout(()=>say(SCENARIOS[i].turns[0].them.zh),300);}
+function renderScen(){const s=SCENARIOS[SP.idx];const t=s.turns[SP.ti];
+  let h='<button class="btn ghost sm" onclick="SP=null;speechSynthesis.cancel();render()">← Scenarios</button>'+
+  '<div class="eyebrow" style="margin-top:14px">'+esc(s.who)+' · turn '+(SP.ti+1)+' / '+s.turns.length+'</div><h1 class="pagetitle" style="font-size:24px">'+esc(s.zh)+' · '+esc(s.en)+'</h1><div style="margin-top:14px">';
+  SP.history.forEach(hh=>{h+=bubble(hh.them,"them")+bubble(hh.you,"you",true);});
+  h+=bubble(t.them,"them");
+  h+='</div><div class="objbox"><b>Your mission:</b> '+esc(t.task)+'</div>';
+  h+='<div class="speakbox"><div class="row">'+
+    (SRcls?'<button class="btn red" id="micBtn" onclick="listen()">'+(SP.listening?"● Listening…":"🎤 Speak")+'</button>':'')+
+    '<button class="btn ghost" onclick="SP.shown=true;render()">Show answer</button>'+
+    '<button class="btn ghost" onclick="say('+attrJS(t.ans.zh)+')">▶ Hear answer</button>'+
+    '<button class="btn ghost sm" onclick="say('+attrJS(t.them.zh)+')">↻ Replay partner</button></div>'+
+    '<div class="transcript" style="margin-top:10px">'+(SP.transcript?'你說 You said: <b>'+esc(SP.transcript)+'</b>':'')+'</div>';
+  if(SP.score!==null){const pct=Math.round(SP.score*100);
+    h+='<div><b class="'+(pct>=65?"correct":"wrong")+'">'+pct+'%'+(pct>=65?" — 不錯！":" — try again or study the model answer")+'</b></div>';}
+  if(SP.shown){h+='<div class="hr"></div><div class="dlg-zh">'+esc(t.ans.zh)+'</div><div class="dlg-py">'+esc(t.ans.py)+'</div><div class="dlg-en">'+esc(t.ans.en)+'</div>';}
+  const canNext=SP.shown||(SP.score!==null&&SP.score>=0.4);
+  h+='<div class="row" style="margin-top:12px"><button class="btn jade" '+(canNext?"":"disabled ")+'onclick="nextTurn()">'+(SP.ti+1<s.turns.length?"Next turn →":"Finish scenario 完成")+'</button></div></div>';
+  $("#main").innerHTML=h;}
+function bubble(m,side,noEn){return '<div class="dlgline '+side+'"><div class="who">'+(side==="them"?"對":"你")+'</div><div class="dlgbubble"><div class="dlg-zh">'+esc(m.zh)+'</div><div class="dlg-py">'+esc(m.py)+'</div>'+(noEn?"":'<div class="dlg-en">'+esc(m.en)+'</div>')+'</div></div>';}
+function listen(){if(!SRcls)return;const rec=new SRcls();rec.lang="zh-TW";rec.interimResults=false;rec.maxAlternatives=3;
+  SP.listening=true;render();
+  rec.onresult=e=>{let best="",bs=-1;const t=SCENARIOS[SP.idx].turns[SP.ti];
+    for(const alt of e.results[0]){const s=scoreAns(alt.transcript,t);if(s>bs){bs=s;best=alt.transcript;}}
+    SP.transcript=best;SP.score=bs;SP.listening=false;render();};
+  rec.onerror=()=>{SP.listening=false;toast("Mic error — check permissions, or use Show answer.");render();};
+  rec.onend=()=>{if(SP&&SP.listening){SP.listening=false;render();}};
+  rec.start();}
+function scoreAns(said,t){const s1=sim(said,t.ans.zh);
+  const keys=norm(t.keys||"");let hit=0;for(const ch of keys)if(norm(said).includes(ch))hit++;
+  const s2=keys.length?hit/keys.length:0;return Math.max(s1,s2*0.9+s1*0.1);}
+function nextTurn(){const s=SCENARIOS[SP.idx];
+  const t=s.turns[SP.ti];SP.history.push({them:t.them,you:SP.transcript?{zh:SP.transcript,py:"",en:""}:t.ans});
+  SP.ti++;SP.shown=false;SP.transcript="";SP.score=null;
+  if(SP.ti>=s.turns.length){ST.scenDone[SP.idx]=true;S.save();if(SP.idx===ST.today.scen)markToday("scen");
+    toast("蓋章！Scenario complete.");SP=null;render();return;}
+  render();setTimeout(()=>say(s.turns[SP.ti].them.zh),250);}
+
+/* ================= SLANG ================= */
+function rSlang(){let h='<div class="eyebrow">Hokkien loans · particles · internet-speak</div><h1 class="pagetitle">台灣味 Taiwan Flavor</h1><p class="pagesub">The stuff textbooks skip. Drop one of these per conversation and watch faces light up.</p>';
+  SLANG.forEach((s,i)=>{h+='<div class="card"><div class="row" style="align-items:baseline"><span class="zh" style="font-size:24px;font-weight:900">'+esc(s.c)+'</span>'+pyHtml(s.p)+'<span>'+esc(s.e)+'</span>'+speakerBtn(s.x[0],1)+'</div><div class="zh" style="font-size:16px;margin-top:4px">'+esc(s.x[0])+'</div><div class="muted">'+pyHtml(s.x[1])+' · '+esc(s.x[2])+'</div>'+(s.n?'<div class="muted" style="margin-top:4px">☞ '+esc(s.n)+'</div>':'')+'</div>';
+    if(i>ST.slangSeen)ST.slangSeen=i;});
+  S.save();$("#main").innerHTML=h;}
+
+/* ================= RESOURCES ================= */
+function rRes(){let h='<div class="eyebrow">Real input · curated for zh-TW</div><h1 class="pagetitle">資源 Resources</h1><p class="pagesub">Graded external listening/reading. Rough guide: L1–3 learner podcasts → L4–5 news podcasts & CNA → L6–7 青年日報, editorials, dramas, GLOSS at ILR 2+/3.</p>';
+  RESOURCES.forEach(r=>{h+='<a class="reslink" href="'+esc(r.u)+'" target="_blank" rel="noopener"><div class="spread"><div><span class="tag gold">'+esc(r.cat)+'</span><span class="tag gray">L'+esc(r.lv)+'</span> <span class="t">'+esc(r.t)+'</span><div class="d">'+esc(r.d)+'</div></div><span class="u">open ↗</span></div></a>';});
+  $("#main").innerHTML=h;}
+
+/* ================= PROGRESS ================= */
+function rProg(){const av=allVocab();const per={};LEVELS.forEach(L=>per[L.n]={tot:0,grad:0,seen:0});
+  av.forEach((w,i)=>{per[w.l].tot++;const r=ST.srs[vid(i)];if(r){per[w.l].seen++;if(r.st==="grad")per[w.l].grad++;}});
+  const acc=ST.stats.rev?Math.round(ST.stats.ok/ST.stats.rev*100):0;
+  const gradTot=Object.values(per).reduce((a,b)=>a+b.grad,0);
+  let band="Novice";if(gradTot>40)band="A2 · TOCFL 1";if(gradTot>90)band="B1 · TOCFL 2";if(gradTot>150)band="B2 · TOCFL 3 · ILR 2";if(gradTot>220)band="C1 · TOCFL 4 · ILR 2+/3";if(gradTot>300)band="C1+/C2 track · ILR 3+";
+  let h='<div class="eyebrow">Where you stand</div><h1 class="pagetitle">進度 Progress</h1>'+
+  '<div class="grid2"><div class="card"><div class="eyebrow">Sessions</div><div class="big-zh" style="font-size:40px">'+ST.session+'</div><div class="muted">streak '+ST.streak+' · review accuracy '+acc+'%</div></div>'+
+  '<div class="card"><div class="eyebrow">Working estimate</div><div style="font-size:20px;font-weight:700">'+band+'</div><div class="muted">based on '+gradTot+' graduated words + level position. The only real meter is the mock test — see below.</div></div></div>'+
+  '<div class="card"><table class="stats"><tr><th>Level</th><th>Words</th><th>Seen</th><th>Graduated</th><th></th></tr>'+
+  LEVELS.map(L=>{const p=per[L.n];const pc=p.tot?Math.round(p.grad/p.tot*100):0;
+  return '<tr><td><b class="zh">'+L.zh+'</b> L'+L.n+'</td><td>'+p.tot+'</td><td>'+p.seen+'</td><td>'+p.grad+'</td><td style="width:34%"><div class="progressbar"><div style="width:'+pc+'%"></div></div></td></tr>';}).join("")+'</table></div>'+
+  '<div class="card"><b>OPI 4 / DLPT 4 flight plan</b><div style="margin-top:8px;font-size:14.5px">'+
+  'ILR 3→4 is won on <b>register control</b> and <b>supported argument</b>, not vocabulary count. Cycle: (1) graduate Levels 5–7 vocab here; (2) every session, one scenario answered in full paragraphs — the 時事訪談 interview is deliberately OPI-shaped: opinion → reasons → concession → rebuttal; (3) 2–3 GLOSS lessons weekly at ILR 2+ then 3 (Resources); (4) read one CNA or 青年日報 article aloud daily, summarize it from memory in Mandarin; (5) monthly self-mock: 15-min recorded monologue on a news topic + one cold TOCFL/DLPT practice passage. When Level 6–7 readings here feel easy, the DLPT curve has genuinely moved.</div></div>';
+  $("#main").innerHTML=h;}
+
+/* ================= SETTINGS ================= */
+function rSet(){loadVoices();
+  let h='<div class="eyebrow">Tune the machine</div><h1 class="pagetitle">設定 Settings</h1>'+
+  '<div class="card"><b>Level</b><div class="muted">Current: L'+ST.level+' — sets which new vocab, readings, listening and default scenarios you get.</div>'+lvlBand()+'</div>'+
+  '<div class="card"><b>Vocab cycle</b><div class="grid2" style="margin-top:8px"><label>New words per session<input type="number" min="1" max="50" value="'+ST.newPer+'" onchange="ST.newPer=Math.max(1,parseInt(this.value)||12);S.save()"></label>'+
+  '<label>Graduated words recycled per session<input type="number" min="0" max="30" value="'+ST.recycleN+'" onchange="ST.recycleN=Math.max(0,parseInt(this.value)||5);S.save()"></label></div>'+
+  '<div class="muted" style="margin-top:6px">Your spec: mastered words leave the main cycle, and each completed session pulls a few back for a partial review pass. Tune both numbers here.</div></div>'+
+  '<div class="card"><b>Speech</b><div class="grid2" style="margin-top:8px"><label>Voice (zh)<select onchange="ST.voice=this.value;S.save()"><option value="">Auto (prefer zh-TW)</option>'+VOICES.map(v=>'<option value="'+esc(v.name)+'"'+(v.name===ST.voice?" selected":"")+'>'+esc(v.name)+' ('+esc(v.lang)+')</option>').join("")+'</select></label>'+
+  '<label>Rate: <span id="rateVal">'+ST.rate+'</span><input type="range" min="0.5" max="1.3" step="0.05" value="'+ST.rate+'" oninput="ST.rate=parseFloat(this.value);$(\'#rateVal\').textContent=this.value;S.save()"></label></div>'+
+  '<div class="row" style="margin-top:8px"><button class="btn sm ghost" onclick="say(\'你好，我是你的台灣華語老師。\')">Test voice</button></div>'+
+  '<div class="muted" style="margin-top:6px">No zh-TW voice listed? On Windows: Settings → Time & Language → Speech → add Chinese (Traditional, Taiwan). On macOS: System Settings → Accessibility → Spoken Content → add 美佳 Meijia.</div></div>'+
+  '<div class="card"><b>Pinyin</b><div class="row" style="margin-top:6px"><label><input type="checkbox" '+(ST.showPy?"checked":"")+' onchange="ST.showPy=this.checked;S.save()" style="width:auto"> Show pinyin by default in readings</label></div></div>'+
+  '<div class="card"><b>Backup</b><div class="row" style="margin-top:8px"><button class="btn sm" onclick="exportState()">Export progress (JSON)</button><label class="btn sm ghost" style="display:inline-block">Import<input type="file" accept=".json" style="display:none" onchange="importState(this)"></label><button class="btn sm red" onclick="if(confirm(\'Wipe all progress?\')){localStorage.removeItem(\'twm_state_v1\');location.reload();}">Reset everything</button></div>'+
+  '<div class="muted" style="margin-top:6px">Progress lives in this browser\'s storage'+(S.ok?"":" (⚠ storage blocked here — export often!)")+'. Export a JSON now and then, especially before switching browsers/computers.</div></div>';
+  h+='<div class="card"><b>Content packs 內容包</b><div class="muted" style="margin-top:4px">Add-on lesson bundles (readings + listening + scenarios + vocab) generated for you day by day. Importing merges them in permanently — no need to redownload the app, and your progress is untouched.</div>'+
+  (ST.packs.length?'<div style="margin-top:8px">'+ST.packs.map(p=>'<div class="vocabrow"><b>'+esc(p.name)+'</b><span class="muted">'+esc(p.date||"")+'</span><span class="tag">'+(p.readings||[]).length+' read</span><span class="tag">'+(p.listening||[]).length+' listen</span><span class="tag">'+(p.scenarios||[]).length+' speak</span></div>').join("")+'</div>':'<div class="muted" style="margin-top:8px">No packs installed yet.</div>')+
+  '<div class="row" style="margin-top:10px"><label class="btn sm" style="display:inline-block">Import pack file<input type="file" accept=".json" style="display:none" onchange="importPack(this)"></label></div>'+
+  '<div class="hr"></div><b style="font-size:14px">Auto-sync (optional, for phone/hosted use)</b><div class="muted">Point this at your hosted packs folder (e.g. GitHub Pages). On every launch the app automatically looks for date-named packs — pack-YYYY-MM-DD.json — from the last 14 days and installs anything new. No manifest editing needed; a manifest.json ({"packs":[...]}) is only for extra files with other names. Still zero AI — just a static file fetch.</div>'+
+  '<input type="text" placeholder="https://yourname.github.io/repo/packs/" value="'+esc(ST.packURL||"")+'" onchange="ST.packURL=this.value.trim();S.save()" style="margin-top:8px">'+
+  '<div class="row" style="margin-top:8px"><button class="btn sm jade" onclick="syncPacks(false)">Check for new packs</button></div>'+
+  '<div class="hr"></div><b style="font-size:14px">Daily generator prompt</b><div class="muted">Paste this into a Claude scheduled task (or any chat in your project) to get back a ready-to-import pack file. Click to select all.</div>'+
+  '<textarea rows="7" readonly style="margin-top:8px;font-family:var(--mono);font-size:11.5px" onclick="this.select()">'+esc(PACK_PROMPT)+'</textarea></div>';
+  $("#main").innerHTML=h;}
+function exportState(){const a=document.createElement("a");a.href="data:application/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(ST));a.download="taiwan-mandarin-progress.json";a.click();}
+function importState(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{ST=JSON.parse(r.result);S.save();toast("Progress imported.");render();}catch(e){toast("That file didn't parse.");}};r.readAsText(f);}
+
+/* ================= CONTENT PACKS ================= */
+const PACK_PROMPT=`Generate today's content pack for my local Taiwanese Mandarin app. Output exactly ONE downloadable JSON file named pack-YYYY-MM-DD.json (today's date) and nothing else. STRICT: valid JSON only, no trailing commas. Traditional characters with Taiwan-standard pinyin (xīngqí, pǐnzhí, gōngjí, wéijī, xiāoxí); pinyin always alongside characters, never replacing them; no bopomofo, no simplified. PROGRESSION IS THE CORE JOB: search this project's earlier packs, find the highest day number and vocabulary already taught; today is day N+1 and must reuse about a third of prior vocabulary in new contexts while adding new material; never re-teach an old word as new; put the day number in the pack name. LEVEL RAMP: start L1 (days 1-10 mostly L1), then L2 (11-25), L3 (26-45), climbing gradually through L4 workplace, L5 news, L6 defense/UxS/government, toward L7 formal; every section gets one stretch item from one level up and one easy review item; weave my professional world (unmanned systems, meetings, government customers) in from day one at simple levels. QUANTITIES: {"id":"pack-YYYY-MM-DD","name":"Day N - theme","date":"YYYY-MM-DD","readings":[5],"listening":[2],"scenarios":[5],"vocab":[20],"slang":[2]} where each listening set has 5 dictations + 1 passage. SCHEMAS: readings {"l":1-7,"title":"","toks":[["trad","pinyin","gloss"] per word, ["punct"] alone],"qs":[3x{"q","ch":[4],"a":index}],"gram":{"t","d"}}; listening {"l","dict":[5x{"zh","py","en"}],"pass":{"zh":"60-120 chars","qs":[2-3 MCQs]}}; scenarios {"id":"unique","l","zh","en","who","intro","turns":[5-6x{"them":{"zh","py","en"},"task":"mission in English","ans":{"zh","py","en"},"keys":"key chars"}]}; vocab {"c","p","e","l","d":["daily|biz|gov|mil|tech|news|formal"],"x":[zh,py,en],"n":"TW note optional"}; slang same minus l,d. Realistic Taiwan situations, natural speech (o, la, ho), honest grammar notes. My profile: American engineer, unmanned systems, works with businesses/governments/military; targets OPI 4 / DLPT 4. After the file, print the filename on its own line.`;
+function installPack(p){
+  if(!p||!p.id)return "Not a pack: missing id.";
+  if(ST.packs.some(x=>x.id===p.id))return "Pack "+p.id+" is already installed.";
+  (p.vocab||[]).forEach(w=>ST.custom.push({c:w.c,p:w.p||"—",e:w.e,l:w.l||ST.level,d:w.d||["daily"],x:w.x||null,n:w.n}));
+  const st={id:p.id,name:p.name||p.id,date:p.date||"",readings:p.readings||[],listening:p.listening||[],scenarios:p.scenarios||[],slang:p.slang||[]};
+  ST.packs.push(st);
+  st.readings.forEach(x=>READINGS.push(x));st.listening.forEach(x=>LISTENING.push(x));
+  st.scenarios.forEach(x=>SCENARIOS.push(x));st.slang.forEach(x=>SLANG.push(x));
+  S.save();return null;}
+function importPack(inp){const f=inp.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const err=installPack(JSON.parse(r.result));toast(err||"Pack installed 安裝完成！");if(!err)render();}
+  catch(e){toast("That file didn't parse as a pack.");}};r.readAsText(f);}
+function syncPacks(quiet){if(!ST.packURL){if(!quiet)toast("Set a pack URL first.");return;}
+  const base=ST.packURL.replace(/\/?$/,"/");
+  const probes=[];for(let i=0;i<14;i++){probes.push("pack-"+new Date(Date.now()-i*864e5).toISOString().slice(0,10)+".json");}
+  fetch(base+"manifest.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null)
+  .then(m=>{const listed=(m&&m.packs)||[];const files=[...new Set(listed.concat(probes))];
+    let chain=Promise.resolve(0);
+    files.forEach(f=>{chain=chain.then(n=>fetch(base+f,{cache:"no-store"})
+      .then(r=>{if(!r.ok)throw 0;return r.json();})
+      .then(p=>installPack(p)?n:n+1).catch(()=>n));});
+    chain.then(n=>{if(n){toast(n+" new pack"+(n>1?"s":"")+" installed.");render();}
+      else if(!quiet)toast("You're up to date.");});
+  });}
+function applyPacks(){ST.packs.forEach(p=>{(p.readings||[]).forEach(x=>READINGS.push(x));
+  (p.listening||[]).forEach(x=>LISTENING.push(x));(p.scenarios||[]).forEach(x=>SCENARIOS.push(x));
+  (p.slang||[]).forEach(x=>SLANG.push(x));});}
+
+/* ================= BOOT ================= */
+applyPacks();render();if(ST.packURL)syncPacks(true);
+</script>
+</body>
+</html>
