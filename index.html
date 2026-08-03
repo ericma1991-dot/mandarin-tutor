@@ -940,8 +940,8 @@ S.save=()=>{try{if(S.ok)localStorage.setItem("twm_state_v1",JSON.stringify(ST));
 
 let ST=S.load()||{placed:false,level:3,session:0,streak:0,lastDay:"",newPer:12,recycleN:5,
 srs:{},gradQ:[],custom:[],readDone:{},listenDone:{},scenDone:{},today:{},todayDay:"",
-voice:"",rate:0.92,showPy:true,stats:{rev:0,ok:0},slangSeen:0,packs:[]};
-ST.packs=ST.packs||[];
+voice:"",rate:0.92,showPy:true,stats:{rev:0,ok:0},slangSeen:0,packs:[],hard:[]};
+ST.packs=ST.packs||[];ST.hard=ST.hard||[];
 
 function allVocab(){return VOCAB.concat(ST.custom);}
 function vid(i){return i<VOCAB.length?"v"+i:"c"+(i-VOCAB.length);}
@@ -1060,9 +1060,13 @@ function rVocab(){
   let h='<div class="eyebrow">Spaced repetition</div><h1 class="pagetitle">詞彙 Vocab</h1>'+
   '<p class="pagesub">'+due+' reviews due · '+fresh+' new available at your level · '+counts.grad+' graduated (recycled '+ST.recycleN+' per session)</p>'+
   '<div class="row" style="margin-bottom:20px"><button class="btn red" '+(due+fresh?'':'disabled ')+'onclick="VQ=buildQueue();render()">Start session</button>'+
+  '<button class="btn jade" '+(ST.hard.length?'':'disabled ')+'onclick="VQ=buildHardQueue();render()">🚩 Drill hard words ('+ST.hard.length+')</button>'+
   '<button class="btn ghost" onclick="window.showBrowse=!window.showBrowse;render()">Browse all words</button>'+
-  '<button class="btn ghost" onclick="window.showAdd=!window.showAdd;render()">+ Add my own word</button></div>';
-  if(VQ&&VQ.i>=VQ.ids.length&&VQ.ids.length){h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">學</span><div style="margin-top:8px"><b>Vocab session done</b> — '+VQ.ids.length+' cards.</div></div>';markToday("vocab");VQ=null;}
+  '<button class="btn ghost" onclick="window.showAdd=!window.showAdd;render()">+ Add my own word</button></div>'+
+  '<div class="muted" style="margin-top:-10px;margin-bottom:16px">Flag any card with 🚩 during a session. Hard-word drills never touch your review schedule — run them as many times a day as you like.</div>';
+  if(VQ&&VQ.i>=VQ.ids.length&&VQ.ids.length){
+    if(VQ.mode==="hard"){h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">練</span><div style="margin-top:8px"><b>Hard-word drill done</b> — '+VQ.ids.length+' cards. '+(ST.hard.length?ST.hard.length+' still flagged — go again whenever.':'All cleared! 太厲害了。')+'</div></div>';VQ=null;}
+    else{h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">學</span><div style="margin-top:8px"><b>Vocab session done</b> — '+VQ.ids.length+' cards.</div></div>';markToday("vocab");VQ=null;}}
   if(window.showAdd)h+=addForm();
   if(window.showBrowse)h+=browse();
   $("#main").innerHTML=h;}
@@ -1072,10 +1076,11 @@ function addWord(){const c=$("#aw_c").value.trim(),p=$("#aw_p").value.trim(),e=$
   ST.custom.push({c,p:p||"—",e,l,d:["daily"],x:null});S.save();window.showAdd=false;toast("Added "+c);render();}
 function browse(){const av=allVocab();
   let rows=av.map((w,i)=>{const r=ST.srs[vid(i)];const st=r?({learn:"learning",rev:"review",grad:"★ graduated"})[r.st]:"unseen";
-  return '<div class="vocabrow"><span class="zh">'+esc(w.c)+'</span>'+pyHtml(w.p)+'<span class="en">'+esc(w.e)+'</span><span class="tag gray">L'+w.l+'</span><span class="muted">'+st+'</span>'+speakerBtn(w.c,1)+'</div>';}).join("");
+  return '<div class="vocabrow"><span class="zh">'+esc(w.c)+'</span>'+pyHtml(w.p)+'<span class="en">'+esc(w.e)+'</span><span class="tag gray">L'+w.l+'</span>'+(ST.hard.includes(vid(i))?'<span class="tag red">🚩</span>':'')+'<span class="muted">'+st+'</span>'+speakerBtn(w.c,1)+'</div>';}).join("");
   return '<div class="card"><b>All words ('+av.length+')</b>'+rows+'</div>';}
-function renderCard(){const id=VQ.ids[VQ.i];const w=byId(id);const r=ST.srs[id];const isNew=!r;
-  let inner='<div class="domtags">'+domTags(w.d)+'</div><div class="srsinfo">'+(isNew?'<span class="tag red">NEW</span>':'<span class="tag gray">'+(r.st==="grad"?"recycle":r.st)+'</span>')+' <span class="tag gold">L'+w.l+'</span></div>'+
+function renderCard(){const id=VQ.ids[VQ.i];const w=byId(id);const r=ST.srs[id];const isNew=!r&&VQ.mode!=="hard";
+  const hardOn=ST.hard.includes(id);
+  let inner='<div class="domtags">'+domTags(w.d)+'</div><div class="srsinfo">'+(VQ.mode==="hard"?'<span class="tag red">🚩 hard drill</span>':(isNew?'<span class="tag red">NEW</span>':'<span class="tag gray">'+(r&&r.st==="grad"?"recycle":(r?r.st:"new"))+'</span>'))+' <span class="tag gold">L'+w.l+'</span></div>'+
   '<div class="big-zh">'+esc(w.c)+'</div>';
   if(VQ.revealed||isNew){inner+='<div>'+pyHtml(w.p)+'</div><div style="font-size:18px">'+esc(w.e)+'</div>'+speakerBtn(w.c)+
     (w.x?'<div class="hr" style="width:60%"></div><div class="zh" style="font-size:19px;font-weight:600">'+esc(w.x[0])+'</div><div>'+pyHtml(w.x[1])+'</div><div class="muted">'+esc(w.x[2])+'</div>'+speakerBtn(w.x[0],1):"")+
@@ -1084,11 +1089,16 @@ function renderCard(){const id=VQ.ids[VQ.i];const w=byId(id);const r=ST.srs[id];
   let btns;
   if(isNew&&!VQ.revealed)VQ.revealed=true; // new cards show everything
   if(!VQ.revealed)btns='<div class="gradebtns"><button class="btn" onclick="VQ.revealed=true;render()">Reveal 翻牌</button></div>';
+  else if(VQ.mode==="hard")btns='<div class="gradebtns"><button class="btn red" onclick="nextCard()">還是難 Still hard</button><button class="btn jade" onclick="unHard(\''+id+'\');nextCard()">記住了 Got it</button></div>';
   else if(isNew)btns='<div class="gradebtns"><button class="btn jade" onclick="grade(\''+id+'\',1);nextCard()">Got it 學了</button></div>';
   else btns='<div class="gradebtns"><button class="btn red" onclick="grade(\''+id+'\',0);nextCard()">Again 再來</button><button class="btn" onclick="grade(\''+id+'\',1);nextCard()">Good 記得</button><button class="btn jade" onclick="grade(\''+id+'\',2);nextCard()">Easy 簡單</button></div>';
-  $("#main").innerHTML='<div class="eyebrow">card '+(VQ.i+1)+' / '+VQ.ids.length+'</div><div class="flashcard">'+inner+'</div>'+btns+
-  '<div style="text-align:center;margin-top:14px"><button class="btn ghost sm" onclick="VQ=null;render()">Exit session</button></div>';}
+  const flagBtn='<div style="text-align:center;margin-top:12px"><button class="btn sm '+(hardOn?'red':'ghost')+'" onclick="toggleHard(\''+id+'\')">'+(hardOn?'🚩 flagged as hard — tap to unflag':'🚩 flag as hard 標記難字')+'</button></div>';
+  $("#main").innerHTML='<div class="eyebrow">'+(VQ.mode==="hard"?"hard drill · ":"")+'card '+(VQ.i+1)+' / '+VQ.ids.length+'</div><div class="flashcard">'+inner+'</div>'+btns+flagBtn+
+  '<div style="text-align:center;margin-top:8px"><button class="btn ghost sm" onclick="VQ=null;render()">Exit session</button></div>';}
 function nextCard(){VQ.i++;VQ.revealed=false;render();}
+function buildHardQueue(){return {ids:ST.hard.slice(),i:0,revealed:false,mode:"hard"};}
+function toggleHard(id){const k=ST.hard.indexOf(id);if(k>=0)ST.hard.splice(k,1);else ST.hard.push(id);S.save();render();}
+function unHard(id){const k=ST.hard.indexOf(id);if(k>=0)ST.hard.splice(k,1);S.save();}
 
 /* ================= READING ================= */
 let RD=null; // {idx, showPy, answers:[]}
