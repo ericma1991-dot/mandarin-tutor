@@ -1282,7 +1282,7 @@ function importPack(inp){const f=inp.files[0];if(!f)return;const r=new FileReade
   catch(e){toast("That file didn't parse as a pack.");}};r.readAsText(f);}
 function syncPacks(quiet){if(!ST.packURL){if(!quiet)toast("Set a pack URL first.");return;}
   const base=ST.packURL.replace(/\/?$/,"/");
-  const probes=[];for(let i=0;i<14;i++){probes.push("pack-"+new Date(Date.now()-i*864e5).toISOString().slice(0,10)+".json");}
+  const probes=[];for(let i=-1;i<14;i++){probes.push("pack-"+new Date(Date.now()-i*864e5).toISOString().slice(0,10)+".json");}
   fetch(base+"manifest.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).catch(()=>null)
   .then(m=>{const listed=(m&&m.packs)||[];const files=[...new Set(listed.concat(probes))];
     let chain=Promise.resolve(0);
