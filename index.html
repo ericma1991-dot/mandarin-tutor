@@ -940,8 +940,8 @@ S.save=()=>{try{if(S.ok)localStorage.setItem("twm_state_v1",JSON.stringify(ST));
 
 let ST=S.load()||{placed:false,level:3,session:0,streak:0,lastDay:"",newPer:12,recycleN:5,
 srs:{},gradQ:[],custom:[],readDone:{},listenDone:{},scenDone:{},today:{},todayDay:"",
-voice:"",rate:0.92,showPy:true,stats:{rev:0,ok:0},slangSeen:0,packs:[],hard:[]};
-ST.packs=ST.packs||[];ST.hard=ST.hard||[];
+voice:"",rate:0.92,showPy:true,stats:{rev:0,ok:0},slangSeen:0,packs:[],hard:[],name:""};
+ST.packs=ST.packs||[];ST.hard=ST.hard||[];ST.name=ST.name||"";
 
 function allVocab(){return VOCAB.concat(ST.custom);}
 function vid(i){return i<VOCAB.length?"v"+i:"c"+(i-VOCAB.length);}
@@ -988,7 +988,7 @@ const SRcls=window.SpeechRecognition||window.webkitSpeechRecognition||null;
 
 /* ================= HELPERS ================= */
 const $=s=>document.querySelector(s);
-function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function esc(s){s=String(s);try{if(ST&&ST.name&&ST.name!=="Eric")s=s.replace(/Eric\b/g,ST.name);}catch(e){}return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 function toast(m){const t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(t._h);t._h=setTimeout(()=>t.style.display="none",2600);}
 function norm(s){return String(s).replace(/[^\u3400-\u9FFF\uF900-\uFAFF0-9A-Za-z]/g,"");}
 function lev(a,b){const m=a.length,n=b.length;if(!m)return n;if(!n)return m;let p=Array.from({length:n+1},(_,j)=>j);
@@ -1024,7 +1024,18 @@ function ensureToday(){const d=todayStr();
     S.save();}
 }
 function markToday(part){ensureToday();ST.today[part+"Done"]=true;S.save();if(VIEW==="today")render();}
+function goNextToday(){ensureToday();const T=ST.today;
+  if(!T.vocabDone){go("vocab");return;}
+  if(!T.readDone){openReading(T.read);return;}
+  if(!T.listenDone){openListen(T.listen);return;}
+  if(!T.scenDone){openScen(T.scen);return;}
+  go("today");}
+function nextBtn(){ensureToday();const T=ST.today;
+  const left=[];if(!T.vocabDone)left.push("詞 Vocab");if(!T.readDone)left.push("讀 Reading");if(!T.listenDone)left.push("聽 Listening");if(!T.scenDone)left.push("說 Speaking");
+  if(!left.length)return '<div class="row" style="margin-top:12px;justify-content:center"><button class="btn jade" onclick="go(\'today\')">All four done — claim today\'s stamp 蓋章 →</button></div>';
+  return '<div class="row" style="margin-top:12px;justify-content:center"><button class="btn red" onclick="goNextToday()">Next section: '+left[0]+' →</button><button class="btn ghost sm" onclick="go(\'today\')">Today overview</button></div>';}
 function rToday(){ensureToday();const T=ST.today;
+  if(!ST.name){$("#main").innerHTML='<div class="eyebrow">歡迎 Welcome</div><h1 class="pagetitle">你叫什麼名字？ What should I call you?</h1><p class="pagesub">Your name appears inside the dialogues and scenarios. Each phone or browser keeps its own name, level, streak, and progress — so you and your wife each get your own copy on your own devices.</p><div class="card"><input type="text" id="nmIn" placeholder="Your name" style="max-width:340px"><div style="margin-top:12px"><button class="btn red" onclick="ST.name=($(\'#nmIn\').value.trim()||\'同學\');S.save();render()">開始 Start</button></div></div>';return;}
   if(!ST.placed){$("#main").innerHTML='<div class="eyebrow">開始 First things first</div><h1 class="pagetitle">Where should we start?</h1>'+
   '<p class="pagesub">Pick the level that matches you today — you can change it anytime in Settings. You said A2–B1, so Level 3 is the recommended door in.</p>'+
   LEVELS.map(L=>'<div class="card" style="cursor:pointer" onclick="ST.level='+L.n+';ST.placed=true;S.save();render()"><div class="spread"><div><span class="levelchip">L'+L.n+'</span> <b class="zh" style="font-size:20px">'+L.zh+'</b> '+esc(L.en)+(L.n===3?' <span class="tag red">recommended</span>':'')+'<div class="muted">'+esc(L.desc)+'</div></div><div class="muted">'+esc(L.band)+'</div></div></div>').join("");return;}
@@ -1066,7 +1077,7 @@ function rVocab(){
   '<div class="muted" style="margin-top:-10px;margin-bottom:16px">Flag any card with 🚩 during a session. Hard-word drills never touch your review schedule — run them as many times a day as you like.</div>';
   if(VQ&&VQ.i>=VQ.ids.length&&VQ.ids.length){
     if(VQ.mode==="hard"){h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">練</span><div style="margin-top:8px"><b>Hard-word drill done</b> — '+VQ.ids.length+' cards. '+(ST.hard.length?ST.hard.length+' still flagged — go again whenever.':'All cleared! 太厲害了。')+'</div></div>';VQ=null;}
-    else{h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">學</span><div style="margin-top:8px"><b>Vocab session done</b> — '+VQ.ids.length+' cards.</div></div>';markToday("vocab");VQ=null;}}
+    else{markToday("vocab");h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">學</span><div style="margin-top:8px"><b>Vocab session done</b> — '+VQ.ids.length+' cards.</div>'+nextBtn()+'</div>';VQ=null;}}
   if(window.showAdd)h+=addForm();
   if(window.showBrowse)h+=browse();
   $("#main").innerHTML=h;}
@@ -1129,7 +1140,7 @@ function renderReading(){const r=READINGS[RD.idx];
   const done=r.qs.every((q,qi)=>RD.ans[qi]!==undefined);
   if(done){const score=r.qs.filter((q,qi)=>RD.ans[qi]===q.a).length;
     if(!ST.readDone[RD.idx]){ST.readDone[RD.idx]=true;S.save();if(RD.idx===ST.today.read)markToday("read");}
-    h+='<div style="margin-top:14px;text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">讀</span><div style="margin-top:6px"><b>'+score+' / '+r.qs.length+'</b> — passage complete.</div></div>';}
+    h+='<div style="margin-top:14px;text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">讀</span><div style="margin-top:6px"><b>'+score+' / '+r.qs.length+'</b> — passage complete.</div>'+nextBtn()+'</div>';}
   h+='</div>';$("#main").innerHTML=h;}
 
 /* ================= LISTENING ================= */
@@ -1162,7 +1173,7 @@ function renderListen(){const li=LISTENING[LS.idx];
     const done=p.qs.every((q,qi)=>LS.pAns[qi]!==undefined);
     if(done){const score=p.qs.filter((q,qi)=>LS.pAns[qi]===q.a).length;
       if(!ST.listenDone[LS.idx]){ST.listenDone[LS.idx]=true;S.save();if(LS.idx===ST.today.listen)markToday("listen");}
-      h+='<div class="hr"></div><div class="zh" style="font-size:19px;font-weight:600">'+esc(p.zh)+'</div><div style="margin-top:10px;text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">聽</span><div style="margin-top:6px"><b>'+score+' / '+p.qs.length+'</b></div></div>';}
+      h+='<div class="hr"></div><div class="zh" style="font-size:19px;font-weight:600">'+esc(p.zh)+'</div><div style="margin-top:10px;text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">聽</span><div style="margin-top:6px"><b>'+score+' / '+p.qs.length+'</b></div>'+nextBtn()+'</div>';}
     h+='</div>';}
   $("#main").innerHTML=h;}
 function li_len(){return LISTENING[LS.idx].dict.length;}
@@ -1170,7 +1181,8 @@ function li_len(){return LISTENING[LS.idx].dict.length;}
 /* ================= SPEAKING ================= */
 let SP=null; // {idx,ti,shown,transcript,score,listening}
 function rSpeak(){if(SP)return renderScen();
-  let h='<div class="eyebrow">Realistic roleplay · mic + zh-TW recognition</div><h1 class="pagetitle">會話 Speaking</h1><p class="pagesub">Your partner speaks (turn your sound on), you get a mission in English, and you answer out loud in Mandarin. '+(SRcls?"Speech recognition is available in this browser.":"⚠ No speech recognition in this browser — use Chrome or Edge, or self-grade with the reveal button.")+'</p>';
+  let h='';if(window.justScen){window.justScen=false;h+='<div class="card" style="text-align:center"><span class="stamp" style="width:50px;height:50px;font-size:24px">說</span><div style="margin-top:6px"><b>Scenario complete 蓋章！</b></div>'+nextBtn()+'</div>';}
+  h+='<div class="eyebrow">Realistic roleplay · mic + zh-TW recognition</div><h1 class="pagetitle">會話 Speaking</h1><p class="pagesub">Your partner speaks (turn your sound on), you get a mission in English, and you answer out loud in Mandarin. '+(SRcls?"Mic ready - tap the mic, speak right away, and the app scores you. iPhone tip: if the mic stalls from the home-screen icon, open the site in a regular Safari tab and check Settings > Apps > Safari > Microphone.":"Speech recognition is not available in this browser. iPhone: use Safari (iOS 17+). Desktop: Chrome or Edge. You can still do every scenario - play the partner line, answer aloud, then Show answer to self-check; Next unlocks either way.")+'</p>';
   SCENARIOS.forEach((s,i)=>{h+='<div class="card"><div class="spread"><div><span class="levelchip">L'+s.l+'</span> <b class="zh" style="font-size:18px">'+esc(s.zh)+'</b> '+esc(s.en)+(ST.scenDone[i]?' <span class="tag">done ✓</span>':'')+'<div class="muted">'+esc(s.intro)+'</div></div><button class="btn sm red" onclick="openScen('+i+')">Enter</button></div></div>';});
   $("#main").innerHTML=h;}
 function openScen(i){SP={idx:i,ti:0,shown:false,transcript:"",score:null,history:[]};VIEW="speak";render();
@@ -1194,14 +1206,17 @@ function renderScen(){const s=SCENARIOS[SP.idx];const t=s.turns[SP.ti];
   h+='<div class="row" style="margin-top:12px"><button class="btn jade" '+(canNext?"":"disabled ")+'onclick="nextTurn()">'+(SP.ti+1<s.turns.length?"Next turn →":"Finish scenario 完成")+'</button></div></div>';
   $("#main").innerHTML=h;}
 function bubble(m,side,noEn){return '<div class="dlgline '+side+'"><div class="who">'+(side==="them"?"對":"你")+'</div><div class="dlgbubble"><div class="dlg-zh">'+esc(m.zh)+'</div><div class="dlg-py">'+esc(m.py)+'</div>'+(noEn?"":'<div class="dlg-en">'+esc(m.en)+'</div>')+'</div></div>';}
-function listen(){if(!SRcls)return;const rec=new SRcls();rec.lang="zh-TW";rec.interimResults=false;rec.maxAlternatives=3;
+function listen(){if(!SRcls)return;const rec=new SRcls();rec.lang="zh-TW";rec.interimResults=false;rec.continuous=false;try{rec.maxAlternatives=3;}catch(e){}
   SP.listening=true;render();
-  rec.onresult=e=>{let best="",bs=-1;const t=SCENARIOS[SP.idx].turns[SP.ti];
-    for(const alt of e.results[0]){const s=scoreAns(alt.transcript,t);if(s>bs){bs=s;best=alt.transcript;}}
-    SP.transcript=best;SP.score=bs;SP.listening=false;render();};
-  rec.onerror=()=>{SP.listening=false;toast("Mic error — check permissions, or use Show answer.");render();};
-  rec.onend=()=>{if(SP&&SP.listening){SP.listening=false;render();}};
-  rec.start();}
+  const to=setTimeout(()=>{try{rec.stop();}catch(e){}if(SP&&SP.listening){SP.listening=false;toast("Did not catch anything - try again closer to the mic, or use Show answer.");render();}},12000);
+  rec.onresult=e=>{clearTimeout(to);if(!SP)return;let best="",bs=-1;const t=SCENARIOS[SP.idx].turns[SP.ti];const res=e.results&&e.results[0];
+    if(res){for(let i=0;i<res.length;i++){const alt=res[i]||(res.item&&res.item(i));if(!alt||!alt.transcript)continue;const sc=scoreAns(alt.transcript,t);if(sc>bs){bs=sc;best=alt.transcript;}}}
+    SP.transcript=best;SP.score=bs<0?0:bs;SP.listening=false;render();};
+  rec.onerror=e=>{clearTimeout(to);if(!SP)return;SP.listening=false;
+    const m={"not-allowed":"Mic blocked - allow the microphone for this site (padlock icon or phone Settings).","service-not-allowed":"Mic blocked by the system - check phone Settings for browser microphone access.","no-speech":"Did not hear anything - tap the mic and speak right away.","audio-capture":"No microphone found on this device.","network":"Speech scoring needs internet - check your connection.","aborted":"Mic stopped early - tap and try again."}[e.error]||("Mic error ("+e.error+") - Show answer + self-check always works.");
+    toast(m);render();};
+  rec.onend=()=>{clearTimeout(to);if(SP&&SP.listening){SP.listening=false;render();}};
+  try{rec.start();}catch(e){clearTimeout(to);SP.listening=false;toast("Could not start the mic - tap again, or use Show answer.");render();}}
 function scoreAns(said,t){const s1=sim(said,t.ans.zh);
   const keys=norm(t.keys||"");let hit=0;for(const ch of keys)if(norm(said).includes(ch))hit++;
   const s2=keys.length?hit/keys.length:0;return Math.max(s1,s2*0.9+s1*0.1);}
@@ -1209,7 +1224,7 @@ function nextTurn(){const s=SCENARIOS[SP.idx];
   const t=s.turns[SP.ti];SP.history.push({them:t.them,you:SP.transcript?{zh:SP.transcript,py:"",en:""}:t.ans});
   SP.ti++;SP.shown=false;SP.transcript="";SP.score=null;
   if(SP.ti>=s.turns.length){ST.scenDone[SP.idx]=true;S.save();if(SP.idx===ST.today.scen)markToday("scen");
-    toast("蓋章！Scenario complete.");SP=null;render();return;}
+    window.justScen=true;SP=null;render();return;}
   render();setTimeout(()=>say(s.turns[SP.ti].them.zh),250);}
 
 /* ================= SLANG ================= */
@@ -1242,6 +1257,7 @@ function rProg(){const av=allVocab();const per={};LEVELS.forEach(L=>per[L.n]={to
 /* ================= SETTINGS ================= */
 function rSet(){loadVoices();
   let h='<div class="eyebrow">Tune the machine</div><h1 class="pagetitle">設定 Settings</h1>'+
+  '<div class="card"><b>Your name</b><div class="muted">Appears inside dialogues and scenarios on this device. Each phone/browser has its own name and progress.</div><input type="text" value="'+(ST.name==="Eric"?"Eric":esc(ST.name||""))+'" onchange="ST.name=this.value.trim();S.save();toast(\'Name updated!\')" style="max-width:340px;margin-top:8px"></div>'+
   '<div class="card"><b>Level</b><div class="muted">Current: L'+ST.level+' — sets which new vocab, readings, listening and default scenarios you get.</div>'+lvlBand()+'</div>'+
   '<div class="card"><b>Vocab cycle</b><div class="grid2" style="margin-top:8px"><label>New words per session<input type="number" min="1" max="50" value="'+ST.newPer+'" onchange="ST.newPer=Math.max(1,parseInt(this.value)||12);S.save()"></label>'+
   '<label>Graduated words recycled per session<input type="number" min="0" max="30" value="'+ST.recycleN+'" onchange="ST.recycleN=Math.max(0,parseInt(this.value)||5);S.save()"></label></div>'+
