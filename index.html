@@ -100,7 +100,7 @@ input:focus,textarea:focus,select:focus{outline:2px solid var(--jade);outline-of
 .reading-zh{font-family:var(--serif);font-size:23px;line-height:2.15;font-weight:600}
 .rubytop{display:block;font-family:var(--mono);font-size:10px;color:var(--jade);text-align:center;line-height:1;margin-bottom:2px;min-height:10px}
 .tokv{display:inline-block;vertical-align:bottom;text-align:center;margin:0 1px}
-#tip{position:fixed;background:var(--ink);color:#fff;padding:9px 13px;border-radius:8px;font-size:13.5px;max-width:280px;z-index:99;pointer-events:none;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none}
+#tip{position:fixed;background:var(--ink);color:#fff;padding:9px 13px;border-radius:8px;font-size:13.5px;max-width:300px;z-index:99;pointer-events:auto;box-shadow:0 4px 16px rgba(0,0,0,.25);display:none}
 #tip .py{color:#8FD4C4}
 #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 20px;border-radius:9px;font-size:14px;z-index:100;display:none;box-shadow:0 6px 20px rgba(0,0,0,.3)}
 .flashcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:38px 30px;text-align:center;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative}
@@ -1000,6 +1000,38 @@ function attrJS(s){return esc(JSON.stringify(s));}
 function pyHtml(p){return '<span class="py">'+esc(p)+'</span>';}
 function speakerBtn(zh,sm){return '<button class="audiobtn'+(sm?' sm':'')+'" onclick="say('+attrJS(zh)+')" title="Listen">&#9654;</button>';}
 
+/* ---- tap-to-define + add-to-flashcards (works in reading AND conversations) ---- */
+let DICTX=null;
+function buildDict(){DICTX={};const add=(c,p,e)=>{if(c&&c.length<=10&&!DICTX[c])DICTX[c]={p:p||"",e:e||""};};
+  allVocab().forEach(w=>add(w.c,w.p,w.e));SLANG.forEach(w=>add(w.c,w.p,w.e));
+  READINGS.forEach(r=>(r.toks||[]).forEach(t=>{if(t.length===3)add(t[0],t[1],t[2]);}));}
+function segZh(s){if(!DICTX)buildDict();const out=[];let i=0;s=String(s);
+  while(i<s.length){let hit=null;
+    for(let L=Math.min(8,s.length-i);L>=1;L--){const sub=s.slice(i,i+L);if(DICTX[sub]){hit={t:sub,p:DICTX[sub].p,e:DICTX[sub].e};break;}}
+    if(hit&&(hit.p||hit.e)){out.push(hit);i+=hit.t.length;}else{out.push({t:s[i]});i++;}}
+  return out;}
+function zhTapHtml(zh){return segZh(zh).map(w=>w.p!==undefined?'<span class="tok hasdef" onclick="showTip(event,'+attrJS(w.t)+','+attrJS(w.p)+','+attrJS(w.e)+')">'+esc(w.t)+'</span>':esc(w.t)).join("");}
+function addCard(c,p,e){c=String(c||"").trim();if(!c){toast("Nothing to add.");return;}
+  if(allVocab().some(w=>w.c===c)||SLANG.some(w=>w.c===c)){toast("「"+c+"」 is already in your deck.");return;}
+  ST.custom.push({c:c,p:String(p||"").trim()||"—",e:String(e||"").trim()||"(from lesson)",l:ST.level,d:["daily"],x:null});
+  DICTX=null;S.save();toast("已加入！ "+c+" will appear as a NEW flashcard.");}
+function showTip(ev,c,p,g){const tip=$("#tip");
+  tip.innerHTML='<b class="zh">'+esc(c)+'</b> <span class="py">'+esc(p)+'</span><br>'+esc(g)+
+  '<div style="margin-top:7px"><button class="btn sm jade" onclick="addCard('+attrJS(c)+','+attrJS(p)+','+attrJS(g)+');hideTip()">＋ Add to vocab 加入單字</button></div>';
+  tip.style.display="block";const x=Math.min(ev.clientX,window.innerWidth-310);tip.style.left=Math.max(6,x)+"px";tip.style.top=(ev.clientY+18)+"px";
+  clearTimeout(tip._h);tip._h=setTimeout(()=>tip.style.display="none",7000);say(c,1);}
+function hideTip(){$("#tip").style.display="none";}
+function tipTok(ev,ri,ti){const t=READINGS[ri].toks[ti];showTip(ev,t[0],t[1],t[2]);}
+function openPhrase(zh,py,en){window.PH={zh:zh||"",py:py||"",en:en||""};render();}
+function autoPy(){const c=$("#ph_c").value.trim();$("#ph_p").value=segZh(c).map(w=>w.p?w.p:w.t).join(" ").replace(/\s+/g," ").trim();}
+function phrasePanel(){if(!window.PH)return "";const P=window.PH;
+  return '<div class="card" style="background:#FDF7EC;border-color:#E8D9B8"><b>＋ Save word / phrase 加入單字卡</b><div class="muted">Trim the text to just the piece you want, adjust pinyin/meaning, save. It joins your SRS as a NEW card.</div>'+
+  '<div class="grid2" style="margin-top:8px"><input id="ph_c" value="'+esc(P.zh)+'" placeholder="漢字 word or phrase"><input id="ph_p" value="'+esc(P.py)+'" placeholder="pinyin"></div>'+
+  '<input id="ph_e" value="'+esc(P.en)+'" placeholder="meaning" style="margin-top:8px">'+
+  '<div class="row" style="margin-top:10px"><button class="btn sm jade" onclick="addCard($(\'#ph_c\').value,$(\'#ph_p\').value,$(\'#ph_e\').value);window.PH=null;render()">Save 加入</button>'+
+  '<button class="btn sm ghost" onclick="autoPy()">Auto-pinyin (after trimming)</button>'+
+  '<button class="btn sm ghost" onclick="window.PH=null;render()">Cancel</button></div></div>';}
+
 /* ================= NAV / ROUTER ================= */
 const NAV=[["today","今","Today's Lesson"],["vocab","詞","Vocab"],["read","讀","Reading"],["listen","聽","Listening"],["speak","說","Speaking"],["slang","味","台灣味 Slang"],["res","源","Resources"],["prog","進","Progress"],["set","設","Settings"]];
 function nav(){$("#nav").innerHTML=NAV.map(n=>'<button class="navbtn'+(VIEW===n[0]?" on":"")+'" onclick="go(\''+n[0]+'\')"><span class="seal">'+n[1]+'</span>'+n[2]+'</button>').join("");
@@ -1084,7 +1116,7 @@ function rVocab(){
 function addForm(){return '<div class="card"><b>Add a word</b><div class="grid2" style="margin-top:10px"><input id="aw_c" placeholder="漢字 characters (trad.)"><input id="aw_p" placeholder="pinyin"><input id="aw_e" placeholder="English meaning"><select id="aw_l">'+LEVELS.map(L=>'<option value="'+L.n+'"'+(L.n===ST.level?' selected':'')+'>Level '+L.n+' '+L.zh+'</option>').join("")+'</select></div><div style="margin-top:10px"><button class="btn sm jade" onclick="addWord()">Save word</button></div></div>';}
 function addWord(){const c=$("#aw_c").value.trim(),p=$("#aw_p").value.trim(),e=$("#aw_e").value.trim(),l=parseInt($("#aw_l").value);
   if(!c||!e){toast("Need at least characters + meaning.");return;}
-  ST.custom.push({c,p:p||"—",e,l,d:["daily"],x:null});S.save();window.showAdd=false;toast("Added "+c);render();}
+  ST.custom.push({c,p:p||"—",e,l,d:["daily"],x:null});DICTX=null;S.save();window.showAdd=false;toast("Added "+c);render();}
 function browse(){const av=allVocab();
   let rows=av.map((w,i)=>{const r=ST.srs[vid(i)];const st=r?({learn:"learning",rev:"review",grad:"★ graduated"})[r.st]:"unseen";
   return '<div class="vocabrow"><span class="zh">'+esc(w.c)+'</span>'+pyHtml(w.p)+'<span class="en">'+esc(w.e)+'</span><span class="tag gray">L'+w.l+'</span>'+(ST.hard.includes(vid(i))?'<span class="tag red">🚩</span>':'')+'<span class="muted">'+st+'</span>'+speakerBtn(w.c,1)+'</div>';}).join("");
@@ -1123,14 +1155,12 @@ function lvlBand(){return '<div class="lvlband">'+LEVELS.map(L=>'<div class="lvl
 function openReading(i){RD={idx:i,showPy:ST.showPy,ans:{}};VIEW="read";render();}
 function tokHtml(t,ri,ti){if(t.length===1)return '<span class="tokv"><span class="rubytop"></span><span>'+esc(t[0])+'</span></span>';
   return '<span class="tokv"><span class="rubytop">'+(RD.showPy?esc(t[1]):"")+'</span><span class="tok hasdef" onclick="tipTok(event,'+ri+','+ti+')">'+esc(t[0])+'</span></span>';}
-function tipTok(ev,ri,ti){const t=READINGS[ri].toks[ti];const tip=$("#tip");
-  tip.innerHTML='<b class="zh">'+esc(t[0])+'</b> <span class="py">'+esc(t[1])+'</span><br>'+esc(t[2]);
-  tip.style.display="block";const x=Math.min(ev.clientX,window.innerWidth-300);tip.style.left=x+"px";tip.style.top=(ev.clientY+18)+"px";
-  clearTimeout(tip._h);tip._h=setTimeout(()=>tip.style.display="none",3200);say(t[0],1);}
+
 function renderReading(){const r=READINGS[RD.idx];
   let h='<button class="btn ghost sm" onclick="RD=null;render()">← All readings</button><div class="eyebrow" style="margin-top:14px">Level '+r.l+' · '+LEVELS[r.l-1].zh+'</div><h1 class="pagetitle" style="font-size:24px">'+esc(r.title)+'</h1>'+
-  '<div class="row" style="margin:10px 0"><button class="btn sm ghost" onclick="RD.showPy=!RD.showPy;render()">'+(RD.showPy?"Hide":"Show")+' pinyin</button><button class="btn sm ghost" onclick="say('+attrJS(r.toks.map(t=>t[0]).join(""))+')">▶ Listen to passage</button></div>'+
+  '<div class="row" style="margin:10px 0"><button class="btn sm ghost" onclick="RD.showPy=!RD.showPy;render()">'+(RD.showPy?"Hide":"Show")+' pinyin</button><button class="btn sm ghost" onclick="say('+attrJS(r.toks.map(t=>t[0]).join(""))+')">▶ Listen to passage</button><button class="btn sm ghost" onclick="openPhrase(\'\',\'\',\'\')">＋ save a phrase</button></div>'+
   '<div class="card"><div class="reading-zh">'+r.toks.map((t,ti)=>tokHtml(t,RD.idx,ti)).join("")+'</div></div>';
+  h+=phrasePanel();
   h+='<div class="card" style="background:var(--jade-lt)"><b>語法 Grammar point · '+esc(r.gram.t)+'</b><div>'+esc(r.gram.d)+'</div></div>';
   h+='<div class="card"><b>理解 Comprehension</b>';
   r.qs.forEach((q,qi)=>{h+='<div style="margin-top:12px"><b>'+(qi+1)+'. '+esc(q.q)+'</b></div>';
@@ -1197,15 +1227,17 @@ function renderScen(){const s=SCENARIOS[SP.idx];const t=s.turns[SP.ti];
     (SRcls?'<button class="btn red" id="micBtn" onclick="listen()">'+(SP.listening?"● Listening…":"🎤 Speak")+'</button>':'')+
     '<button class="btn ghost" onclick="SP.shown=true;render()">Show answer</button>'+
     '<button class="btn ghost" onclick="say('+attrJS(t.ans.zh)+')">▶ Hear answer</button>'+
-    '<button class="btn ghost sm" onclick="say('+attrJS(t.them.zh)+')">↻ Replay partner</button></div>'+
+    '<button class="btn ghost sm" onclick="say('+attrJS(t.them.zh)+')">↻ Replay partner</button>'+
+    '<button class="btn ghost sm" onclick="openPhrase('+attrJS(t.them.zh)+','+attrJS(t.them.py)+','+attrJS(t.them.en)+')">＋ save phrase</button></div>'+
     '<div class="transcript" style="margin-top:10px">'+(SP.transcript?'你說 You said: <b>'+esc(SP.transcript)+'</b>':'')+'</div>';
   if(SP.score!==null){const pct=Math.round(SP.score*100);
     h+='<div><b class="'+(pct>=65?"correct":"wrong")+'">'+pct+'%'+(pct>=65?" — 不錯！":" — try again or study the model answer")+'</b></div>';}
-  if(SP.shown){h+='<div class="hr"></div><div class="dlg-zh">'+esc(t.ans.zh)+'</div><div class="dlg-py">'+esc(t.ans.py)+'</div><div class="dlg-en">'+esc(t.ans.en)+'</div>';}
+  if(SP.shown){h+='<div class="hr"></div><div class="dlg-zh">'+zhTapHtml(t.ans.zh)+'</div><div class="dlg-py">'+esc(t.ans.py)+'</div><div class="dlg-en">'+esc(t.ans.en)+'</div><div style="margin-top:6px"><button class="btn ghost sm" onclick="openPhrase('+attrJS(t.ans.zh)+','+attrJS(t.ans.py)+','+attrJS(t.ans.en)+')">＋ save from answer</button></div>';}
   const canNext=SP.shown||(SP.score!==null&&SP.score>=0.4);
+  h+=phrasePanel();
   h+='<div class="row" style="margin-top:12px"><button class="btn jade" '+(canNext?"":"disabled ")+'onclick="nextTurn()">'+(SP.ti+1<s.turns.length?"Next turn →":"Finish scenario 完成")+'</button></div></div>';
   $("#main").innerHTML=h;}
-function bubble(m,side,noEn){return '<div class="dlgline '+side+'"><div class="who">'+(side==="them"?"對":"你")+'</div><div class="dlgbubble"><div class="dlg-zh">'+esc(m.zh)+'</div><div class="dlg-py">'+esc(m.py)+'</div>'+(noEn?"":'<div class="dlg-en">'+esc(m.en)+'</div>')+'</div></div>';}
+function bubble(m,side,noEn){return '<div class="dlgline '+side+'"><div class="who">'+(side==="them"?"對":"你")+'</div><div class="dlgbubble"><div class="dlg-zh">'+zhTapHtml(m.zh)+'</div><div class="dlg-py">'+esc(m.py)+'</div>'+(noEn?"":'<div class="dlg-en">'+esc(m.en)+'</div>')+'</div></div>';}
 function listen(){if(!SRcls)return;const rec=new SRcls();rec.lang="zh-TW";rec.interimResults=false;rec.continuous=false;try{rec.maxAlternatives=3;}catch(e){}
   SP.listening=true;render();
   const to=setTimeout(()=>{try{rec.stop();}catch(e){}if(SP&&SP.listening){SP.listening=false;toast("Did not catch anything - try again closer to the mic, or use Show answer.");render();}},12000);
@@ -1289,7 +1321,7 @@ function installPack(p){
   if(ST.packs.some(x=>x.id===p.id))return "Pack "+p.id+" is already installed.";
   (p.vocab||[]).forEach(w=>ST.custom.push({c:w.c,p:w.p||"—",e:w.e,l:w.l||ST.level,d:w.d||["daily"],x:w.x||null,n:w.n}));
   const st={id:p.id,name:p.name||p.id,date:p.date||"",readings:p.readings||[],listening:p.listening||[],scenarios:p.scenarios||[],slang:p.slang||[]};
-  ST.packs.push(st);
+  ST.packs.push(st);DICTX=null;
   st.readings.forEach(x=>READINGS.push(x));st.listening.forEach(x=>LISTENING.push(x));
   st.scenarios.forEach(x=>SCENARIOS.push(x));st.slang.forEach(x=>SLANG.push(x));
   S.save();return null;}
